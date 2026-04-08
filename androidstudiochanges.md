@@ -46,6 +46,41 @@
   hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
   ```
 
+### Issue 4: Hilt Annotation Processor Error
+- **Error Faced:** `[Hilt] Expected @AndroidEntryPoint to have a value. Did you forget to apply the Gradle Plugin? (com.google.dagger.hilt.android)`
+- **Cause:** 
+    - **Plugin Order:** In several modules, the Hilt Gradle plugin was applied before the Kotlin Kapt plugin. Hilt requires Kapt to be initialized first to correctly inject annotation processor arguments.
+    - **Java Version:** The project was using Java 11, but the latest AGP and Kotlin versions require Java 17 for stability and compatibility.
+    - **Tooling Instability:** The experimental AGP 9.1.0 and Kotlin 2.2.10 versions were causing issues with Hilt's stub generation.
+- **Mitigation:**
+    - Reordered plugins in all `build.gradle.kts` files to ensure `kotlin("kapt")` is applied before `alias(libs.plugins.hilt.android)`.
+    - Updated `compileOptions` and `kotlinOptions` to use **Java 17**.
+    - Standardized the project on stable tooling versions: AGP **8.7.2**, Kotlin **2.0.21**, and Hilt **2.51.1**.
+    - Added `correctErrorTypes = true` to the `kapt` configuration block.
+- **Why:** Ensures Hilt can correctly process annotations like `@AndroidEntryPoint` and `@HiltAndroidApp` during the Kapt task execution.
+- **Code Fix in `app/build.gradle.kts` (and others):**
+  ```kotlin
+  plugins {
+      // ...
+      kotlin("kapt") // Must come before Hilt
+      alias(libs.plugins.hilt.android)
+  }
+
+  android {
+      compileOptions {
+          sourceCompatibility = JavaVersion.VERSION_17
+          targetCompatibility = JavaVersion.VERSION_17
+      }
+      kotlinOptions {
+          jvmTarget = "17"
+      }
+  }
+
+  kapt {
+      correctErrorTypes = true
+  }
+  ```
+
 ### Project Upgrade
 The upgraded project successfully synced with the IDE. You should test that the upgraded project builds and passes its tests successfully before making further changes.
 The upgrade consisted of the following steps:
