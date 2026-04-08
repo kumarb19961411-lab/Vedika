@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "799731847794",
+    "project_id": "vedika-e44be",
+    "storage_bucket": "vedika-e44be.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799731847794:android:2b29818f2e15a3cb6c28eb",
+        "android_client_info": {
+          "package_name": "com.example.vedika"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7iSNpPC_l5Gp9M7LLDHoDzHuBsLugr9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
