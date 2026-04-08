@@ -1,6 +1,14 @@
+# Built outputs
 *.iml
 .gradle
 /local.properties
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# IDE — IntelliJ / Android Studio
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -8,8 +16,18 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+
+# VS Code
+.vscode/
+
+# Kotlin build metadata
+.kotlin/
+
+# Gradle build cache output
+**/build/
+
+# Temporary build error logs
+build_err.txt
+
+# Google services (don't commit real keys — commit google-services.json only for dev)
+# google-services.json

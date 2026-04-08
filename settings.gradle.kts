@@ -24,3 +24,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "Vedika"
 include(":app")
+include(":core:design")
+include(":core:navigation")
+include(":core:data")
+include(":feature:auth")
+include(":feature:dashboard")
+include(":feature:calendar")
+include(":feature:inventory")
+include(":feature:finance")
