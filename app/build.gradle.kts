@@ -30,14 +30,17 @@ android {
             dimension = "environment"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
+            buildConfigField("Boolean", "USE_FIREBASE_EMULATOR", "false")
         }
         create("staging") {
             dimension = "environment"
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
+            buildConfigField("Boolean", "USE_FIREBASE_EMULATOR", "false") // Staging points to live backend by default, toggle true for Emulators.
         }
         create("prod") {
             dimension = "environment"
+            buildConfigField("Boolean", "USE_FIREBASE_EMULATOR", "false")
         }
     }
 
@@ -59,6 +62,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

@@ -1,0 +1,12 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    match /vendors/{vendorId}/{allPaths=**} {
+      // Gallery & Profile Assets
+      // Only the vendor can upload/read their own secure files.
+      // For Phase 2, this is scaffolded and explicitly blocks all public access.
+      allow read, write: if request.auth != null && request.auth.uid == vendorId;
+    }
+  }
+}
