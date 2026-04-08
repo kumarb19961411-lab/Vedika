@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
     fun getActiveVendor(): Flow<VendorUser?>
+    suspend fun sendOtp(phoneNumber: String): Result<String>
+    suspend fun verifyOtp(verificationId: String, otp: String): Result<VendorUser>
     suspend fun loginAsDevBypass(username: String): Result<VendorUser>
     suspend fun logout()
 }

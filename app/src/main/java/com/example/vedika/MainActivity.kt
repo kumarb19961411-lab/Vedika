@@ -124,9 +124,29 @@ fun VedikaAppShell() {
         ) {
             composable(VedikaDestination.Login.route) {
                 LoginScreen(
-                    onLoginSuccess = {
+                    onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
+                    onDevBypassSuccess = {
                         navController.navigate(VedikaDestination.Dashboard.route) {
                             popUpTo(VedikaDestination.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(VedikaDestination.OtpVerification.route) {
+                com.example.vedika.feature.auth.OtpVerificationScreen(
+                    onVerificationSuccess = { isNewPartner ->
+                        val route = if (isNewPartner) VedikaDestination.PartnerSetup.route else VedikaDestination.Dashboard.route
+                        navController.navigate(route) {
+                            popUpTo(VedikaDestination.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(VedikaDestination.PartnerSetup.route) {
+                com.example.vedika.feature.auth.PartnerSetupScreen(
+                    onSetupComplete = {
+                        navController.navigate(VedikaDestination.Dashboard.route) {
+                            popUpTo(VedikaDestination.PartnerSetup.route) { inclusive = true }
                         }
                     }
                 )

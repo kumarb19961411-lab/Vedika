@@ -15,6 +15,8 @@ sealed class VedikaDestination(val route: String) {
     object Finance    : VedikaDestination("finance")
     object Profile    : VedikaDestination("profile")
     object Login      : VedikaDestination("login")
+    object OtpVerification : VedikaDestination("otp_verification")
+    object PartnerSetup : VedikaDestination("partner_setup")
     object NewBooking : VedikaDestination("new_booking")
 }
 

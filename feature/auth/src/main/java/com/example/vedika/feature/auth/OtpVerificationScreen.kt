@@ -8,32 +8,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
-    onNavigateToOtp: () -> Unit,
-    onDevBypassSuccess: () -> Unit,
+fun OtpVerificationScreen(
+    onVerificationSuccess: (isNewPartner: Boolean) -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val backgroundGradient = Brush.verticalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.background,
-            MaterialTheme.colorScheme.surface
-        )
-    )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundGradient)
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -42,38 +32,24 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "KalyanaVedika",
-                style = MaterialTheme.typography.displayMedium,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Modern Heritage Wedding App",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.tertiary,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Text(
-                text = "Sign In",
+                text = "Verify Number",
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Enter your details to access your dashboard",
+                text = "Enter the 6-digit code sent to ${uiState.phoneNumber}",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = uiState.phoneNumber,
-                onValueChange = viewModel::updatePhoneNumber,
-                label = { Text("Mobile Number") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                value = uiState.otp,
+                onValueChange = viewModel::updateOtp,
+                label = { Text("6-Digit Code") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -91,11 +67,11 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             Button(
                 onClick = { 
-                    viewModel.sendOtp(onSuccess = onNavigateToOtp) 
+                    viewModel.verifyOtp(onSuccess = onVerificationSuccess) 
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,15 +85,8 @@ fun LoginScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Continue", style = MaterialTheme.typography.labelLarge)
+                    Text("Verify and Proceed", style = MaterialTheme.typography.labelLarge)
                 }
-            }
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            // Dev Bypass (Debug Only)
-            TextButton(onClick = { viewModel.loginAsDevBypass(onSuccess = onDevBypassSuccess) }) {
-                Text("Developer Route (Bypass)", color = MaterialTheme.colorScheme.outline)
             }
         }
     }
