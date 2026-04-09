@@ -18,8 +18,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.vedika.core.design.theme.VedikaTheme
 import com.example.vedika.core.navigation.VedikaDestination
 import com.example.vedika.core.navigation.bottomNavItems
+import com.example.vedika.feature.auth.CategorySelectionScreen
+import com.example.vedika.feature.auth.DecoratorRegistrationScreen
 import com.example.vedika.feature.auth.LoginScreen
+import com.example.vedika.feature.auth.OtpVerificationScreen
+import com.example.vedika.feature.auth.PartnerSetupScreen
 import com.example.vedika.feature.auth.ProfileScreen
+import com.example.vedika.feature.auth.VenueRegistrationScreen
 import com.example.vedika.feature.calendar.CalendarScreen
 import com.example.vedika.feature.dashboard.DashboardScreen
 import com.example.vedika.feature.dashboard.NewBookingScreen
@@ -46,7 +51,7 @@ fun VedikaAppShell() {
     val currentRoute = currentBackStack?.destination?.route
 
     val topLevelRoutes = bottomNavItems.map { it.destination.route }
-    val showBottomBar = currentRoute in topLevelRoutes
+    val showBottomBar = currentRoute in topLevelRoutes || currentRoute == VedikaDestination.DecoratorRegistration.route
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -133,17 +138,52 @@ fun VedikaAppShell() {
                 )
             }
             composable(VedikaDestination.OtpVerification.route) {
-                com.example.vedika.feature.auth.OtpVerificationScreen(
+                OtpVerificationScreen(
                     onVerificationSuccess = { isNewPartner ->
-                        val route = if (isNewPartner) VedikaDestination.PartnerSetup.route else VedikaDestination.Dashboard.route
+                        val route = if (isNewPartner) {
+                            VedikaDestination.CategorySelection.route
+                        } else {
+                            VedikaDestination.Dashboard.route
+                        }
                         navController.navigate(route) {
                             popUpTo(VedikaDestination.Login.route) { inclusive = true }
                         }
                     }
                 )
             }
+            composable(VedikaDestination.CategorySelection.route) {
+                CategorySelectionScreen(
+                    onNavigateToVenueRegistration = { navController.navigate(VedikaDestination.VenueRegistration.route) },
+                    onNavigateToDecoratorRegistration = { navController.navigate(VedikaDestination.DecoratorRegistration.route) },
+                    onNavigateToDashboard = {
+                        navController.navigate(VedikaDestination.Dashboard.route) {
+                            popUpTo(VedikaDestination.CategorySelection.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(VedikaDestination.VenueRegistration.route) {
+                VenueRegistrationScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToDashboard = {
+                        navController.navigate(VedikaDestination.Dashboard.route) {
+                            popUpTo(VedikaDestination.CategorySelection.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(VedikaDestination.DecoratorRegistration.route) {
+                DecoratorRegistrationScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToDashboard = {
+                        navController.navigate(VedikaDestination.Dashboard.route) {
+                            popUpTo(VedikaDestination.CategorySelection.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
             composable(VedikaDestination.PartnerSetup.route) {
-                com.example.vedika.feature.auth.PartnerSetupScreen(
+                PartnerSetupScreen(
                     onSetupComplete = {
                         navController.navigate(VedikaDestination.Dashboard.route) {
                             popUpTo(VedikaDestination.PartnerSetup.route) { inclusive = true }

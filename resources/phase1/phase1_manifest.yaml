@@ -1,0 +1,56 @@
+version: v2_phase1
+source_of_truth: resources/phase1
+declaration: "This manifest defines the strict micro-scope for Vedika Version 2 Phase 1. Only the screens listed below are to be implemented/refined in this pass."
+
+phase1_screens:
+  - id: login_gateway
+    folder: kalyanavedika_interactive_login_gateway
+    route: auth/login
+    bottom_nav: disallowed
+    action: MODIFY # Existing LoginScreen
+  
+  - id: otp_verification
+    folder: kalyanavedika_otp_verification
+    route: auth/otp
+    bottom_nav: disallowed
+    action: MODIFY # Existing OtpVerificationScreen
+
+  - id: category_selection
+    folder: kalyanavedika_category_selection_no_nav
+    route: registration/category
+    bottom_nav: disallowed
+    action: CREATE # New screen replacing PartnerSetupScreen primary role
+
+  - id: venue_registration
+    folder: venue_registration_refined_flow
+    route: registration/venue
+    bottom_nav: disallowed
+    action: CREATE # New separate destination
+
+  - id: decorator_registration
+    folder: decorator_registration_expanded_expertise
+    route: registration/decorator
+    bottom_nav: allowed # Exception: shown as per source
+    action: CREATE # New separate destination
+
+navigation_flow:
+  - auth/login
+  - auth/otp
+  - registration/category
+  - "BRANCH: registration/venue OR registration/decorator"
+  - dashboard (Out of Scope for UI changes, but terminal destination)
+
+out_of_scope:
+  - dashboard/*
+  - calendar/*
+  - finance/*
+  - inventory/*
+  - gallery/*
+  - profile/*
+  - internal_logic/firebase_*
+
+engineering_rules:
+  - "Ignore Stitch: Use resources/phase1 exports only."
+  - "Frontend Only: No new backend logic or Firebase calls."
+  - "Architecture: Preserve Hilt, NavHost, and VedikaTheme."
+  - "Mock-First: Use local state/mocks to ensure UI fidelity."

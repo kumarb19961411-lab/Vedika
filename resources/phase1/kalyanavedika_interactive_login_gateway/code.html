@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KalyanaVedika - Login Gateway</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 248, 239, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .mandala-bg {
+            background-image: radial-gradient(circle at center, transparent 0%, transparent 100%), url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjOGY0ZTAwIiBmaWxsLW9wYWNpdHk9IjAuMDUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0iTTIwIDE4bDIgMmg0bC0yLTJoMmwtMi0yaC00bDIgMnoiLz48L2c+PC9zdmc+');
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8f4e00",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdfa0",
+                        "tertiary-container": "#e2a900",
+                        "primary-fixed": "#ffdcc2",
+                        "on-secondary-fixed": "#002020",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "secondary-fixed": "#93f2f2",
+                        "on-surface-variant": "#554336",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f8f0e1",
+                        "error": "#ba1a1a",
+                        "tertiary": "#795900",
+                        "on-tertiary-fixed": "#261a00",
+                        "inverse-surface": "#343026",
+                        "secondary": "#006a6a",
+                        "outline-variant": "#dbc2b0",
+                        "on-secondary-container": "#006e6e",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e9e2d3",
+                        "secondary-container": "#90efef",
+                        "surface": "#fff8ef",
+                        "on-primary-fixed": "#2e1500",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "surface-tint": "#8f4e00",
+                        "background": "#fff8ef",
+                        "on-surface": "#1e1b13",
+                        "tertiary-fixed-dim": "#fbbc00",
+                        "surface-container-low": "#fbf3e4",
+                        "inverse-primary": "#ffb77a",
+                        "surface-bright": "#fff8ef",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#ff9933",
+                        "on-tertiary-container": "#594000",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#efe7d9",
+                        "surface-container": "#f5edde",
+                        "primary-fixed-dim": "#ffb77a",
+                        "error-container": "#ffdad6",
+                        "outline": "#887364",
+                        "on-background": "#1e1b13",
+                        "surface-dim": "#e1d9cb",
+                        "surface-container-highest": "#e9e2d3",
+                        "on-primary-container": "#693800",
+                        "on-tertiary-fixed-variant": "#5c4300",
+                        "on-primary-fixed-variant": "#6d3a00"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen overflow-x-hidden">
+<!-- Hero Background Section -->
+<div class="fixed inset-0 z-0">
+<img alt="Elegant Wedding Backdrop" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5btkSk9J9QVVc-C1b2S21nwJ_LX16E4TGovvJHuj6pbAkgqfip-ZVM192uY_8rYo5yuuVIzbYORIUuLCkB0xaar9CVVxtegXrMK-foELDK3dOp_0LIJQg3_v4OGYsdkzosy9t0kY1eUwVhj-UoWLsXrVROuYIsF7-JiC4trHcsKbkAdqWzx9jLsJwGO1sG8IsXdv148DeN3WQUjtFq1pGN8voLWx_0Xsd73KSVf0QApN2RMWJb_NswXTDUOvswUHKrOidbF-l0FUc"/>
+<div class="absolute inset-0 bg-gradient-to-tr from-surface via-surface/40 to-transparent"></div>
+</div>
+<!-- Main Content Shell -->
+<main class="relative z-10 min-h-screen flex flex-col md:flex-row items-center justify-center md:justify-between px-6 lg:px-24 py-12">
+<!-- Left Side: Branding and Welcome (Desktop Only) -->
+<div class="hidden md:flex flex-col max-w-xl space-y-6">
+<div class="space-y-2">
+<span class="text-secondary font-bold tracking-[0.2em] text-sm uppercase">Welcome to Modern Traditions</span>
+<h1 class="text-7xl font-headline font-bold text-primary leading-tight">KalyanaVedika</h1>
+<p class="text-xl text-on-surface-variant font-light max-w-md leading-relaxed" id="desktop-subtitle">
+                    Plan your dream celebration with a touch of modern heritage. Your journey to the perfect union begins here.
+                </p>
+</div>
+<div class="flex items-center gap-4 text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-semibold tracking-wide uppercase text-xs">Curated Vendors • Bespoke Planning • Family Centric</span>
+</div>
+</div>
+<!-- Right Side: Login Card -->
+<div class="w-full max-w-[420px] glass-panel rounded-xl shadow-2xl p-8 md:p-10 mandala-bg relative">
+<!-- Mobile Header -->
+<div class="md:hidden text-center mb-8">
+<h1 class="text-4xl font-headline font-bold text-primary">KalyanaVedika</h1>
+<p class="text-sm text-on-surface-variant mt-2 uppercase tracking-widest">Modern Heritage Wedding App</p>
+</div>
+<div class="space-y-8">
+<header class="text-center md:text-left">
+<h2 class="text-2xl font-headline font-bold text-on-surface">Sign In</h2>
+<p class="text-on-surface-variant text-sm mt-1" id="login-subtitle">Plan your dream celebration</p>
+</header>
+<!-- Dual Login Toggle -->
+<div class="bg-surface-container-low p-1.5 rounded-full flex items-center shadow-inner">
+<button class="flex-1 py-3 text-sm font-bold rounded-full bg-primary text-on-primary shadow-sm transition-all duration-300" id="user-login-btn">User Login</button>
+<button class="flex-1 py-3 text-sm font-semibold text-on-surface-variant hover:text-primary transition-all duration-300" id="vendor-login-btn">Vendor Login</button>
+</div>
+<!-- Input Form -->
+<form class="space-y-6" onsubmit="return false;">
+<div class="space-y-2">
+<label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant ml-1" id="login-label">Mobile Number</label>
+<div class="relative flex items-center">
+<div class="absolute left-4 flex items-center gap-2 pr-3 border-r border-outline-variant/30">
+<span class="text-sm font-bold text-on-surface">+91</span>
+<span class="material-symbols-outlined text-sm text-outline">expand_more</span>
+</div>
+<input class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/20 rounded-lg py-4 pl-20 pr-4 text-on-surface placeholder:text-outline/40 focus:ring-2 focus:ring-primary focus:bg-white transition-all shadow-inner" id="mobile-input" placeholder="98765 43210" type="tel"/>
+</div>
+</div>
+<button class="w-full py-4 bg-primary hover:bg-primary-container text-on-primary rounded-lg font-bold text-lg shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group transition-all">
+                        Send OTP
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</form>
+<!-- Decorative Divider -->
+<div class="flex items-center justify-center gap-4 py-2">
+<div class="h-px w-full bg-outline-variant/20"></div>
+<span class="material-symbols-outlined text-tertiary-container text-xl" style="font-variation-settings: 'FILL' 1;">spa</span>
+<div class="h-px w-full bg-outline-variant/20"></div>
+</div>
+<div class="text-center space-y-4">
+<p class="text-sm text-on-surface-variant">
+                        New to KalyanaVedika? 
+                        <a class="text-secondary font-bold hover:underline" href="#" id="register-link">Register your event</a>
+</p>
+<div class="flex justify-center gap-6">
+<a class="text-outline hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+</a>
+<a class="text-outline hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">language</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Credit -->
+<footer class="fixed bottom-6 left-6 md:left-24 z-10 text-[10px] uppercase tracking-[0.3em] font-bold text-on-surface-variant/60 hidden md:block">
+        © 2024 KalyanaVedika • Excellence in Indian Weddings
+    </footer>
+<!-- Navigation Drawer (Mandatory Shell) -->
+<nav class="fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 bg-white/10 backdrop-blur-sm md:hidden">
+<span class="text-primary font-serif font-bold italic text-xl">KalyanaVedika</span>
+<button class="text-primary p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</nav>
+<script>
+        const userBtn = document.getElementById('user-login-btn');
+        const vendorBtn = document.getElementById('vendor-login-btn');
+        const loginLabel = document.getElementById('login-label');
+        const loginSubtitle = document.getElementById('login-subtitle');
+        const desktopSubtitle = document.getElementById('desktop-subtitle');
+        const registerLink = document.getElementById('register-link');
+        const mobileInput = document.getElementById('mobile-input');
+
+        const activeClasses = ['bg-primary', 'text-on-primary', 'shadow-sm', 'font-bold'];
+        const inactiveClasses = ['text-on-surface-variant', 'hover:text-primary', 'font-semibold'];
+
+        function setLoginState(isUser) {
+            if (isUser) {
+                // User State
+                userBtn.classList.add(...activeClasses);
+                userBtn.classList.remove(...inactiveClasses);
+                vendorBtn.classList.remove(...activeClasses);
+                vendorBtn.classList.add(...inactiveClasses);
+
+                loginSubtitle.textContent = 'Plan your dream celebration';
+                if(desktopSubtitle) desktopSubtitle.textContent = 'Plan your dream celebration with a touch of modern heritage. Your journey to the perfect union begins here.';
+                loginLabel.textContent = 'Mobile Number';
+                registerLink.textContent = 'Register your event';
+                mobileInput.placeholder = '98765 43210';
+            } else {
+                // Vendor State
+                vendorBtn.classList.add(...activeClasses);
+                vendorBtn.classList.remove(...inactiveClasses);
+                userBtn.classList.remove(...activeClasses);
+                userBtn.classList.add(...inactiveClasses);
+
+                loginSubtitle.textContent = 'Manage your wedding business';
+                if(desktopSubtitle) desktopSubtitle.textContent = 'Expand your reach and manage your boutique wedding services with our professional vendor dashboard.';
+                loginLabel.textContent = 'Vendor Mobile Number';
+                registerLink.textContent = 'Register as a Vendor';
+                mobileInput.placeholder = 'Business Contact';
+            }
+        }
+
+        userBtn.addEventListener('click', () => setLoginState(true));
+        vendorBtn.addEventListener('click', () => setLoginState(false));
+    </script>
+</body></html>
