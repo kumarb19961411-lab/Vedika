@@ -21,7 +21,7 @@ class FakeAuthRepository @Inject constructor() : AuthRepository {
 
     override suspend fun verifyOtp(verificationId: String, otp: String): Result<VendorUser> {
         kotlinx.coroutines.delay(1500) // Simulate network delay
-        if (otp != "123456") return Result.failure(IllegalArgumentException("Invalid OTP"))
+        if (otp != "1234") return Result.failure(IllegalArgumentException("Invalid OTP"))
         
         val devUser = VendorUser(
             id = "mock_vendor_auth",

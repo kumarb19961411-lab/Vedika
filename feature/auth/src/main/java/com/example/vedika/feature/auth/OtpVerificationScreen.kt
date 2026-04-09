@@ -42,6 +42,7 @@ import coil.compose.AsyncImage
 @Composable
 fun OtpVerificationScreen(
     onVerificationSuccess: (isNewPartner: Boolean) -> Unit,
+    onNavigateBack: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -54,35 +55,31 @@ fun OtpVerificationScreen(
                     Text(
                         text = "KalyanaVedika",
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color(0xFFC2410C),
                         fontWeight = FontWeight.Bold,
                         fontStyle = FontStyle.Italic
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back */ }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.primary)
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF78716A))
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = Color.White.copy(alpha = 0.8f)
                 )
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.fillMaxSize()
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-            // Mandala Background (Mocked with decorative elements)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(horizontal = 24.dp, vertical = 24.dp),
+                    .padding(horizontal = 24.dp, vertical = 48.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Hero Content Layer
-                Spacer(modifier = Modifier.height(24.dp))
                 Surface(
                     modifier = Modifier.size(80.dp),
                     shape = CircleShape,
@@ -106,29 +103,21 @@ fun OtpVerificationScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = buildAnnotatedString {
-                        append("Enter the 4-digit code sent to ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)) {
-                            append("+91 98765 43210")
-                        }
-                    },
+                    text = "Verification code sent to +91 ${uiState.phoneNumber}",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 28.sp
+                    textAlign = TextAlign.Center
                 )
-                TextButton(
-                    onClick = { /* Change Number */ },
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-                    Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Change Number", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.secondary)
-                }
+                Text(
+                    text = "Change Number",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 8.dp).clickable(onClick = onNavigateBack)
+                )
 
                 Spacer(modifier = Modifier.height(48.dp))
 
-                // OTP Input Section
                 Surface(
                     modifier = Modifier.fillMaxWidth().widthIn(max = 448.dp),
                     shape = RoundedCornerShape(16.dp),
@@ -136,78 +125,78 @@ fun OtpVerificationScreen(
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.1f)),
                     shadowElevation = 2.dp
                 ) {
-                    Column(
-                        modifier = Modifier.padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        // OTP 4-Digit Grid
-                        Row(
-                            modifier = Modifier.fillMaxWidth().widthIn(max = 320.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            repeat(4) { index ->
-                                Surface(
-                                    modifier = Modifier.size(64.dp, 80.dp),
-                                    shape = RoundedCornerShape(16.dp),
-                                    color = MaterialTheme.colorScheme.surfaceContainerHigh
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Text(
-                                            text = "•",
-                                            style = MaterialTheme.typography.displaySmall,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-                                        )
+                    Box(modifier = Modifier.padding(32.dp), contentAlignment = Alignment.Center) {
+                        androidx.compose.foundation.text.BasicTextField(
+                            value = uiState.otp,
+                            onValueChange = { viewModel.updateOtp(it) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            decorationBox = {
+                                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    repeat(4) { index ->
+                                        val char = uiState.otp.getOrNull(index)?.toString() ?: ""
+                                        Surface(
+                                            modifier = Modifier.size(64.dp, 80.dp),
+                                            shape = RoundedCornerShape(16.dp),
+                                            color = if (char.isNotEmpty()) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surfaceContainerHighest,
+                                            border = if (char.isNotEmpty()) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
+                                        ) {
+                                            Box(contentAlignment = Alignment.Center) {
+                                                Text(
+                                                    text = char,
+                                                    style = MaterialTheme.typography.headlineLarge,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = MaterialTheme.colorScheme.primary
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
-                        }
-
-                        Spacer(modifier = Modifier.height(40.dp))
-
-                        // Actions
-                        Button(
-                            onClick = { viewModel.verifyOtp(onSuccess = onVerificationSuccess) },
-                            modifier = Modifier.fillMaxWidth().height(56.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
-                            ),
-                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
-                        ) {
-                            if (uiState.isLoading) {
-                                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
-                            } else {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text("Verify & Login", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Icon(Icons.Default.Login, contentDescription = null)
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Didn't receive the code?", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            TextButton(onClick = { /* Resend */ }) {
-                                Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.tertiary)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Resend OTP", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.tertiary, fontWeight = FontWeight.Bold)
-                            }
-                        }
+                        )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(64.dp))
+                Text(
+                    text = if (uiState.isResendEnabled) "Resend OTP" else "Resend in ${uiState.countdown}s",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = if (uiState.isResendEnabled) MaterialTheme.colorScheme.primary else Color.Gray,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 24.dp).clickable(enabled = uiState.isResendEnabled) {
+                        viewModel.resendOtp()
+                    }
+                )
 
-                // Decorative Element
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.alpha(0.1f)) {
-                    Box(modifier = Modifier.width(48.dp).height(1.dp).background(MaterialTheme.colorScheme.outlineVariant))
-                    Icon(Icons.Default.SettingsSuggest, contentDescription = null, modifier = Modifier.padding(horizontal = 16.dp))
-                    Box(modifier = Modifier.width(48.dp).height(1.dp).background(MaterialTheme.colorScheme.outlineVariant))
+                if (uiState.error != null) {
+                    Text(
+                        text = uiState.error ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(48.dp))
+
+                Button(
+                    onClick = { 
+                        viewModel.verifyOtp { isNewPartner ->
+                            onVerificationSuccess(isNewPartner)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .widthIn(max = 448.dp)
+                        .height(56.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
+                    enabled = !uiState.isLoading
+                ) {
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                    } else {
+                        Text("Verify & Proceed", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -232,7 +221,6 @@ fun OtpVerificationScreen(
                 
                 Spacer(modifier = Modifier.height(48.dp))
                 
-                // Security Badge
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
@@ -244,7 +232,6 @@ fun OtpVerificationScreen(
                 }
             }
 
-            // Visual Anchor Background Image (Decorative Bottom Right)
             AsyncImage(
                 model = "https://lh3.googleusercontent.com/aida-public/AB6AXuB9b1faUIP5RRvaHNnp7h4rXHW_1fLTCPp0JPY2c0jMBDacxi-9CrvrFFC9cukE0XaeRIxvL8-Fz6aS33B18Bhf9sW1xEtQqu4ZVOa-Cq2_C-UPsoEQNSL2kCyfheXyGnJHEjcMRMpxRjLpX9fEqbtaSHITvKmzLve1plIEjnsMjqcdMsdo9PUq_lmgJ8-_W2UFEk92MkhqOF6VO2n4tsNIEZ_U9LpoIIfBdiiS2OgGZcVdUw8FErrc82aH4vWnqWrYErV9Aq807Fbs",
                 contentDescription = null,

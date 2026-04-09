@@ -148,7 +148,8 @@ fun VedikaAppShell() {
                         navController.navigate(route) {
                             popUpTo(VedikaDestination.Login.route) { inclusive = true }
                         }
-                    }
+                    },
+                    onNavigateBack = { navController.popBackStack() }
                 )
             }
             composable(VedikaDestination.CategorySelection.route) {

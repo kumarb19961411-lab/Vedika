@@ -34,6 +34,13 @@ fun VenueRegistrationScreen(
     onNavigateToDashboard: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    
+    // Form State
+    var venueName by remember { mutableStateOf("") }
+    var capacity by remember { mutableStateOf("") }
+    var location by remember { mutableStateOf("") }
+    var basePrice by remember { mutableStateOf("") }
+    val selectedAmenities = remember { mutableStateListOf("Catering") }
 
     Scaffold(
         topBar = {
@@ -153,8 +160,20 @@ fun VenueRegistrationScreen(
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.1f))
                     ) {
                         Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
-                            RegistrationField(label = "Venue Identity", placeholder = "The Royal Orchid Garden")
-                            RegistrationField(label = "Guest Capacity", placeholder = "Number of guests", icon = Icons.Default.Groups, keyboardType = KeyboardType.Number)
+                            RegistrationField(
+                                label = "Venue Identity", 
+                                placeholder = "The Royal Orchid Garden",
+                                value = venueName,
+                                onValueChange = { venueName = it }
+                            )
+                            RegistrationField(
+                                label = "Guest Capacity", 
+                                placeholder = "Number of guests", 
+                                icon = Icons.Default.Groups, 
+                                keyboardType = KeyboardType.Number,
+                                value = capacity,
+                                onValueChange = { capacity = it }
+                            )
                         }
                     }
                     
@@ -165,7 +184,13 @@ fun VenueRegistrationScreen(
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.1f))
                     ) {
                         Column(modifier = Modifier.padding(24.dp)) {
-                            RegistrationField(label = "Location", placeholder = "Street address, City, State", actionIcon = Icons.Default.Map)
+                            RegistrationField(
+                                label = "Location", 
+                                placeholder = "Street address, City, State", 
+                                actionIcon = Icons.Default.Map,
+                                value = location,
+                                onValueChange = { location = it }
+                            )
                             Spacer(modifier = Modifier.height(16.dp))
                             AsyncImage(
                                 model = "https://lh3.googleusercontent.com/aida-public/AB6AXuBdcaJxP1V6Q5uLYCpXK-g0fAAZOPtOT-g2m_jX00O14H-r2pfWIyPuDr0vvCik_8cNesFcDyiR3GtBd31gdQy1-JIFeVLXx7klOm_8YvisZz7vWqIkz7xl1P0QbNPm4aWL8Ji8aJnj8oAqhNBS9awa-0244U4_a5z4BKtjaoZBamXmPyd9q34uOvOBkRQxDjZY6jLSS772Z7zDQqmK7L2mgpoMhT8GLlDVfenirBgjCvr9hh234onaAhzhppxylmUENesj75r60qfv",
@@ -189,14 +214,28 @@ fun VenueRegistrationScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    AmenityChip(icon = Icons.Default.AcUnit, label = "Central AC")
-                    AmenityChip(icon = Icons.Default.Restaurant, label = "Catering", isSelected = true)
-                    AmenityChip(icon = Icons.Default.DirectionsCar, label = "Valet")
-                    AmenityChip(icon = Icons.Default.NightShelter, label = "Guest Rooms")
-                    AmenityChip(icon = Icons.Default.CameraEnhance, label = "Stage Setup")
-                    AmenityChip(icon = Icons.Default.Wifi, label = "Free Wi-Fi")
-                    AmenityChip(icon = Icons.Default.LocalFlorist, label = "Decoration")
-                    AmenityChip(icon = Icons.Default.Bolt, label = "Backup Power")
+                    val amenities = listOf(
+                        Icons.Default.AcUnit to "Central AC",
+                        Icons.Default.Restaurant to "Catering",
+                        Icons.Default.DirectionsCar to "Valet",
+                        Icons.Default.NightShelter to "Guest Rooms",
+                        Icons.Default.CameraEnhance to "Stage Setup",
+                        Icons.Default.Wifi to "Free Wi-Fi",
+                        Icons.Default.LocalFlorist to "Decoration",
+                        Icons.Default.Bolt to "Backup Power"
+                    )
+                    
+                    amenities.forEach { (icon, label) ->
+                        AmenityChip(
+                            icon = icon, 
+                            label = label, 
+                            isSelected = selectedAmenities.contains(label),
+                            onClick = {
+                                if (selectedAmenities.contains(label)) selectedAmenities.remove(label)
+                                else selectedAmenities.add(label)
+                            }
+                        )
+                    }
                 }
 
                 // Pricing Section
@@ -211,12 +250,13 @@ fun VenueRegistrationScreen(
                         Spacer(modifier = Modifier.height(24.dp))
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             OutlinedTextField(
-                                value = "",
-                                onValueChange = {},
+                                value = basePrice,
+                                onValueChange = { basePrice = it },
                                 placeholder = { Text("50,000", fontSize = 20.sp, fontWeight = FontWeight.Bold) },
                                 leadingIcon = { Text("₹", fontWeight = FontWeight.Bold, color = Color.Gray) },
                                 modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(8.dp),
+                                shape = RoundedCornerShape(16.dp),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedContainerColor = Color.White,
                                     focusedContainerColor = Color.White,
@@ -300,6 +340,8 @@ fun StepItem(number: Int, label: String, isActive: Boolean) {
 fun RegistrationField(
     label: String,
     placeholder: String,
+    value: String = "",
+    onValueChange: (String) -> Unit = {},
     icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
     actionIcon: androidx.compose.ui.graphics.vector.ImageVector? = null,
     keyboardType: KeyboardType = KeyboardType.Text
@@ -308,8 +350,8 @@ fun RegistrationField(
         Text(label.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
         Box(contentAlignment = Alignment.CenterEnd) {
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = value,
+                onValueChange = onValueChange,
                 placeholder = { Text(placeholder, color = Color.LightGray) },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp),
@@ -338,8 +380,14 @@ fun RegistrationField(
 }
 
 @Composable
-fun AmenityChip(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, isSelected: Boolean = false) {
+fun AmenityChip(
+    icon: androidx.compose.ui.graphics.vector.ImageVector, 
+    label: String, 
+    isSelected: Boolean = false,
+    onClick: () -> Unit = {}
+) {
     Surface(
+        onClick = onClick,
         shape = RoundedCornerShape(16.dp),
         color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceContainerLowest,
         border = BorderStroke(1.dp, if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))

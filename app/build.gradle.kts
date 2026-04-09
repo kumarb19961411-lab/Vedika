@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    kotlin("kapt")
+    kotlin("kapt") // RULE: Must come before Hilt plugin to avoid annotation processor errors
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.services)
@@ -26,17 +26,17 @@ android {
 
     flavorDimensions += "environment"
     productFlavors {
+        // RULE: No applicationIdSuffix is allowed here to maintain Firebase client matching stability.
+        // Golden Path: One package name (com.example.vedika) for all flavors.
         create("dev") {
             dimension = "environment"
-            applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
             buildConfigField("Boolean", "USE_FIREBASE_EMULATOR", "true")
         }
         create("staging") {
             dimension = "environment"
-            applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
-            buildConfigField("Boolean", "USE_FIREBASE_EMULATOR", "false") // Staging points to live backend by default, toggle true for Emulators.
+            buildConfigField("Boolean", "USE_FIREBASE_EMULATOR", "false")
         }
         create("prod") {
             dimension = "environment"
