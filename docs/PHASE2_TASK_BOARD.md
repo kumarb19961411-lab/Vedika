@@ -12,3 +12,6 @@
 | P2-08 | Firebase Emulator Config Toggle | firebase_backend_engineer | /core/data/ | done | Medium | P2-07 | |
 | P2-09 | Firestore Rules & Security Config | security_access_guard | /core/data/ | done | High | P2-08 | Rules created in project root |
 | P2-10 | Compile & Verify all flavors | qa_reliability_engineer | / | done | High | P2-09 | assembleStagingDebug fully compiles |
+| P2-11 | Create Finance Ledger Skill | product_architect | /.agents/skills/ | done | Medium | None | Established domain authority |
+| P2-12 | Scaffold Feature Gallery | product_architect | /feature/gallery/ | done | Medium | None | Skeleton module created |
+| P2-13 | Final Phase Closure Audit | product_architect | /docs/ | done | High | P2-10 | Formal PASS recorded |

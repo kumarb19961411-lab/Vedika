@@ -1,7 +1,7 @@
 # Phase 2 Status
 
 **Last Updated**: 2026-04-09
-**Current Phase Decision**: Transitioning into Live Firebase repository scaffolding and flavor DI structuring. No major blockers.
+**Current Phase Decision**: Phase 2 Completed. All core scaffolding and flavor DI confirmed. Transitioning to Phase 3.
 
 ## Completed
 - [X] P2-01: Repo Audit & Docs Bootstrap
@@ -29,7 +29,9 @@
 
 ## Scheduled Next (Phase 3)
 - Execute Booking backend workflows via Firebase Functions
-- Setup full production Identity verification flows
+- Setup full production Identity verification flows (Carry-forward from P2)
+- Implement Gallery Uploads & Storage integration
+- Implement Finance Ledger & Payouts logic
 
 ## Blocked
 - None

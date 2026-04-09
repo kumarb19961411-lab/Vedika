@@ -7,7 +7,8 @@
 - **Trusted Enforcement Work**: Booking status transitions and inventory availability locking must eventually shift to Firebase Cloud Functions for trusted integrity. They are currently implemented via client-side SDK calls in Phase 2 logic (marked explicitly lacking backend enforcement).
 - **Google Sign-In**: Deferred. Authentication supports mock Bypass + scaffolded OTP (to be hooked up later).
 - **Finance Ledger & Payouts**: Display only. Client-authoritative mutations are strictly prohibited.
-- **Gallery Uploads (Storage)**: Unfinished. Requires future Firebase Storage integration.
+- **Gallery Uploads (Storage)**: Unfinished. Skeleton `:feature:gallery` module created; requires future Firebase Storage integration in Phase 3.
+- **Firebase Auth (Cellular OTP)**: Architecture scaffolded but real cellular verification deferred to Phase 3.
 
 ### QA Gaps
 - End-to-end integration tests using Local Firebase Emulators.
