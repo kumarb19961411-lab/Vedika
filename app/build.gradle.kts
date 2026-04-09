@@ -1,10 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("kapt")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.services)
-    kotlin("kapt")
 }
 
 android {
@@ -30,7 +30,7 @@ android {
             dimension = "environment"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-            buildConfigField("Boolean", "USE_FIREBASE_EMULATOR", "false")
+            buildConfigField("Boolean", "USE_FIREBASE_EMULATOR", "true")
         }
         create("staging") {
             dimension = "environment"
@@ -54,17 +54,22 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
         buildConfig = true
     }
 }
+
+kapt {
+    correctErrorTypes = true
+}
+
 
 dependencies {
     implementation(platform(libs.firebase.bom))
