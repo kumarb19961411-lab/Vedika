@@ -1,5 +1,6 @@
 package com.example.vedika.feature.auth
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.FilterVintage
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Refresh
@@ -23,9 +25,14 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,7 +56,7 @@ fun OtpVerificationScreen(
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
-                        italic = true
+                        fontStyle = FontStyle.Italic
                     )
                 },
                 navigationIcon = {
@@ -101,8 +108,9 @@ fun OtpVerificationScreen(
                 Text(
                     text = buildAnnotatedString {
                         append("Enter the 4-digit code sent to ")
-                        pushStyle(SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface))
-                        append("+91 98765 43210")
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)) {
+                            append("+91 98765 43210")
+                        }
                     },
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -207,13 +215,13 @@ fun OtpVerificationScreen(
                 Text(
                     text = buildAnnotatedString {
                         append("By logging in, you agree to KalyanaVedika's ")
-                        pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-                        append("Terms of Service")
-                        pop()
+                        withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                            append("Terms of Service")
+                        }
                         append(" and ")
-                        pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-                        append("Privacy Policy")
-                        pop()
+                        withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                            append("Privacy Policy")
+                        }
                         append(".")
                     },
                     style = MaterialTheme.typography.bodySmall,

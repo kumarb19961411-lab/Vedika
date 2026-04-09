@@ -17,8 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -42,7 +44,7 @@ fun VenueRegistrationScreen(
                         style = MaterialTheme.typography.titleLarge,
                         color = Color(0xFFC2410C),
                         fontWeight = FontWeight.Bold,
-                        italic = true
+                        fontStyle = FontStyle.Italic
                     )
                 },
                 navigationIcon = {

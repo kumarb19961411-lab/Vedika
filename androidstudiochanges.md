@@ -81,19 +81,30 @@
   }
   ```
 
-### Project Upgrade
-The upgraded project successfully synced with the IDE. You should test that the upgraded project builds and passes its tests successfully before making further changes.
-The upgrade consisted of the following steps:
-- Upgrade AGP dependency from 8.13.2 to 9.1.0
-- Upgrade Gradle version to 9.3.1
-- Upgrade Gradle plugins
-- Enable resValues build feature
-- Disable targetSdk defaults to compileSdk
-- Disable App Compile-Time R Class
-- Continue to allow `intent-filters` in the main manifest
-- Allow non-unique package names
-- Enable Dependency Constraints
-- Disable R8 Strict Mode for Keep Rules
-- Disable R8 Optimized Resource Shrinking
-- Disable built-in Kotlin support
-- Preserve the old (internal) AGP Dsl APIs
+### Issue 5: Unresolved References and Missing Imports in UI Modules
+- **Error Faced:** Multiple `Unresolved reference` errors in `feature:auth` module screens (e.g., `BorderStroke`, `FontStyle`, `linearGradient`, `FilterVintage`).
+- **Cause:** 
+    - Missing explicit imports for standard Compose Foundation and UI components.
+    - Usage of deprecated or incorrect parameters in `Text` and `buildAnnotatedString` (e.g., `italic = true` instead of `fontStyle = FontStyle.Italic`).
+    - Missing `coil-compose` dependency in the feature module.
+- **Mitigation:**
+    - Added `implementation(libs.coil.compose)` to `feature/auth/build.gradle.kts`.
+    - Added explicit imports for `androidx.compose.foundation.BorderStroke`, `androidx.compose.ui.text.font.FontStyle`, `androidx.compose.ui.graphics.Brush`, and others.
+    - Updated `buildAnnotatedString` blocks to use the modern `withStyle` API:
+      ```kotlin
+      // Before
+      pushStyle(SpanStyle(...))
+      append("Text")
+      pop()
+
+      // After
+      withStyle(SpanStyle(...)) {
+          append("Text")
+      }
+      ```
+    - Replaced `italic = true` with `fontStyle = FontStyle.Italic` in `Text` composables.
+    - Fixed missing icon references (e.g., added `import androidx.compose.material.icons.filled.FilterVintage`).
+- **Why:** To align with Jetpack Compose best practices and ensure all UI components and icons are correctly resolved during compilation.
+
+### Project Build Status
+The project now builds successfully using `:app:assembleDevDebug`.
