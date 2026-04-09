@@ -41,8 +41,13 @@ fun VenueRegistrationScreen(
     var location by remember { mutableStateOf("") }
     var basePrice by remember { mutableStateOf("") }
     val selectedAmenities = remember { mutableStateListOf("Catering") }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val isFormValid = venueName.isNotBlank() && location.isNotBlank()
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -89,18 +94,31 @@ fun VenueRegistrationScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextButton(onClick = { /* Save Draft */ }) {
+                    TextButton(onClick = { 
+                        scope.launch { 
+                            snackbarHostState.showSnackbar("Draft saved successfully") 
+                        } 
+                    }) {
                         Icon(Icons.Default.Save, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Save Draft", fontWeight = FontWeight.SemiBold)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Text("Skip", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            text = "Skip", 
+                            style = MaterialTheme.typography.bodyMedium, 
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.clickable { onNavigateToDashboard() }
+                        )
                         Button(
                             onClick = onNavigateToDashboard,
+                            enabled = isFormValid,
                             modifier = Modifier.height(56.dp).padding(start = 8.dp),
                             shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                            )
                         ) {
                             Text("Continue", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.width(8.dp))

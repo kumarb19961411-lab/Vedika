@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class LoginMode { USER, VENDOR }
+enum class AuthFlow { SIGN_IN, SIGN_UP }
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -22,6 +23,10 @@ class AuthViewModel @Inject constructor(
 
     fun selectLoginMode(mode: LoginMode) {
         _uiState.value = _uiState.value.copy(loginMode = mode, error = null)
+    }
+
+    fun setAuthFlow(flow: AuthFlow) {
+        _uiState.value = _uiState.value.copy(authFlow = flow, error = null)
     }
 
     fun updatePhoneNumber(phone: String) {
@@ -106,15 +111,21 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateSelectedCategory(category: String?) {
+        _uiState.value = _uiState.value.copy(selectedCategory = category)
+    }
 }
 
 data class AuthUiState(
     val phoneNumber: String = "",
     val otp: String = "",
     val loginMode: LoginMode = LoginMode.VENDOR,
+    val authFlow: AuthFlow = AuthFlow.SIGN_IN,
     val verificationId: String? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
     val isResendEnabled: Boolean = true,
-    val countdown: Int = 0
+    val countdown: Int = 0,
+    val selectedCategory: String? = null
 )

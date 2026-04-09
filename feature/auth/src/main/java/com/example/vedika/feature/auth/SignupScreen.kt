@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -34,10 +34,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 
 @Composable
-fun LoginScreen(
+fun SignupScreen(
     onNavigateToOtp: () -> Unit,
-    onNavigateToSignUp: () -> Unit,
-    onDevBypassSuccess: () -> Unit,
+    onNavigateToSignIn: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -46,7 +45,7 @@ fun LoginScreen(
 
     // Stable initialization of the AuthFlow state on screen entry
     LaunchedEffect(Unit) {
-        viewModel.setAuthFlow(AuthFlow.SIGN_IN)
+        viewModel.setAuthFlow(AuthFlow.SIGN_UP)
     }
 
     Scaffold(
@@ -90,7 +89,7 @@ fun LoginScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Host Heritage.\nCraft Traditions.",
+                            text = "Join Heritage.\nBuild Traditions.",
                             style = MaterialTheme.typography.displaySmall,
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
@@ -99,7 +98,7 @@ fun LoginScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "India's Premiere Management Suite for\nHeritage Venues & Decorators",
+                            text = "The Modern Tech Partner for India's\nFinest Heritage Venues & Decorators",
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.White.copy(alpha = 0.9f),
                             textAlign = TextAlign.Center,
@@ -107,7 +106,7 @@ fun LoginScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Modern Heritage Wedding App".uppercase(),
+                            text = "Scale Your Business With KalyanaVedika".uppercase(),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             letterSpacing = 1.sp,
@@ -117,7 +116,7 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(48.dp))
 
-                    // Right Side: Login Card (Glass Panel)
+                    // Right Side: Signup Card (Glass Panel)
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -135,20 +134,20 @@ fun LoginScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Sign In",
+                                text = "Sign Up",
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = "Access your account to book or manage event services",
+                                text = "Create your account to book or provide event services",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
 
                             Spacer(modifier = Modifier.height(32.dp))
 
-                            // Login Toggle Segment
+                            // Signup Toggle Segment
                             Surface(
                                 modifier = Modifier.fillMaxWidth().height(48.dp),
                                 shape = RoundedCornerShape(24.dp),
@@ -167,7 +166,7 @@ fun LoginScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            "User Login",
+                                            "User Sign Up",
                                             fontWeight = FontWeight.Bold,
                                             color = if (!isVendorMode) Color(0xFFC2410C) else Color.White
                                         )
@@ -183,7 +182,7 @@ fun LoginScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            "Partner Login",
+                                            "Partner Sign Up",
                                             fontWeight = FontWeight.Bold,
                                             color = if (isVendorMode) Color(0xFFC2410C) else Color.White
                                         )
@@ -284,14 +283,14 @@ fun LoginScreen(
 
                             Text(
                                 text = buildAnnotatedString {
-                                    append("New to KalyanaVedika? ")
+                                    append("Already have an account? ")
                                     withStyle(SpanStyle(color = Color.White, fontWeight = FontWeight.Bold)) {
-                                        append("Register your account")
+                                        append("Sign In")
                                     }
                                 },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color.White.copy(alpha = 0.7f),
-                                modifier = Modifier.clickable { onNavigateToSignUp() }
+                                modifier = Modifier.clickable { onNavigateToSignIn() }
                             )
 
                             Spacer(modifier = Modifier.height(16.dp))
@@ -304,11 +303,6 @@ fun LoginScreen(
                     }
 
                     Spacer(modifier = Modifier.height(48.dp))
-
-                    // Dev Bypass (Debug Only) - Kept from original
-                    TextButton(onClick = { viewModel.loginAsDevBypass(onSuccess = onDevBypassSuccess) }) {
-                        Text("Developer Route (Bypass)", color = Color.White.copy(alpha = 0.3f))
-                    }
                 }
             }
         }

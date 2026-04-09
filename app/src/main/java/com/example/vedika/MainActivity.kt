@@ -18,18 +18,22 @@ import androidx.navigation.compose.rememberNavController
 import com.example.vedika.core.design.theme.VedikaTheme
 import com.example.vedika.core.navigation.VedikaDestination
 import com.example.vedika.core.navigation.bottomNavItems
-import com.example.vedika.feature.auth.CategorySelectionScreen
-import com.example.vedika.feature.auth.DecoratorRegistrationScreen
 import com.example.vedika.feature.auth.LoginScreen
+import com.example.vedika.feature.auth.SignupScreen
 import com.example.vedika.feature.auth.OtpVerificationScreen
+import com.example.vedika.feature.auth.CategorySelectionScreen
+import com.example.vedika.feature.auth.VenueRegistrationScreen
+import com.example.vedika.feature.auth.DecoratorRegistrationScreen
 import com.example.vedika.feature.auth.PartnerSetupScreen
 import com.example.vedika.feature.auth.ProfileScreen
-import com.example.vedika.feature.auth.VenueRegistrationScreen
+import com.example.vedika.feature.auth.AuthViewModel
+import com.example.vedika.feature.auth.AuthFlow
 import com.example.vedika.feature.calendar.CalendarScreen
 import com.example.vedika.feature.dashboard.DashboardScreen
 import com.example.vedika.feature.dashboard.NewBookingScreen
 import com.example.vedika.feature.finance.FinanceScreen
 import com.example.vedika.feature.inventory.InventoryScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -127,9 +131,14 @@ fun VedikaAppShell() {
                 )
             }
         ) {
+            val authViewModel: AuthViewModel = hiltViewModel()
+            val authState by authViewModel.uiState.collectAsState()
+
             composable(VedikaDestination.Login.route) {
                 LoginScreen(
+                    viewModel = authViewModel,
                     onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
+                    onNavigateToSignUp = { navController.navigate(VedikaDestination.SignUp.route) },
                     onDevBypassSuccess = {
                         navController.navigate(VedikaDestination.Dashboard.route) {
                             popUpTo(VedikaDestination.Login.route) { inclusive = true }
@@ -137,10 +146,18 @@ fun VedikaAppShell() {
                     }
                 )
             }
+            composable(VedikaDestination.SignUp.route) {
+                SignupScreen(
+                    viewModel = authViewModel,
+                    onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
+                    onNavigateToSignIn = { navController.navigate(VedikaDestination.Login.route) }
+                )
+            }
             composable(VedikaDestination.OtpVerification.route) {
                 OtpVerificationScreen(
+                    viewModel = authViewModel,
                     onVerificationSuccess = { isNewPartner ->
-                        val route = if (isNewPartner) {
+                        val route = if (authState.authFlow == AuthFlow.SIGN_UP) {
                             VedikaDestination.CategorySelection.route
                         } else {
                             VedikaDestination.Dashboard.route
@@ -154,6 +171,7 @@ fun VedikaAppShell() {
             }
             composable(VedikaDestination.CategorySelection.route) {
                 CategorySelectionScreen(
+                    viewModel = authViewModel,
                     onNavigateToVenueRegistration = { navController.navigate(VedikaDestination.VenueRegistration.route) },
                     onNavigateToDecoratorRegistration = { navController.navigate(VedikaDestination.DecoratorRegistration.route) },
                     onNavigateToDashboard = {

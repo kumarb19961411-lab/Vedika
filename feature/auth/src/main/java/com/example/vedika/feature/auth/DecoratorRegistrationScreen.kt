@@ -43,8 +43,13 @@ fun DecoratorRegistrationScreen(
     var tier1Inclusions by remember { mutableStateOf("") }
     var tier2Price by remember { mutableStateOf("") }
     var tier2Inclusions by remember { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val isFormValid = businessName.isNotBlank()
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -245,7 +250,8 @@ fun DecoratorRegistrationScreen(
                                     leadingIcon = { Text("₹", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold) },
                                     placeholder = { Text("Starts at", fontSize = 12.sp) },
                                     modifier = Modifier.fillMaxWidth().height(48.dp),
-                                    shape = RoundedCornerShape(16.dp)
+                                    shape = RoundedCornerShape(16.dp),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                                 )
                             }
                         }
@@ -262,7 +268,8 @@ fun DecoratorRegistrationScreen(
                                     leadingIcon = { Text("₹", color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold) },
                                     placeholder = { Text("Premium Price", fontSize = 12.sp) },
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(16.dp)
+                                    shape = RoundedCornerShape(16.dp),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 OutlinedTextField(
@@ -282,7 +289,14 @@ fun DecoratorRegistrationScreen(
 
             // Footer
             Button(
-                onClick = onNavigateToDashboard, 
+                onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Registration Complete! Welcome to Vedika.")
+                        kotlinx.coroutines.delay(1500)
+                        onNavigateToDashboard()
+                    }
+                }, 
+                enabled = isFormValid,
                 shape = CircleShape, 
                 modifier = Modifier.fillMaxWidth().height(56.dp)
             ) {

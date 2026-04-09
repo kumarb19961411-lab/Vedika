@@ -1,33 +1,45 @@
-# Android Build Regression Guard
+# Android Build Regression Guard (Vedika V2)
 
-This document serves as the protective guardrail for the Vedika V2 Android project. It contains mandatory rules that must be followed by all future agents and developers to prevent recurring build failures and Firebase regressions.
+This document serves as the source of truth for protecting the Vedika V2 Android build from regressions. All future agents and developers must verify compliance with these rules before submitting changes.
 
-## 1. Golden Path: Single Package Name
-- **Rule**: `applicationIdSuffix` MUST NOT be used in any product flavors for Vedika V2.
-- **Why**: To ensure 100% compatibility with the `google-services.json` contract. Reintroducing suffixes breaks Firebase Auth, Firestore, and Analytics client matching.
-- **Status**: Enforced. Current `applicationId` for all environments is `com.example.vedika`.
+## 1. Protected Build Rules (Golden Path)
 
-## 2. Java Stability
-- **Rule**: Java 17 is the mandatory source and target compatibility standard for the entire project.
-- **IDE Property**: `org.gradle.java.home` in `gradle.properties` should point to a valid JDK 17 (preferably the Android Studio `jbr` path).
-- **Check**: Verify `compileOptions` and `kotlinOptions` are set to `17` in all new modules.
+### Firebase & Package Identity
+- **Rule**: Never use `applicationIdSuffix` in `dev` or `staging` flavors.
+- **Reason**: Firebase `google-services.json` is configured for the base package `com.example.vedika`. Suffixes cause client-mismatch errors during initialization.
+- **Current Config**: Checked and Verified in `app/build.gradle.kts`.
 
-## 3. Hilt & Kapt Dependency Chain
-- **Rule**: In all `plugins` blocks, `kotlin("kapt")` MUST be applied BEFORE `alias(libs.plugins.hilt.android)`.
-- **Annotation Processing**: `kapt { correctErrorTypes = true }` MUST be present in all modules using Hilt.
-- **Stable Versions**: Do not upgrade Hilt, Kotlin, or AGP beyond the current stable baseline without explicit regression testing for Hilt metadata compatibility.
+### Hilt & Code Generation
+- **Rule**: `kotlin("kapt")` must be declared **before** `alias(libs.plugins.hilt.android)`.
+- **Rule**: `correctErrorTypes = true` must be set in the `kapt` block of all modules using Hilt.
+- **Reason**: Prevents "unresolved reference" errors during annotation processing and ensures clear error messages for Hilt dependency graph failures.
 
-## 4. UI Module Dependencies
-- **Rule**: All feature/UI modules using `AsyncImage` or network images MUST include `libs.coil.compose`.
-- **Imports**: Avoid using deprecated Compose APIs (e.g., use `fontStyle = FontStyle.Italic` instead of older parameters).
+### Tooling & Compatibility
+- **Rule**: Source and Target compatibility must be `JavaVersion.VERSION_17`.
+- **Rule**: Kotlin `jvmTarget` must be `"17"`.
+- **Reason**: Ensures compatibility with the latest Gradle JBR and Compose compiler metadata.
 
-## Build Safety Checklist (Pre-Merge)
-- [ ] No `applicationIdSuffix` present in `app/build.gradle.kts`.
-- [ ] `kapt` applied before `hilt` in all modified modules.
-- [ ] `org.gradle.java.home` exists and points to JDK 17.
-- [ ] Module `namespace` follows `com.example.vedika` prefix.
-- [ ] No machine-specific hardcoded paths added to Gradle files.
-- [ ] Successful configuration check: `./gradlew help` (no JVM or plugin errors).
+## 2. Shared State Architecture (Auth Workflow)
 
-## Historical Issues Resolved (Source of Truth)
-Refer to [androidstudiochanges.md](file:///c:/Users/Welcome/Documents/GitHub/Vedika/androidstudiochanges.md) for the full history of the five core build issues resolved during the early V2 transition.
+### Auth State Sharing
+- **Rule**: The `AuthViewModel` must be shared across the `Login`, `SignUp`, and `OtpVerification` routes.
+- **Implementation**: Obtain the instance once at the `NavHost` level in `MainActivity.kt` and pass it to the destination screens.
+- **Reason**: Essential for preserving:
+    - User input (Phone number) across screens.
+    - Auth flow intent (`SIGN_IN` vs `SIGN_UP`).
+    - Login mode (`USER` vs `VENDOR`).
+
+## 3. Mandatory Dependency Verification
+
+Before introducing new UI components, verify the following are included in the module's `build.gradle.kts`:
+1. **Coil**: `libs.coil.compose` (for premium image loading/glassmorphism).
+2. **Icons**: `libs.androidx.material.icons.extended` (for specialized UI symbols).
+3. **Hilt Navigation**: `libs.androidx.hilt.navigation.compose` (for the `hiltViewModel()` utility).
+
+## 4. Pre-Finalization Checklist
+- [ ] No placeholder `clickable {}` or `onClick {}` handlers in production code.
+- [ ] No hardcoded `errorMessage = "Error"` placeholders; use `uiState` mappings.
+- [ ] All Compose imports are explicit (no unresolved `Icons` or `Alignment` references).
+
+---
+*Last Updated: 2026-04-10*

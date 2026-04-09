@@ -122,29 +122,35 @@ fun OtpVerificationScreen(
                 Surface(
                     modifier = Modifier.fillMaxWidth().widthIn(max = 448.dp),
                     shape = RoundedCornerShape(16.dp),
-                    color = Color(0xFFFBF3E4),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.1f)),
-                    shadowElevation = 2.dp
+                    color = Color(0xFFFBF3E4).copy(alpha = 0.5f),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.1f))
                 ) {
                     Box(modifier = Modifier.padding(32.dp), contentAlignment = Alignment.Center) {
                         androidx.compose.foundation.text.BasicTextField(
                             value = uiState.otp,
-                            onValueChange = { viewModel.updateOtp(it) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            onValueChange = { 
+                                if (it.length <= 4) viewModel.updateOtp(it)
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                             decorationBox = {
-                                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
                                     repeat(4) { index ->
                                         val char = uiState.otp.getOrNull(index)?.toString() ?: ""
+                                        val isFocused = uiState.otp.length == index
                                         Surface(
                                             modifier = Modifier.size(64.dp, 80.dp),
                                             shape = RoundedCornerShape(16.dp),
-                                            color = if (char.isNotEmpty()) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surfaceContainerHighest,
-                                            border = if (char.isNotEmpty()) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
+                                            color = if (char.isNotEmpty()) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else Color.White.copy(alpha = 0.5f),
+                                            border = if (isFocused) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.2f))
                                         ) {
                                             Box(contentAlignment = Alignment.Center) {
                                                 Text(
                                                     text = char,
-                                                    style = MaterialTheme.typography.headlineLarge,
+                                                    style = MaterialTheme.typography.displaySmall,
                                                     fontWeight = FontWeight.Bold,
                                                     color = MaterialTheme.colorScheme.primary
                                                 )

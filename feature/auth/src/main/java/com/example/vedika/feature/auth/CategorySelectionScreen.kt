@@ -45,12 +45,14 @@ import coil.compose.AsyncImage
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategorySelectionScreen(
+    viewModel: AuthViewModel,
     onNavigateToVenueRegistration: () -> Unit,
     onNavigateToDecoratorRegistration: () -> Unit,
     onNavigateToDashboard: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
-    var selectedCategory by remember { mutableStateOf<String?>(null) }
+    val selectedCategory = uiState.selectedCategory
 
     Scaffold(
         topBar = {
@@ -200,7 +202,7 @@ fun CategorySelectionScreen(
                         icon = Icons.Default.TempleHindu,
                         imageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuCrEryDF8by3op87O1Kc9ZbPZ7DSBbjwg7JrW6oUcy4b_HpmyfcCW61lo-bj-_ZoAhCLviMRmqztCuIjZVUsGY50R52v1o_5oL3vV9JSa09NdvsSWLk3WpRnOb9pBQAzBANovUrHypphxUcgneLPTCugFdqoiDHwD8pYdehCe9va-S9yruvUZOf7YY7yIr38Tfj1xw6mzklF0Bxqq3sYGjTewD2xsWoZstvIBgug1I-JF4VAbG3AO1EUiP83GAK3Iyatzn_EY9YlxO5",
                         isSelected = selectedCategory == "Venues",
-                        onSelect = { selectedCategory = "Venues" },
+                        onSelect = { viewModel.updateSelectedCategory("Venues") },
                         isLarge = true
                     )
 
@@ -211,7 +213,7 @@ fun CategorySelectionScreen(
                         icon = Icons.Default.FormatPaint,
                         imageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuB0HDO1fFrPrvjzIJufoCMz4w7MDu29c9BAPELPdECs3WseuMGNXwHXk3Pzp-9EuZhfn8V-z6n44Mhy02AmrxBudFSp_iPxeHubvlIRF3sIbD6XAtbaE4knIDZN5V32-VyKmBzQJ1Bu-hqmxg2CBPJZn0SzlTIqUZdvXchyVpN1oh_4Qahtx4xUUhUVZW2N859HSSya95aO_-SOTziClIzrzOQYRcp9Erwq_a6Avk-GHZqUWdiCAsKOKTKUJVhDt0MqxYFAWvAlrK2X",
                         isSelected = selectedCategory == "Decorators",
-                        onSelect = { selectedCategory = "Decorators" },
+                        onSelect = { viewModel.updateSelectedCategory("Decorators") },
                         infoText = "89 Available"
                     )
 
