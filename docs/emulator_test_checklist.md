@@ -9,41 +9,33 @@ This checklist ensures the core auth and registration flows are bug-free. Use th
 
 ---
 
-## 🏗 Flow 1: Sign Up as User (Register)
-1. **Screen: Login**
-   - Click "Register your account" footer.
-2. **Screen: Sign Up**
-   - Toggle to "User Sign Up".
-   - Enter a valid 10-digit mobile number.
-   - Click "Send OTP".
-3. **Screen: OTP Verification**
-   - Enter `1234`.
-   - Click "Verify".
-4. **Expected Result**: Navigates to **Category Selection** screen.
+## 🏗 forward Routing: The 4 Paths
+### 1. User (Sign Up OR Sign In)
+- [ ] Path: (Login OR Signup) -> OTP -> **Dashboard**
+- [ ] *Verification*: Verify that Category Selection is COMPLETELY skipped for Users.
 
-## 🏗 Flow 2: Sign Up as Partner (Register)
-1. **Screen: Signup**
-   - Toggle to "Partner Sign Up".
-   - Enter number -> Click "Send OTP".
-2. **Screen: OTP Verification**
-   - Enter `1234` -> Click "Verify".
-3. **Expected Result**: Navigates to **Category Selection** screen.
+### 2. Partner (Sign In)
+- [ ] Path: Login -> Partner Login -> OTP -> **Dashboard**
+- [ ] *Verification*: Verify it lands on Dashboard (not registration).
 
-## 🏗 Flow 3: Sign In (Existing User)
-1. **Screen: Login**
-   - Toggle to "User Login" or "Partner Login".
-   - Click "Send OTP".
-2. **Screen: OTP Verification**
-   - Enter `1234`.
-3. **Expected Result**: Navigates directly to **Dashboard** (Bypasses Registration).
+### 3. Partner (Sign Up)
+- [ ] Path: Signup -> Partner Sign Up -> OTP -> **Category Selection**
+- [ ] *Verification*: Verify it enters the registration flow.
 
 ---
 
-## 🧪 Interactive Interaction Guard
-- [ ] **Validation**: Verify "Continue" buttons are disabled until required fields are filled on registration screens.
-- [ ] **Feedback**: Ensure the "Draft Saved" Snackbar appears when clicking "Save Draft".
-- [ ] **Back-stack**: Ensure clicking "Back" from Category Selection returns you to the OTP screen properly.
-- [ ] **Number Pad**: Ensure phone and price fields trigger a numeric keyboard.
+## 🏗 Backward Routing: Change Number
+- [ ] **Sign In Path**: Login -> OTP -> Click "Change Number" -> **Returns to Login Screen**.
+- [ ] **Sign Up Path**: Signup -> OTP -> Click "Change Number" -> **Returns to Signup Screen**.
+- [ ] *Verification*: Check that the previously entered phone number remains pre-filled.
+
+---
+
+## 🧪 Interaction Guard
+- [ ] **Verification Logic**: Verify OTP `1234` triggers success; any other code triggers error text.
+- [ ] **Button State**: Confirm "Verify & Proceed" is disabled until exactly 4 digits are entered.
+- [ ] **Resend**: Click "Resend OTP" after 30s -> Verify countdown resets and success feedback appears.
+- [ ] **Visuals**: Confirm OTP slots highlight correctly on focus.
 
 ## 📱 Visual Sanity Check
 - [ ] No layout overlapping on smaller emulator screens (e.g., Pixel 4).

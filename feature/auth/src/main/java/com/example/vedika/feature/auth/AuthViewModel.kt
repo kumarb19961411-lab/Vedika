@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class LoginMode { USER, VENDOR }
+enum class AccountMode { USER, PARTNER }
 enum class AuthFlow { SIGN_IN, SIGN_UP }
 
 @HiltViewModel
@@ -21,8 +21,8 @@ class AuthViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
-    fun selectLoginMode(mode: LoginMode) {
-        _uiState.value = _uiState.value.copy(loginMode = mode, error = null)
+    fun selectAccountMode(mode: AccountMode) {
+        _uiState.value = _uiState.value.copy(accountMode = mode, error = null)
     }
 
     fun setAuthFlow(flow: AuthFlow) {
@@ -81,18 +81,18 @@ class AuthViewModel @Inject constructor(
         sendOtp { /* No-op success callback for resend */ }
     }
 
-    fun verifyOtp(onSuccess: (isNewPartner: Boolean) -> Unit) {
+    fun verifyOtp(onSuccess: () -> Unit) {
         if (_uiState.value.otp.length < 4) {
             _uiState.value = _uiState.value.copy(error = "Enter 4-digit OTP")
             return
         }
-        val verificationId = _uiState.value.verificationId ?: "mock-session" // Fallback for dev mode
+        val verificationId = _uiState.value.verificationId ?: "mock-session"
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result = authRepository.verifyOtp(verificationId, _uiState.value.otp)
             _uiState.value = _uiState.value.copy(isLoading = false)
-            result.onSuccess { vendorUser ->
-                onSuccess(vendorUser.primaryServiceCategory.isBlank())
+            result.onSuccess {
+                onSuccess()
             }.onFailure { ex ->
                 _uiState.value = _uiState.value.copy(error = ex.message ?: "Invalid OTP")
             }
@@ -120,7 +120,7 @@ class AuthViewModel @Inject constructor(
 data class AuthUiState(
     val phoneNumber: String = "",
     val otp: String = "",
-    val loginMode: LoginMode = LoginMode.VENDOR,
+    val accountMode: AccountMode = AccountMode.PARTNER,
     val authFlow: AuthFlow = AuthFlow.SIGN_IN,
     val verificationId: String? = null,
     val isLoading: Boolean = false,

@@ -42,7 +42,7 @@ import coil.compose.AsyncImage
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtpVerificationScreen(
-    onVerificationSuccess: (isNewPartner: Boolean) -> Unit,
+    onVerificationSuccess: () -> Unit,
     onNavigateBack: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
@@ -186,8 +186,8 @@ fun OtpVerificationScreen(
 
                 Button(
                     onClick = { 
-                        viewModel.verifyOtp { isNewPartner ->
-                            onVerificationSuccess(isNewPartner)
+                        viewModel.verifyOtp {
+                            onVerificationSuccess()
                         }
                     },
                     modifier = Modifier
@@ -197,7 +197,7 @@ fun OtpVerificationScreen(
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
-                    enabled = !uiState.isLoading
+                    enabled = !uiState.isLoading && uiState.otp.length == 4
                 ) {
                     if (uiState.isLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)

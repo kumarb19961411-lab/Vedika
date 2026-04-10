@@ -16,15 +16,23 @@ There are two distinct entry points on the **Login** screen:
 ### 2. OTP Verification (Unified Link)
 Both Case A and B consolidate at the **OTP Verification** screen (`auth/otp`).
 - **Dev Mode**: Use `1234` for instant verification.
-- [**RULE**]: The `AuthViewModel` must preserve the `authFlow` (`SIGN_IN` vs `SIGN_UP`) and `loginMode` (`USER` vs `PARTNER`) across this transition.
+- [**RULE**]: The `AuthViewModel` must preserve the `authFlow` (`SIGN_IN` vs `SIGN_UP`) and `accountMode` (`USER` vs `PARTNER`) across this transition.
+
+### 2.1 Back Navigation (Change Number)
+The "Change Number" action follows a strict "Return to Origin" policy:
+- **Flow: SIGN_IN** ➔ Returns to **Login Screen** (`auth/login`).
+- **Flow: SIGN_UP** ➔ Returns to **Signup Screen** (`auth/signup`).
+- **State**: The `phoneNumber` and `accountMode` must remain cached in the ViewModel to allow the user to quickly correct and re-submit.
 
 ### 3. Post-Verification Routing (Deterministic)
 The destination after a successful OTP verification depends entirely on the entry branch:
 
-| Entry Mode | Verification Status | Next Destination |
+| Entry Flow | Account Mode | Next Destination |
 | :--- | :--- | :--- |
-| **SIGN_IN** | SUCCESS | **Dashboard** |
-| **SIGN_UP** | SUCCESS | **Category Selection** |
+| **SIGN_IN** | **USER** | **Dashboard** |
+| **SIGN_UP** | **USER** | **Dashboard** (Self-service Setup) |
+| **SIGN_IN** | **PARTNER** | **Dashboard** (Partner Home) |
+| **SIGN_UP** | **PARTNER** | **Category Selection** |
 
 ### 4. Registration Sub-graph (Signup Only)
 If the user is in `SIGN_UP` mode, they follow this branch:

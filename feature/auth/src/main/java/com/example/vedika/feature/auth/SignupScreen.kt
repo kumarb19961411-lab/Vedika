@@ -40,7 +40,7 @@ fun SignupScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val isVendorMode = uiState.loginMode == LoginMode.VENDOR
+    val isPartnerMode = uiState.accountMode == AccountMode.PARTNER
     val scrollState = rememberScrollState()
 
     // Stable initialization of the AuthFlow state on screen entry
@@ -161,14 +161,14 @@ fun SignupScreen(
                                             .fillMaxHeight()
                                             .padding(4.dp)
                                             .clip(RoundedCornerShape(20.dp))
-                                            .background(if (!isVendorMode) Color.White else Color.Transparent)
-                                            .clickable { viewModel.selectLoginMode(LoginMode.USER) },
+                                            .background(if (!isPartnerMode) Color.White else Color.Transparent)
+                                            .clickable { viewModel.selectAccountMode(AccountMode.USER) },
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
                                             "User Sign Up",
                                             fontWeight = FontWeight.Bold,
-                                            color = if (!isVendorMode) Color(0xFFC2410C) else Color.White
+                                            color = if (!isPartnerMode) Color(0xFFC2410C) else Color.White
                                         )
                                     }
                                     Box(
@@ -177,14 +177,14 @@ fun SignupScreen(
                                             .fillMaxHeight()
                                             .padding(4.dp)
                                             .clip(RoundedCornerShape(20.dp))
-                                            .background(if (isVendorMode) Color.White else Color.Transparent)
-                                            .clickable { viewModel.selectLoginMode(LoginMode.VENDOR) },
+                                            .background(if (isPartnerMode) Color.White else Color.Transparent)
+                                            .clickable { viewModel.selectAccountMode(AccountMode.PARTNER) },
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
                                             "Partner Sign Up",
                                             fontWeight = FontWeight.Bold,
-                                            color = if (isVendorMode) Color(0xFFC2410C) else Color.White
+                                            color = if (isPartnerMode) Color(0xFFC2410C) else Color.White
                                         )
                                     }
                                 }
@@ -192,7 +192,7 @@ fun SignupScreen(
 
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = if (isVendorMode) "Provide and manage your services" else "Book services for your event",
+                                text = if (isPartnerMode) "Provide and manage your services" else "Book services for your event",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = Color.White.copy(alpha = 0.7f),
                                 fontStyle = FontStyle.Italic

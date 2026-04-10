@@ -7,8 +7,26 @@ This contract defines the exact expected behavior for every interactive element 
 - **Phone Input**: Must only accept numeric characters. Formatting `+91` should be handled automatically by the UI decorator.
 - **CTA (Send OTP)**: Disabled until a 10-digit number is entered. Navigates to `auth/otp` on success.
 - **Footer Links**:
-    - **Login**: `Register account` -> Navigates to `auth/signup`.
-    - **Signup**: `Already have account` -> Navigates to `auth/login`.
+- **Copy Specifications**:
+    - **Login**: Title: `Sign In` | Subtitle: `Access your account to book or manage event services` | Toggles: `User Login`, `Partner Login` | Footer: `New to KalyanaVedika? Register your account`.
+    - **Signup**: Title: `Sign Up` | Subtitle: `Create your account to book or provide event services` | Toggles: `User Sign Up`, `Partner Sign Up` | Footer: `Already have an account? Sign In`.
+    - **Role Helper (Both)**: `Partner` -> `Provide and manage your services` | `User` -> `Book services for your event`.
+
+- **Post-Verification Destination Matrix**:
+    - **USER** + (SignIn OR SignUp) ➔ **Dashboard**
+    - **PARTNER** + SignIn ➔ **Dashboard**
+    - **PARTNER** + SignUp ➔ **Category Selection**
+
+### 1.1 OTP Verification Screen
+- **Input Behavior**:
+    - Uses 4 individual slots for numeric entry.
+    - Focus must automatically land on the first slot if empty.
+    - **Verify** button is disabled until exactly 4 digits are entered.
+- **Back / Change Number**:
+    - Triggers a return to the **Origin Screen** (Login if `SIGN_IN`, Signup if `SIGN_UP`).
+- **Resend OTP**:
+    - Triggerable only after a 30s countdown.
+    - Results in a success message and timer reset in Mock/Dev mode.
 
 ## 2. Category Selection Screen
 - **Bento Cards**:

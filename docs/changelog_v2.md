@@ -8,6 +8,11 @@ A record of significant architectural and feature milestones in the Vedika V2 pr
 - **Shared State Architecture**: `AuthViewModel` now tracks `selectedCategory` and `authFlow` across transitions.
 - **Form Validation**: Reactive button states on Venue and Decorator registration screens.
 - **Micro-interactions**: Added Snackbar feedback for "Save Draft" and "Registration Success".
+- **Role-Based Logic Lock**: Fixed deterministic routing for User vs Partner roles. Users now correctly bypass registration regardless of flow.
+- **State Stability & Copy Pass**: Locked exact product copy and role-helper text across Sign In/Sign Up. Ensured `AuthFlow` and `AccountMode` are strictly preserved across steps.
+- **Product Alignment**: Renamed legacy `LoginMode` to `AccountMode` across the auth module.
+- **Partner Branching**: Implemented deterministic routing from Category Selection into specialized Venue and Decorator registration forms.
+- **Verification & Safety Lock**: Standardized all 5 post-OTP routing paths and established a formal Build Regression Guard.
 - **Documentation Overhaul**: Created central README, Project Structure map, and Emulator Checklist.
 
 ### Fixed

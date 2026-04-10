@@ -32,4 +32,10 @@ Before introducing new UI components, verify these are present in the feature mo
 - **Imports**: No wildcard `*` imports. Every Compose component must be explicitly imported to avoid resolution ambiguity.
 
 ---
+## 6. Navigation & State Guard
+- **Shared ViewModel**: Use `hiltViewModel()` within the `NavHost` composable scope to ensure the same instance is shared across registration steps.
+- **Deterministic Routing**: Every successful OTP verification must land on a destination derived from the `AccountMode` and `AuthFlow` state in the ViewModel.
+- **Why**: Prevents state reset when navigating between Login, OTP, and Registration forms.
+
+---
 *Policy violations will lead to build breakage. Re-verify after any dependency update.*

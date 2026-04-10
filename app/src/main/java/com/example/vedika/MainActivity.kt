@@ -157,11 +157,23 @@ fun VedikaAppShell() {
                 val currentAuthState by authViewModel.uiState.collectAsState()
                 OtpVerificationScreen(
                     viewModel = authViewModel,
-                    onVerificationSuccess = { isNewPartner ->
-                        val route = if (currentAuthState.authFlow == AuthFlow.SIGN_UP) {
-                            VedikaDestination.CategorySelection.route
-                        } else {
-                            VedikaDestination.Dashboard.route
+                    onVerificationSuccess = {
+                        val route = when {
+                            currentAuthState.accountMode == AccountMode.USER -> {
+                                // Both User Sign In and Sign Up go to Dashboard
+                                VedikaDestination.Dashboard.route
+                            }
+                            currentAuthState.accountMode == AccountMode.PARTNER && 
+                                    currentAuthState.authFlow == AuthFlow.SIGN_IN -> {
+                                // Partner Sign In goes to Dashboard
+                                VedikaDestination.Dashboard.route
+                            }
+                            currentAuthState.accountMode == AccountMode.PARTNER && 
+                                    currentAuthState.authFlow == AuthFlow.SIGN_UP -> {
+                                // Partner Sign Up goes to Category Selection
+                                VedikaDestination.CategorySelection.route
+                            }
+                            else -> VedikaDestination.Dashboard.route
                         }
                         navController.navigate(route) {
                             popUpTo(VedikaDestination.Login.route) { inclusive = true }
