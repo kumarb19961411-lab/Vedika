@@ -52,4 +52,21 @@ To ensure a "Premium" feel, the following state must be tracked in the **Shared 
 - `selectedCategory`: `ServiceCategory?` (Preserved if navigating back from a registration form).
 
 ---
+
+## 🏗 Technical Implementation: Nested Graph & Scoping
+To prevent state loss during the Partner onboarding funnel, the authentication flow is implemented as a **Nested Navigation Graph** (`auth_graph`).
+
+### Scoping Rule:
+- The `AuthViewModel` is **not** scoped to individual destinations.
+- Instead, it is scoped to the **parent `auth_graph`** entry.
+- **Retrieval Logic** (in `MainActivity.kt`):
+  ```kotlin
+  val parentEntry = remember(it) {
+      navController.getBackStackEntry(VedikaDestination.AuthGraph.route)
+  }
+  val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
+  ```
+- **Benefit**: This guarantees that the exact same instance is shared across Login ➔ Signup ➔ OTP ➔ Category ➔ Registration, preventing reset to default values during transitions.
+
+---
 *Note: Any modification to the `MainActivity` NavHost logic must be audited against this workflow.*

@@ -22,6 +22,7 @@ sealed class VedikaDestination(val route: String) {
     object VenueRegistration : VedikaDestination("venue_registration")
     object DecoratorRegistration : VedikaDestination("decorator_registration")
     object NewBooking : VedikaDestination("new_booking")
+    object AuthGraph  : VedikaDestination("auth_graph")
 }
 
 data class BottomNavItem(

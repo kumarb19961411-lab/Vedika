@@ -12,6 +12,11 @@ This contract defines the exact expected behavior for every interactive element 
     - **Signup**: Title: `Sign Up` | Subtitle: `Create your account to book or provide event services` | Toggles: `User Sign Up`, `Partner Sign Up` | Footer: `Already have an account? Sign In`.
     - **Role Helper (Both)**: `Partner` -> `Provide and manage your services` | `User` -> `Book services for your event`.
 
+### 1.2 State Persistence & Scoping
+- **Shared Instance**: The `AuthViewModel` must be shared across all screens in the `auth_graph`.
+- **Preserved State**: `authFlow`, `accountMode`, `phoneNumber`, and `selectedCategory` must remain stable across transitions.
+- **Back Navigation Correction**: If a user selects "Partner Sign Up", navigates to OTP, and clicks "Change Number", the Signup screen must correctly display the "Partner" role and pre-filled phone number upon return.
+
 - **Post-Verification Destination Matrix**:
     - **USER** + (SignIn OR SignUp) ➔ **Dashboard**
     - **PARTNER** + SignIn ➔ **Dashboard**

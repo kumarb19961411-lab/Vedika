@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.vedika.core.design.theme.VedikaTheme
@@ -28,6 +29,7 @@ import com.example.vedika.feature.auth.PartnerSetupScreen
 import com.example.vedika.feature.auth.ProfileScreen
 import com.example.vedika.feature.auth.AuthViewModel
 import com.example.vedika.feature.auth.AuthFlow
+import com.example.vedika.feature.auth.AccountMode
 import com.example.vedika.feature.calendar.CalendarScreen
 import com.example.vedika.feature.dashboard.DashboardScreen
 import com.example.vedika.feature.dashboard.NewBookingScreen
@@ -104,7 +106,7 @@ fun VedikaAppShell() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = VedikaDestination.Login.route,
+            startDestination = VedikaDestination.AuthGraph.route,
             modifier = Modifier.padding(innerPadding),
             enterTransition = {
                 slideIntoContainer(
@@ -131,89 +133,114 @@ fun VedikaAppShell() {
                 )
             }
         ) {
-            composable(VedikaDestination.Login.route) {
-                val authViewModel: AuthViewModel = hiltViewModel()
-                LoginScreen(
-                    viewModel = authViewModel,
-                    onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
-                    onNavigateToSignUp = { navController.navigate(VedikaDestination.SignUp.route) },
-                    onDevBypassSuccess = {
-                        navController.navigate(VedikaDestination.Dashboard.route) {
-                            popUpTo(VedikaDestination.Login.route) { inclusive = true }
-                        }
+            navigation(
+                startDestination = VedikaDestination.Login.route,
+                route = VedikaDestination.AuthGraph.route
+            ) {
+                composable(VedikaDestination.Login.route) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(VedikaDestination.AuthGraph.route)
                     }
-                )
-            }
-            composable(VedikaDestination.SignUp.route) {
-                val authViewModel: AuthViewModel = hiltViewModel()
-                SignupScreen(
-                    viewModel = authViewModel,
-                    onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
-                    onNavigateToSignIn = { navController.navigate(VedikaDestination.Login.route) }
-                )
-            }
-            composable(VedikaDestination.OtpVerification.route) {
-                val authViewModel: AuthViewModel = hiltViewModel()
-                val currentAuthState by authViewModel.uiState.collectAsState()
-                OtpVerificationScreen(
-                    viewModel = authViewModel,
-                    onVerificationSuccess = {
-                        val route = when {
-                            currentAuthState.accountMode == AccountMode.USER -> {
-                                // Both User Sign In and Sign Up go to Dashboard
-                                VedikaDestination.Dashboard.route
+                    val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
+                    LoginScreen(
+                        viewModel = authViewModel,
+                        onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
+                        onNavigateToSignUp = { navController.navigate(VedikaDestination.SignUp.route) },
+                        onDevBypassSuccess = {
+                            navController.navigate(VedikaDestination.Dashboard.route) {
+                                popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
                             }
-                            currentAuthState.accountMode == AccountMode.PARTNER && 
-                                    currentAuthState.authFlow == AuthFlow.SIGN_IN -> {
-                                // Partner Sign In goes to Dashboard
-                                VedikaDestination.Dashboard.route
+                        }
+                    )
+                }
+                composable(VedikaDestination.SignUp.route) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(VedikaDestination.AuthGraph.route)
+                    }
+                    val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
+                    SignupScreen(
+                        viewModel = authViewModel,
+                        onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
+                        onNavigateToSignIn = { navController.navigate(VedikaDestination.Login.route) }
+                    )
+                }
+                composable(VedikaDestination.OtpVerification.route) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(VedikaDestination.AuthGraph.route)
+                    }
+                    val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
+                    val currentAuthState by authViewModel.uiState.collectAsState()
+                    OtpVerificationScreen(
+                        viewModel = authViewModel,
+                        onVerificationSuccess = {
+                            // [DEBUG] Verification for Graph Scoping
+                            android.util.Log.d("VedikaAuth", "OTP Success: Mode=${currentAuthState.accountMode}, Flow=${currentAuthState.authFlow}")
+                            
+                            val route = when {
+                                currentAuthState.accountMode == AccountMode.USER -> {
+                                    VedikaDestination.Dashboard.route
+                                }
+                                currentAuthState.accountMode == AccountMode.PARTNER && 
+                                        currentAuthState.authFlow == AuthFlow.SIGN_IN -> {
+                                    VedikaDestination.Dashboard.route
+                                }
+                                currentAuthState.accountMode == AccountMode.PARTNER && 
+                                        currentAuthState.authFlow == AuthFlow.SIGN_UP -> {
+                                    VedikaDestination.CategorySelection.route
+                                }
+                                else -> VedikaDestination.Dashboard.route
                             }
-                            currentAuthState.accountMode == AccountMode.PARTNER && 
-                                    currentAuthState.authFlow == AuthFlow.SIGN_UP -> {
-                                // Partner Sign Up goes to Category Selection
-                                VedikaDestination.CategorySelection.route
+                            navController.navigate(route) {
+                                popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
                             }
-                            else -> VedikaDestination.Dashboard.route
-                        }
-                        navController.navigate(route) {
-                            popUpTo(VedikaDestination.Login.route) { inclusive = true }
-                        }
-                    },
-                    onNavigateBack = { navController.popBackStack() }
-                )
-            }
-            composable(VedikaDestination.CategorySelection.route) {
-                val authViewModel: AuthViewModel = hiltViewModel()
-                CategorySelectionScreen(
-                    viewModel = authViewModel,
-                    onNavigateToVenueRegistration = { navController.navigate(VedikaDestination.VenueRegistration.route) },
-                    onNavigateToDecoratorRegistration = { navController.navigate(VedikaDestination.DecoratorRegistration.route) },
-                    onNavigateToDashboard = {
-                        navController.navigate(VedikaDestination.Dashboard.route) {
-                            popUpTo(VedikaDestination.CategorySelection.route) { inclusive = true }
-                        }
+                        },
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+                composable(VedikaDestination.CategorySelection.route) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(VedikaDestination.AuthGraph.route)
                     }
-                )
-            }
-            composable(VedikaDestination.VenueRegistration.route) {
-                VenueRegistrationScreen(
-                    onNavigateBack = { navController.popBackStack() },
-                    onNavigateToDashboard = {
-                        navController.navigate(VedikaDestination.Dashboard.route) {
-                            popUpTo(VedikaDestination.CategorySelection.route) { inclusive = true }
+                    val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
+                    CategorySelectionScreen(
+                        viewModel = authViewModel,
+                        onNavigateToVenueRegistration = { navController.navigate(VedikaDestination.VenueRegistration.route) },
+                        onNavigateToDecoratorRegistration = { navController.navigate(VedikaDestination.DecoratorRegistration.route) },
+                        onNavigateToDashboard = {
+                            navController.navigate(VedikaDestination.Dashboard.route) {
+                                popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
+                            }
                         }
+                    )
+                }
+                composable(VedikaDestination.VenueRegistration.route) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(VedikaDestination.AuthGraph.route)
                     }
-                )
-            }
-            composable(VedikaDestination.DecoratorRegistration.route) {
-                DecoratorRegistrationScreen(
-                    onNavigateBack = { navController.popBackStack() },
-                    onNavigateToDashboard = {
-                        navController.navigate(VedikaDestination.Dashboard.route) {
-                            popUpTo(VedikaDestination.CategorySelection.route) { inclusive = true }
+                    val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
+                    VenueRegistrationScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateToDashboard = {
+                            navController.navigate(VedikaDestination.Dashboard.route) {
+                                popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
+                            }
                         }
+                    )
+                }
+                composable(VedikaDestination.DecoratorRegistration.route) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(VedikaDestination.AuthGraph.route)
                     }
-                )
+                    val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
+                    DecoratorRegistrationScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateToDashboard = {
+                            navController.navigate(VedikaDestination.Dashboard.route) {
+                                popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
+                            }
+                        }
+                    )
+                }
             }
             composable(VedikaDestination.PartnerSetup.route) {
                 PartnerSetupScreen(

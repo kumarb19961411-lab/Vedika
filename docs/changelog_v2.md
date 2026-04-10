@@ -18,7 +18,8 @@ A record of significant architectural and feature milestones in the Vedika V2 pr
 ### Fixed
 - Navigation "accidental route flip" from Login to Registration.
 - Numeric keyboard behavior for capacity and pricing fields.
-- Fixed `NavHost` scoping to ensure ViewModel instances are correctly shared.
+- **Auth Graph Scoping**: Implemented nested navigation graph (`auth_graph`) to scope a single `AuthViewModel` instance across the entire onboarding funnel. Fixes the state-loss bug during the Partner Sign Up flow.
+- **Verification & Safety Lock**: Standardized all 5 post-OTP routing paths and established a formal Build Regression Guard.
 
 ---
 
