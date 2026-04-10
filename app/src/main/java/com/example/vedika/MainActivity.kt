@@ -131,10 +131,8 @@ fun VedikaAppShell() {
                 )
             }
         ) {
-            val authViewModel: AuthViewModel = hiltViewModel()
-            val authState by authViewModel.uiState.collectAsState()
-
             composable(VedikaDestination.Login.route) {
+                val authViewModel: AuthViewModel = hiltViewModel()
                 LoginScreen(
                     viewModel = authViewModel,
                     onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
@@ -147,6 +145,7 @@ fun VedikaAppShell() {
                 )
             }
             composable(VedikaDestination.SignUp.route) {
+                val authViewModel: AuthViewModel = hiltViewModel()
                 SignupScreen(
                     viewModel = authViewModel,
                     onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
@@ -154,10 +153,12 @@ fun VedikaAppShell() {
                 )
             }
             composable(VedikaDestination.OtpVerification.route) {
+                val authViewModel: AuthViewModel = hiltViewModel()
+                val currentAuthState by authViewModel.uiState.collectAsState()
                 OtpVerificationScreen(
                     viewModel = authViewModel,
                     onVerificationSuccess = { isNewPartner ->
-                        val route = if (authState.authFlow == AuthFlow.SIGN_UP) {
+                        val route = if (currentAuthState.authFlow == AuthFlow.SIGN_UP) {
                             VedikaDestination.CategorySelection.route
                         } else {
                             VedikaDestination.Dashboard.route
@@ -170,6 +171,7 @@ fun VedikaAppShell() {
                 )
             }
             composable(VedikaDestination.CategorySelection.route) {
+                val authViewModel: AuthViewModel = hiltViewModel()
                 CategorySelectionScreen(
                     viewModel = authViewModel,
                     onNavigateToVenueRegistration = { navController.navigate(VedikaDestination.VenueRegistration.route) },

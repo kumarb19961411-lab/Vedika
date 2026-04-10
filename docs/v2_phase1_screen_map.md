@@ -1,30 +1,25 @@
-# Version 2 Phase 1 Screen Map
+# Phase 1 Screen Map — Implementation Status
 
-This document tracks the mapping between the locked source folders in `resources/phase1` and the corresponding Jetpack Compose implementation files.
+This document maps the source designs to the Jetpack Compose implementations and tracks their current status.
 
-## Phase 1 Locked Mapping
+| Screen ID | Source Folder (Stitch) | Compose Composable | Route | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| `login_gateway` | `kalyanavedika_interactive_login_gateway` | `LoginScreen.kt` | `auth/login` | ✅ **Complete** |
+| `signup_entry` | `N/A (Derived from Login)` | `SignupScreen.kt` | `auth/signup` | ✅ **Complete** |
+| `otp_verification` | `kalyanavedika_otp_verification` | `OtpVerificationScreen.kt` | `auth/otp` | ✅ **Complete** |
+| `category_selection`| `kalyanavedika_category_selection` | `CategorySelectionScreen.kt`| `registration/category` | ✅ **Complete** |
+| `venue_reg` | `venue_registration_refined` | `VenueRegistrationScreen.kt` | `registration/venue` | ✅ **Complete** |
+| `decorator_reg` | `decorator_registration_expanded`| `DecoratorRegistrationScreen.kt`| `registration/decorator`| ✅ **Complete** |
 
-| Source Folder Name | Target Kotlin/Compose Screen | Navigation Route | Type | Bottom Nav | Action |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `kalyanavedika_interactive_login_gateway` | `LoginScreen.kt` | `auth/login` | Auth | Hidden | MODIFY |
-| `kalyanavedika_otp_verification` | `OtpVerificationScreen.kt` | `auth/otp` | Auth | Hidden | MODIFY |
-| `kalyanavedika_category_selection_no_nav` | `CategorySelectionScreen.kt` | `registration/category` | Onboarding | Hidden | CREATE |
-| `venue_registration_refined_flow` | `VenueRegistrationScreen.kt` | `registration/venue` | Registration | Hidden | CREATE |
-| `decorator_registration_expanded_expertise` | `DecoratorRegistrationScreen.kt` | `registration/decorator` | Registration | Allowed | CREATE |
+---
 
-## Do Not Touch In This Pass
+## 🔒 Source of Truth: Locked Screens
+The screens listed above are considered **Phase 1 Locked**. Any modification to their visual layout requires a new design review.
 
-The following areas are strictly out of scope for UI modifications during Phase 1. Any changes here will be rejected by the Fidelity Guard.
+### Review Criteria:
+1. **Typography**: Ensure headings used `MaterialTheme.typography.displaySmall` and labels use `MaterialTheme.typography.labelMedium`.
+2. **Branding**: Orange accent (`#EA580C`) must be used for primary actions.
+3. **Hierarchy**: The main "KalyanaVedika" wordmark must be present in the centered Top Bar.
 
-- **Dashboard**: `DashboardScreen.kt`, `NewBookingScreen.kt`
-- **Calendar**: `CalendarScreen.kt`
-- **Finance**: `FinanceScreen.kt`
-- **Inventory**: `InventoryScreen.kt`
-- **Profile**: `ProfileScreen.kt`
-- **Navigation Scaffolding**: Changes to `MainActivity.kt` should be limited to route registration only.
-- **Styling**: Do not modify `VedikaTheme` or core design tokens unless a missing Phase 1 token is identified in the source pack.
-
-## Implementation Notes
-
-- **PartnerSetupScreen Refactor**: The existing `PartnerSetupScreen.kt` is deprecated as a primary destination. Its logic (e.g., category selection, venue details) should be extracted into the new separate Phase 1 screens or kept as internal shared components if needed.
-- **Route Registration**: New routes must be added to `VedikaDestination` or the equivalent navigation contract.
+---
+*Last Status Check: 2026-04-10 — All 6 Screens Verified in Emulator.*

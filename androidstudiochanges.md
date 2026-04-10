@@ -106,5 +106,17 @@
     - Fixed missing icon references (e.g., added `import androidx.compose.material.icons.filled.FilterVintage`).
 - **Why:** To align with Jetpack Compose best practices and ensure all UI components and icons are correctly resolved during compilation.
 
+### Issue 6: Composable Scope and Missing Imports in Registration Screens
+- **Error Faced:** `Unresolved reference` for `KeyboardOptions`, `KeyboardType`, `launch`, and `clickable` in `DecoratorRegistrationScreen.kt` and `VenueRegistrationScreen.kt`. Also `@Composable invocations can only happen from the context of a @Composable function` in `MainActivity.kt`.
+- **Cause:** 
+    - Missing imports for foundational Compose and Coroutine APIs.
+    - Attempting to use `hiltViewModel()` and `collectAsState()` directly inside the `NavHost` builder block instead of within a `composable` lambda.
+- **Mitigation:**
+    - Added missing imports: `androidx.compose.foundation.clickable`, `androidx.compose.foundation.text.KeyboardOptions`, `androidx.compose.ui.text.input.KeyboardType`, and `kotlinx.coroutines.launch`.
+    - Refactored `MainActivity.kt` to move `hiltViewModel()` and `collectAsState()` calls inside the individual `composable` destination blocks.
+- **Why:** 
+    - Foundational components must be explicitly imported in Kotlin.
+    - `NavHost` builder content (the trailing lambda of `NavHost`) is a DSL block, not a `@Composable` function itself. Only the lambdas passed to `composable(...) { ... }` are Composable contexts.
+
 ### Project Build Status
-The project now builds successfully using `:app:assembleDevDebug`.
+The project now builds successfully using `:app:assembleDevDebug` with no remaining compilation errors.

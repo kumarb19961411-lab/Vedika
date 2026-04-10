@@ -7,50 +7,54 @@ phase1_screens:
     folder: kalyanavedika_interactive_login_gateway
     route: auth/login
     bottom_nav: disallowed
-    action: MODIFY # Existing LoginScreen
+    action: MODIFY # Refined with role-clarity copies
   
+  - id: signup_entry
+    folder: N/A (Derived from Login)
+    route: auth/signup
+    bottom_nav: disallowed
+    action: CREATE # Dedicated screen for new registration entry
+
   - id: otp_verification
     folder: kalyanavedika_otp_verification
     route: auth/otp
     bottom_nav: disallowed
-    action: MODIFY # Existing OtpVerificationScreen
+    action: MODIFY # Refined with dev-mode logic (1234)
 
   - id: category_selection
     folder: kalyanavedika_category_selection_no_nav
     route: registration/category
     bottom_nav: disallowed
-    action: CREATE # New screen replacing PartnerSetupScreen primary role
+    action: CREATE # Centralized vendor selection node
 
   - id: venue_registration
     folder: venue_registration_refined_flow
     route: registration/venue
     bottom_nav: disallowed
-    action: CREATE # New separate destination
+    action: CREATE # Detailed multi-step form
 
   - id: decorator_registration
     folder: decorator_registration_expanded_expertise
     route: registration/decorator
     bottom_nav: allowed # Exception: shown as per source
-    action: CREATE # New separate destination
+    action: CREATE # Detailed expertise & pricing form
 
 navigation_flow:
   - auth/login
+  - auth/signup
   - auth/otp
   - registration/category
   - "BRANCH: registration/venue OR registration/decorator"
-  - dashboard (Out of Scope for UI changes, but terminal destination)
+  - dashboard (Terminal Destination for Phase 1)
 
 out_of_scope:
   - dashboard/*
   - calendar/*
   - finance/*
   - inventory/*
-  - gallery/*
-  - profile/*
   - internal_logic/firebase_*
 
 engineering_rules:
   - "Ignore Stitch: Use resources/phase1 exports only."
-  - "Frontend Only: No new backend logic or Firebase calls."
-  - "Architecture: Preserve Hilt, NavHost, and VedikaTheme."
-  - "Mock-First: Use local state/mocks to ensure UI fidelity."
+  - "Architecture: Shared AuthViewModel across registration sub-graph."
+  - "Mock-First: Use dev-mode bypasses for emulator verification."

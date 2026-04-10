@@ -1,39 +1,35 @@
-# Vedika V2 Phase 1 Interaction Contract
+# Interaction Contract — Vedika V2 Phase 1
 
-This document outlines the state-wiring and interaction behavior for the Phase 1 onboarding flow (Run E).
+This contract defines the exact expected behavior for every interactive element in the Phase 1 registration flow.
 
-## 1. Login Gateway
-- **Mode Toggle**: Persists `LoginMode` (USER/VENDOR) in `AuthViewModel`.
-- **Phone Input**: 10-digit validation.
-- **Action**: "Send OTP" triggers a mock network call with a 1-second delay.
-- **Error Handling**: Displays inline validation errors for invalid phone numbers or simulated network failures.
+## 1. Login & Signup Screens
+- **Role Toggles**: Switching between User/Partner must instantly update the `AccountMode` in the ViewModel.
+- **Phone Input**: Must only accept numeric characters. Formatting `+91` should be handled automatically by the UI decorator.
+- **CTA (Send OTP)**: Disabled until a 10-digit number is entered. Navigates to `auth/otp` on success.
+- **Footer Links**:
+    - **Login**: `Register account` -> Navigates to `auth/signup`.
+    - **Signup**: `Already have account` -> Navigates to `auth/login`.
 
-## 2. OTP Verification
-- **Input**: 1-digit restricted fields (4 total).
-- **Auto-Focus**: (Future improvement) Cursor moves to next field on entry.
-- **Countdown**: 30-second timer for "Resend OTP".
-- **Validation**: 
-  - `1234`: Simulates a NEW partner (navigates to Category Selection).
-  - `0000`: Simulates an EXISTING partner (navigates to Dashboard).
-  - Others: Displays "Invalid OTP" error.
+## 2. Category Selection Screen
+- **Bento Cards**:
+    - Single-selection only.
+    - Selecting a card highlights it with a colored border and check icon.
+    - Selecting "Venues" vs "Decorators" must update the `selectedCategory` in state.
+- **Proceed Button**: Enabled only when a category is selected. Navigates to the specific registration form based on selection.
 
-## 3. Category Selection
-- **Selection**: Radio-style selection between "Heritage Venue" and "Heritage Decorator".
-- **Validation**: "Proceed" button enabled only when a category is selected.
+## 3. Registration Forms (Venue & Decorator)
+- **Validation**:
+    - **Venue**: "Continue" is enabled only if `Venue Name` AND `Location` are not blank.
+    - **Decorator**: "Complete Registration" is enabled only if `Business Name` is not blank.
+- **Pricing Fields**: Must trigger the `Number` keyboard layout.
+- **Feedback (Premium)**:
+    - **Save Draft**: Must trigger a Snackbar with "Draft saved successfully".
+    - **Complete Registration**: Must trigger a Snackbar with "Registration Complete! Welcome to Vedika" before delayed navigation to Dashboard.
+- **Skip**: Clicking "Skip" bypasses the form and navigates directly to Dashboard (Mock behavior for Phase 1).
 
-## 4. Venue Registration
-- **Identity**: Interactive "Venue Identity" and "Guest Capacity" fields.
-- **Location**: Editable address field with decorative map icon.
-- **Amenities**: Multi-select chips for standard heritage venue features.
-- **Pricing**: Functional base price input with currency symbol prefix.
+---
 
-## 5. Decorator Registration
-- **Identity**: Business name and years of experience (fixed dropdown).
-- **Expertise**: Multi-select cards for specialized service categories.
-- **Packages**:
-  - Essential: Editable starting price.
-  - Premium: Editable price and inclusion list (large text area).
-
-## System State (Mock Mode)
-- **Persistence**: All registration data is temporary and held in-memory or in the `AuthViewModel` state for the session.
-- **Developer Bypass**: "Developer Route (Bypass)" in LoginScreen remains functional for rapid testing of subsequent phases.
+## 🛑 Mock Safety Rules
+1. **No Backend Persistence**: In Phase 1, data is only saved in the `UiState` and `AuthViewModel`. Clicking "Save Draft" does not write to a database yet.
+2. **Deterministic OTP**: Verification only succeeds if `1234` is entered.
+3. **Dashboard Access**: The "Dashboard" is currently a terminal destination (Placeholder) and does not require session verification in Phase 1 dev mode.
