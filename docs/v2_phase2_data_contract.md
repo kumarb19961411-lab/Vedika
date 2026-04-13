@@ -1,55 +1,32 @@
-# Phase 2 Data Contract — Shared Mock Vendor State (Updated)
+# Vedika V2 - Phase 2B Data Continuity Contract
 
-This document defines the structured mock state shared between the Registration flow and the Vendor Shell (Dashboard/Profile) implemented in Phase 2A.
+This document defines the high-fidelity mock data contract used to synchronize the Partner Registration Flow (Phase 2A) with the Vendor Shell Screens (Phase 2B).
 
-## 📊 Vendor Data Model
+## Shared Data Model: `VendorMockState`
 
-```kotlin
-data class VendorMockState(
-    val businessName: String,
-    val venueName: String? = null,    // Populate from venueName in VenueRegistration
-    val location: String,             // User input (Venue) or Default (Decorator)
-    val capacity: String? = null,     // User input (Venue)
-    val pricing: String,              // User input (Base Price / Tier 1 Price)
-    val amenities: List<String>,      // User selected IDs/names
-    val coverImage: String,           // Mock Default for Phase 2A
-    val galleryImages: List<String>,  // Empty for Phase 2A
-    val vendorType: VendorType,       // Derived from Category Selection
-    val primaryCategory: String,      // Category name from Selection
-    val ownerName: String             // Mock Default for Phase 2A
-)
+| Field | Source (Registration) | Destination (Shell) | Type | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| `ownerName` | **Signup: Full Name** | Dashboard Greeting, Profile Header | User Entered | **Live** |
+| `businessName` | **Reg: Business/Venue Name** | Dashboard Title, Profile Header | User Entered | **Live** |
+| `location` | **Reg: Address/Map** | Dashboard Location, Profile Stats | User Entered | **Live** |
+| `capacity` | **Reg: Guest Capacity** (Venue) | Dashboard Highlights | User Entered | **Live** |
+| `pricing` | **Reg: Daily Base Price** | Dashboard Highlights, Service Cards | User Entered | **Live** |
+| `amenities` | **Reg: Premium Features** | Dashboard Amenities Grid | User Entered | **Live** |
+| `yearsExperience` | **Reg: Exp Dropdown** (Decorator) | Decorator Dashboard Hero | User Entered | **Live** |
+| `packageTiers` | **Reg: Tier 1/2 Price & Inclusions** | Decorator Service Collections | User Entered | **Live** |
+| `coverImage` | Category Selection (Implicit) | Hero Section, Asset Preview | Default Mock | **Placeholder** |
+| `rating` | N/A | Dashboard Highlights, Analytics | Random Mock | **Placeholder** |
+| `leadsCount` | N/A | Dashboard Stats Bar | Random Mock | **Placeholder** |
 
-enum class VendorType { VENUE, DECORATOR }
-```
+## Data Continuity Logic
 
-## 🔌 Connection Points
+1. **Personalization**: The `NAMASTE, {ownerName}` greeting is derived directly from the partner's input during the Signup phase.
+2. **Context Awareness**: The `DashboardViewModel` identifies the `vendorType` (VENUE vs DECORATOR) from the registration choice to render the appropriate specialized dashboard.
+3. **Media Handling**: In the absence of a real image uploader, high-fidelity hero images are assigned based on the primary category selected (e.g., Luxury Hall for Venues, Floral Mandap for Decorators).
 
-### 1. Registration (Producer)
-Registration state is hoisted in the graph-scoped `AuthViewModel` and "committed" to the `FakeVendorRepository` only upon successful completion.
+## Implementation Traceability
 
-- **VenueRegistrationScreen**: Populates `venueName`, `venueCapacity`, `venueLocation`, `venuePrice`, and `venueAmenities`.
-- **DecoratorRegistrationScreen**: Populates `decoratorBusinessName`, `decoratorTier1Price`, and `decoratorExpertise`.
-- **Primary Logic**: The `AuthViewModel.saveRegistrationData()` method maps these screen-specific fields into the unified `VendorMockState`.
-
-### 2. Dashboard (Consumer)
-Future Phase 2B screens should consume data from `VendorRepository.getMockVendor()`.
-
-| Consumer Screen | Main Data Fields Consumed |
-| :--- | :--- |
-| **VenueDashboard** | `businessName`, `capacity`, `amenities`, `pricing` |
-| **DecoratorDashboard** | `businessName`, `pricing`, `amenities` |
-| **VendorProfile** | `ownerName`, `coverImage`, `location`, `primaryCategory` |
-
-## 🛠️ Mock Defaults (Phase 2A)
-
-The following fields use documented mock defaults to ensure the model is complete for rendering in future passes:
-
-- **Location (Decorator)**: `"Main Market, Hyderabad"`
-- **Owner Name**: `"Heritage Partner Admin"` (Venue) or `"Luxe Decor Admin"` (Decorator)
-- **Cover Image**: Generic Unsplash architectural/floral URLs.
-- **Gallery**: Currently initialized as an empty list `[]`.
-
-## 💾 Implementation Authority
-- **Model**: `com.example.vedika.core.data.model.VendorMockState`
-- **Repository**: `com.example.vedika.core.data.repository.VendorRepository`
-- **Storage**: `com.example.vedika.data.fake.FakeVendorRepository` (Singleton)
+- **State Capture**: `feature:auth:AuthViewModel.saveRegistrationData`
+- **Mock Persistence**: `core:data:VendorRepository` (In-memory flow)
+- **Consumption**: `feature:dashboard:DashboardViewModel`
+- **UI Exposure**: `VenueDashboardScreen`, `DecoratorDashboardScreen`, `ProfileScreen`

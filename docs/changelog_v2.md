@@ -2,7 +2,29 @@
 
 A record of significant architectural and feature milestones in the Vedika V2 project.
 6: 
-7: ## [2026-04-14] — Phase 2A: Registration Shell & Data Contract Locked
+7: ## [2026-04-14] — Phase 2B: High-Fidelity Vendor Shell & Data Continuity
+### Added
+- **Data Continuity Binding (Run C)**:
+    - **Personalization**: Added `Full Name` field to Signup to drive `ownerName` across the dashboard and profile.
+    - **High-Fidelity Mock Mapping**: Extended `VendorMockState` with `yearsExperience` and `packageTiers` (typed model).
+    - **Role-Aware Dashboards**: Fully bound registration data (Venue name, capacity, pricing, amenities, experience, and tiers) to the специализированные dashboards.
+    - **Live Profile**: Profile screen now reflects real user name, business name, and location from the onboarding funnel.
+    - **Data Contract**: Created `docs/v2_phase2_data_contract.md` to formally document the mock data lifecycle.
+- **Verification & Acceptance (Run D)**:
+    - **Final Audit**: Verified all 6 Phase 2B screens for pixel fidelity and role-appropriate content.
+    - **Acceptance Locked**: Updated `docs/v2_phase2_acceptance.md` and created formal verification report.
+    - **Regression Guard**: Re-verified Hilt, Kapt, and Navigation scoping after continuity changes.
+- **Data Continuity Binding (Run C)**:
+    - **Specialized Dashboards**: Implemented `VenueDashboardScreen` and `DecoratorDashboardScreen` with Bento-style layouts and M3 components.
+    - **Editorial Inventory**: Rebuilt Inventory Hub as an editorial asset showcase with performance metrics.
+    - **Bento Profile**: Refactored `ProfileScreen` into a modern Bento grid grid with categorized action cards.
+    - **Booking Calendar**: Rebuilt the Calendar screen with a professional grid and M3 Bottom Sheet for booking details.
+
+### Fixed
+- **UI Syntax Guard**: Resolved invalid `RoundedCornerShape(full = 999.dp)` and `ContentScale` errors across the dashboard module.
+- **Dependency Guard**: Added missing `coil-compose` to the inventory module to resolve image rendering issues.
+
+## [2026-04-14] — Phase 2A: Registration Shell & Data Contract Locked
 8: ### Added
 9: - **Shell Isolation**: Fully isolated the registration flow by removing the Bottom Navigation Bar from all screens within the `auth_graph`.
 10: - **Navigation Refinement**: Implemented `popUpTo(AuthGraph) { inclusive = true }` for registration completion to prevent back-navigation into completed forms.

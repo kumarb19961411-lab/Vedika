@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 data class ProfileUiState(
     val vendor: VendorUser? = null,
+    val mockVendor: com.example.vedika.core.data.model.VendorMockState? = null,
     val isLoading: Boolean = true
 )
 
@@ -31,8 +32,16 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadProfile() {
         viewModelScope.launch {
-            authRepository.getActiveVendor().collect { vendor ->
-                _uiState.value = ProfileUiState(vendor = vendor, isLoading = false)
+            // Collect both real user and mock state for data continuity
+            launch {
+                authRepository.getActiveVendor().collect { vendor ->
+                    _uiState.value = _uiState.value.copy(vendor = vendor)
+                }
+            }
+            launch {
+                vendorRepository.getMockVendor().collect { mock ->
+                    _uiState.value = _uiState.value.copy(mockVendor = mock, isLoading = false)
+                }
             }
         }
     }

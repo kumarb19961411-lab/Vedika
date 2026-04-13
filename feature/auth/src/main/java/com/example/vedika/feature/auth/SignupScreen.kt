@@ -203,6 +203,30 @@ fun SignupScreen(
                             // Input Form
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Text(
+                                    text = "Full Name".uppercase(),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+                                )
+                                OutlinedTextField(
+                                    value = uiState.ownerName,
+                                    onValueChange = { viewModel.updateOwnerName(it) },
+                                    placeholder = { Text("Enter Your Full Name", color = Color.LightGray) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(12.dp),
+                                    singleLine = true,
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
+                                        focusedBorderColor = Color.White,
+                                        unfocusedTextColor = Color.White,
+                                        focusedTextColor = Color.White
+                                    )
+                                )
+                                
+                                Spacer(modifier = Modifier.height(24.dp))
+
+                                Text(
                                     text = "Mobile Number".uppercase(),
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,

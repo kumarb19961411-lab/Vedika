@@ -32,6 +32,12 @@ data class InventoryItem(
 
 enum class VendorType { VENUE, DECORATOR }
 
+data class PackageTier(
+    val name: String,
+    val price: String,
+    val inclusions: String
+)
+
 data class VendorMockState(
     val businessName: String,
     val venueName: String? = null,    // Only for Venue type
@@ -43,5 +49,19 @@ data class VendorMockState(
     val galleryImages: List<String>,  // List of URIs/asset references
     val vendorType: VendorType,       // VENUE or DECORATOR
     val primaryCategory: String,      // Category name from Selection
-    val ownerName: String             // Contact person
+    val ownerName: String,            // Contact person
+    
+    // Phase 2B Run C: High-Fidelity Extensions
+    val yearsExperience: String? = null,
+    val packageTiers: List<PackageTier> = emptyList(),
+    
+    // Stats & Feedback (Used by Dashboard)
+    val featuredAssetTitle: String? = null,
+    val featuredAssetImage: String? = null,
+    val featuredAssetPrice: String? = null,
+    val analyticsSummary: Map<String, String>? = null,
+    val area: String? = null,         // e.g. "15,000 Sq Ft"
+    val venueType: String? = null,     // e.g. "Indoor/Outdoor"
+    val rating: String? = null,       // e.g. "4.8 (212)"
+    val leadsCount: String? = null    // e.g. "12 New"
 )

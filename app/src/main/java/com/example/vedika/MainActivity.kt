@@ -34,7 +34,9 @@ import com.example.vedika.feature.calendar.CalendarScreen
 import com.example.vedika.feature.dashboard.DashboardScreen
 import com.example.vedika.feature.dashboard.NewBookingScreen
 import com.example.vedika.feature.finance.FinanceScreen
+import com.example.vedika.feature.gallery.DecoratorsGalleryScreen
 import com.example.vedika.feature.inventory.InventoryScreen
+import com.example.vedika.feature.inventory.InventoryHubScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -173,9 +175,6 @@ fun VedikaAppShell() {
                     OtpVerificationScreen(
                         viewModel = authViewModel,
                         onVerificationSuccess = {
-                            // [DEBUG] Verification for Graph Scoping
-                            android.util.Log.d("VedikaAuth", "OTP Success: Mode=${currentAuthState.accountMode}, Flow=${currentAuthState.authFlow}")
-                            
                             val route = when {
                                 currentAuthState.accountMode == AccountMode.USER -> {
                                     VedikaDestination.Dashboard.route
@@ -258,6 +257,12 @@ fun VedikaAppShell() {
                 DashboardScreen(
                     onNavigateToNewBooking = {
                         navController.navigate(VedikaDestination.NewBooking.route)
+                    },
+                    onNavigateToInventoryHub = {
+                        navController.navigate(VedikaDestination.InventoryHub.route)
+                    },
+                    onNavigateToGallery = {
+                        navController.navigate(VedikaDestination.DecoratorsGallery.route)
                     }
                 )
             }
@@ -267,8 +272,10 @@ fun VedikaAppShell() {
             composable(VedikaDestination.Inventory.route) {
                 InventoryScreen()
             }
-            composable(VedikaDestination.Finance.route) {
-                FinanceScreen()
+            composable(VedikaDestination.DecoratorsGallery.route) {
+                DecoratorsGalleryScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
             composable(VedikaDestination.Profile.route) {
                 ProfileScreen(
@@ -281,6 +288,11 @@ fun VedikaAppShell() {
             }
             composable(VedikaDestination.NewBooking.route) {
                 NewBookingScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(VedikaDestination.InventoryHub.route) {
+                InventoryHubScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

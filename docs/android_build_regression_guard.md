@@ -34,9 +34,14 @@ Before introducing new UI components, verify these are present in the feature mo
 
 ---
 ## 6. Navigation & State Guard
-- **Shared ViewModel**: Use `hiltViewModel()` within the `NavHost` composable scope to ensure the same instance is shared across registration steps.
+- **Shared ViewModel**: Use `hiltViewModel(parentEntry)` within the `NavHost` composable scope by retrieving the `parentEntry` of the nested graph. This ensures the same instance is shared across all registration steps.
 - **Deterministic Routing**: Every successful OTP verification must land on a destination derived from the `AccountMode` and `AuthFlow` state in the ViewModel.
 - **Why**: Prevents state reset when navigating between Login, OTP, and Registration forms.
+
+## 7. Media & Resource Guard
+- **Coil Integration**: When using `AsyncImage`, always ensure `libs.coil.compose` is included in the module's `build.gradle.kts`. 
+- **Placeholders**: Dashboards and Profiles should use high-fidelity Unsplash placeholders for local testing until Phase 3 upload logic is implemented.
+- **Why**: Ensures visual premium standards are met during design reviews even without a backend.
 
 ---
 *Policy violations will lead to build breakage. Re-verify after any dependency update.*

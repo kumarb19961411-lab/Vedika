@@ -85,6 +85,7 @@ dependencies {
     implementation(project(":feature:calendar"))
     implementation(project(":feature:inventory"))
     implementation(project(":feature:finance"))
+    implementation(project(":feature:gallery"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

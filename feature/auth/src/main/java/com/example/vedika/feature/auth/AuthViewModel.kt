@@ -120,6 +120,10 @@ class AuthViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(selectedCategory = category)
     }
 
+    fun updateOwnerName(name: String) {
+        _uiState.value = _uiState.value.copy(ownerName = name)
+    }
+
     // Venue Registration State Updates
     fun updateVenueName(name: String) { _uiState.value = _uiState.value.copy(venueName = name) }
     fun updateVenueCapacity(capacity: String) { _uiState.value = _uiState.value.copy(venueCapacity = capacity) }
@@ -156,23 +160,44 @@ class AuthViewModel @Inject constructor(
                 capacity = state.venueCapacity,
                 pricing = state.venuePrice,
                 amenities = state.venueAmenities,
-                coverImage = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3", // Mock default
+                coverImage = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3", // High-fidelity Venue placeholder
                 galleryImages = emptyList(),
                 vendorType = VendorType.VENUE,
                 primaryCategory = state.selectedCategory ?: "Venue",
-                ownerName = "Heritage Partner Admin" // Mock default
+                ownerName = state.ownerName.ifBlank { "Heritage Partner" },
+                area = "12,000 Sq Ft", // Derived mock for demo
+                venueType = "Indoor/Outdoor", // Derived mock for demo
+                rating = "4.8 (124)",
+                leadsCount = "8 New"
             )
         } else {
+            val tiers = listOf(
+                com.example.vedika.core.data.model.PackageTier(
+                    name = "Essential Tier",
+                    price = state.decoratorTier1Price,
+                    inclusions = state.decoratorTier1Inclusions.ifBlank { "Base setup, entry decor, and lighting" }
+                ),
+                com.example.vedika.core.data.model.PackageTier(
+                    name = "Signature Heritage",
+                    price = state.decoratorTier2Price,
+                    inclusions = state.decoratorTier2Inclusions.ifBlank { "Premium floral mandap, stage setup, and thematic entry" }
+                )
+            )
+
             VendorMockState(
                 businessName = state.decoratorBusinessName,
-                location = "Main Market, Hyderabad", // Mock default
+                location = "Main Market, Hyderabad", // Generic location for decorators
                 pricing = state.decoratorTier1Price,
                 amenities = state.decoratorExpertise,
-                coverImage = "https://images.unsplash.com/photo-1469334031218-e382a71b716b", // Mock default
+                coverImage = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622", // High-fidelity Decorator placeholder
                 galleryImages = emptyList(),
                 vendorType = VendorType.DECORATOR,
                 primaryCategory = state.selectedCategory ?: "Decorator",
-                ownerName = "Luxe Decor Admin" // Mock default
+                ownerName = state.ownerName.ifBlank { "Luxe Decor Partner" },
+                yearsExperience = state.decoratorExperience,
+                packageTiers = tiers,
+                rating = "4.9 (86)",
+                leadsCount = "12 New"
             )
         }
 
@@ -195,6 +220,7 @@ data class AuthUiState(
     val isResendEnabled: Boolean = true,
     val countdown: Int = 0,
     val selectedCategory: String? = null,
+    val ownerName: String = "",
     
     // Venue Registration Form State
     val venueName: String = "",

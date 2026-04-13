@@ -1,197 +1,362 @@
 package com.example.vedika.feature.calendar
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vedika.core.data.model.Booking
 import com.example.vedika.core.data.model.BookingStatus
-import java.text.NumberFormat
+import com.example.vedika.core.design.theme.NotoSerif
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var selectedBooking by remember { mutableStateOf<Booking?>(null) }
+    var showBottomSheet by remember { mutableStateOf(false) }
 
-    if (state.isLoading) {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-        }
-        return
-    }
+    val primaryColor = Color(0xFF8F4E00)
+    val secondaryColor = Color(0xFF006A6A)
+    val blockedColor = Color(0xFFBA1A1A)
+    val surfaceColor = Color(0xFFFFF8EF)
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        // Header
-        Surface(
-            color = MaterialTheme.colorScheme.surface,
-            shadowElevation = 2.dp
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        "KalyanaVedika",
+                        fontFamily = NotoSerif,
+                        fontStyle = FontStyle.Italic,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF8B4513)
+                    )
+                },
+                actions = {
+                    IconButton(onClick = { /* Add booking */ }) {
+                        Icon(Icons.Default.AddCircle, contentDescription = "Add", tint = primaryColor)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White.copy(alpha = 0.8f))
+            )
+        },
+        containerColor = surfaceColor
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp)
         ) {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-                Text(
-                    text = "Booking Calendar",
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = "${state.allBookings.size} total bookings",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
+            // Header
+            Text(
+                "BOOKING CALENDAR",
+                style = MaterialTheme.typography.labelSmall,
+                color = secondaryColor,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 2.sp
+            )
+            Text(
+                "November 2024",
+                style = MaterialTheme.typography.displaySmall,
+                fontFamily = NotoSerif,
+                fontWeight = FontWeight.Bold,
+                color = Color.DarkGray
+            )
 
-        if (state.allBookings.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Default.Event,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(56.dp)
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Status Legend
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                LegendItem(label = "Available", color = Color.LightGray.copy(alpha = 0.4f))
+                LegendItem(label = "Booked", color = primaryColor)
+                LegendItem(label = "Blocked", color = blockedColor)
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Calendar Grid UI (Mocked for Visuals)
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                color = Color.White,
+                shadowElevation = 2.dp
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    // Weekdays
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                        "MTWTFSS".forEach { day ->
+                            Text(day.toString(), style = MaterialTheme.typography.labelMedium, color = Color.Gray)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    // Grid Rows (Mocked 5 weeks)
+                    repeat(5) { weekIndex ->
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                            repeat(7) { dayIndex ->
+                                val dayNum = (weekIndex * 7 + dayIndex + 1) % 31
+                                CalendarDayItem(
+                                    day = if (dayNum == 0) "31" else dayNum.toString(),
+                                    status = when {
+                                        dayNum == 12 || dayNum == 28 -> "Booked"
+                                        dayNum == 15 -> "Blocked"
+                                        else -> "Available"
+                                    },
+                                    isSelected = dayNum == 12,
+                                    primaryColor = primaryColor,
+                                    blockedColor = blockedColor,
+                                    onClick = {
+                                        if (dayNum == 12) {
+                                            selectedBooking = state.allBookings.firstOrNull()
+                                            showBottomSheet = true
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Booking List Header
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text("Today's Schedule", style = MaterialTheme.typography.titleLarge, fontFamily = NotoSerif, fontWeight = FontWeight.Bold)
+                Text("See All", style = MaterialTheme.typography.labelLarge, color = secondaryColor, fontWeight = FontWeight.Bold)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Booking List
+            if (state.allBookings.isEmpty()) {
+                EmptyCalendarState()
+            } else {
+                state.allBookings.take(2).forEach { booking ->
+                    BookingLogCard(
+                        booking = booking,
+                        onClick = {
+                            selectedBooking = booking
+                            showBottomSheet = true
+                        }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "No bookings yet",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
             }
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+
+            Spacer(modifier = Modifier.height(100.dp))
+        }
+
+        // Booking Detail Bottom Sheet
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = sheetState,
+                containerColor = Color.White,
+                dragHandle = { BottomSheetDefaults.DragHandle(color = Color.LightGray) }
             ) {
-                items(state.allBookings) { booking ->
-                    BookingManagementCard(
-                        booking = booking,
-                        onConfirm = { viewModel.confirmBooking(booking.id) },
-                        onCancel = { viewModel.cancelBooking(booking.id) }
-                    )
-                }
+                BookingDetailContent(
+                    booking = selectedBooking,
+                    onClose = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) showBottomSheet = false
+                        }
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-private fun BookingManagementCard(
-    booking: Booking,
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit
+private fun CalendarDayItem(
+    day: String,
+    status: String,
+    isSelected: Boolean,
+    primaryColor: Color,
+    blockedColor: Color,
+    onClick: () -> Unit
 ) {
-    val dateFormat = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault())
-    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "IN"))
-    val isPending = booking.status == BookingStatus.PENDING
-    val isCancelled = booking.status == BookingStatus.CANCELLED
-
-    val statusColor = when (booking.status) {
-        BookingStatus.CONFIRMED -> MaterialTheme.colorScheme.secondary
-        BookingStatus.PENDING   -> MaterialTheme.colorScheme.tertiary
-        BookingStatus.CANCELLED -> MaterialTheme.colorScheme.error
-        BookingStatus.COMPLETED -> MaterialTheme.colorScheme.primary
-    }
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(if (isSelected) primaryColor.copy(alpha = 0.1f) else Color.Transparent)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.Event,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = dateFormat.format(Date(booking.eventDate)),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Surface(
-                    shape = RoundedCornerShape(6.dp),
-                    color = statusColor.copy(alpha = 0.15f)
-                ) {
-                    Text(
-                        text = booking.status.name,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = statusColor,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(day, style = MaterialTheme.typography.bodyMedium, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
+            Spacer(modifier = Modifier.height(2.dp))
+            Box(
+                modifier = Modifier
+                    .size(4.dp)
+                    .clip(CircleShape)
+                    .background(
+                        when (status) {
+                            "Booked" -> primaryColor
+                            "Blocked" -> blockedColor
+                            else -> Color.Transparent
+                        }
                     )
-                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun LegendItem(label: String, color: Color) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(modifier = Modifier.size(8.dp).clip(CircleShape).background(color))
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+    }
+}
+
+@Composable
+fun BookingLogCard(booking: Booking, onClick: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        shape = RoundedCornerShape(20.dp),
+        color = Color.White,
+        border = BorderStroke(1.dp, Color.Black.copy(alpha = 0.05f))
+    ) {
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Surface(modifier = Modifier.size(44.dp), shape = RoundedCornerShape(12.dp), color = Color(0xFF8F4E00).copy(alpha = 0.05f)) {
+                Icon(Icons.Default.Event, contentDescription = null, modifier = Modifier.padding(10.dp), tint = Color(0xFF8F4E00))
             }
-            Spacer(modifier = Modifier.height(10.dp))
-            Divider(color = MaterialTheme.colorScheme.surfaceVariant)
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(booking.customerName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text("Wedding Event • 4:00 PM", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            }
+            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.LightGray)
+        }
+    }
+}
+
+@Composable
+fun BookingDetailContent(booking: Booking?, onClose: () -> Unit) {
+    Column(modifier = Modifier.padding(24.dp).padding(bottom = 32.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("Booking Details", style = MaterialTheme.typography.headlineSmall, fontFamily = NotoSerif, fontWeight = FontWeight.Bold)
+            IconButton(onClick = onClose) {
+                Icon(Icons.Default.Close, contentDescription = "Close")
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), color = Color(0xFFF5EDDE)) {
+            Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = booking.customerName,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = currencyFormat.format(booking.totalAmount),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Text(booking?.customerName ?: "Ravi Sharma", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text("Sharma Engagement Party", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                 }
-            }
-            if (isPending) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(
-                        onClick = onCancel,
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                        border = ButtonDefaults.outlinedButtonBorder.copy(
-                            brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.error.copy(alpha = 0.5f))
-                        )
-                    ) {
-                        Icon(Icons.Default.Cancel, contentDescription = null, modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Decline", style = MaterialTheme.typography.labelLarge)
-                    }
-                    Button(
-                        onClick = onConfirm,
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-                    ) {
-                        Icon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Confirm", style = MaterialTheme.typography.labelLarge)
-                    }
+                Surface(color = Color(0xFF006A6A), shape = CircleShape) {
+                    Text("CONFIRMED", modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), style = MaterialTheme.typography.labelSmall, color = Color.White, fontWeight = FontWeight.Bold)
                 }
             }
         }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        DetailField(icon = Icons.Default.Event, label = "Event Date", value = "Tuesday, November 12, 2024")
+        DetailField(icon = Icons.Default.Schedule, label = "Time Slot", value = "04:00 PM - 11:00 PM")
+        DetailField(icon = Icons.Default.Group, label = "Guest Count", value = "450 Guests")
+        DetailField(icon = Icons.Default.CurrencyRupee, label = "Total Amount", value = "₹2,50,000")
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            OutlinedButton(
+                onClick = {},
+                modifier = Modifier.weight(1f).height(56.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Icon(Icons.Default.Message, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Chat")
+            }
+            Button(
+                onClick = {},
+                modifier = Modifier.weight(1f).height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006A6A))
+            ) {
+                Icon(Icons.Default.Call, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Call Client")
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailField(icon: ImageVector, label: String, value: String) {
+    Row(modifier = Modifier.padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+        Spacer(modifier = Modifier.width(16.dp))
+        Column {
+            Text(label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+            Text(value, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+@Composable
+fun EmptyCalendarState() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = Icons.Default.EventBusy,
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+            tint = Color.LightGray
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "No Bookings Found",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "Share your profile to start receiving inquiries.",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.Gray
+        )
     }
 }

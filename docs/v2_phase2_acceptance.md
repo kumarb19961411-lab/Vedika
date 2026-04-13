@@ -17,13 +17,23 @@ This document defines the "Definition of Done" for Phase 2 implementation, focus
 ### 3. Navigation Continuity
 - [x] **Handoff Logic**: Navigating from a finished registration screen to the dashboard must use `popUpTo(AuthGraph) { inclusive = true }` to prevent back-navigation into registration.
 
-## 🏁 Phase 2B (Future) Context Prep
+## 🏁 Phase 2B: High-Fidelity Vendor Shell & Data Continuity
 
 ### 4. Data Continuity
 - [x] **Mock Data Hook**: Successful registration input must populate a local `FakeVendorState` that is immediately readable by the incoming `DashboardScreen`.
-- [x] **Contract Consistency**: The fields captured in `VenueRegistration` must map 1:1 to the fields displayed in the `VenueDashboard` command center.
+- [x] **Contract Consistency**: The fields captured in `VenueRegistration` must map 1:1 to the fields displayed in the `VenueDashboard`.
+- [x] **Personalization**: Dashboard greetings MUST include the `ownerName` captured during the Signup step.
+- [x] **Typed Packages**: Decorator pricing tiers (Essential/Signature) must be modeled using typed data classes.
+
+### 5. High-Fidelity Screens (Figma Alignment)
+- [x] **Venue Dashboard**: Implemented with Bento-style layout, hero visual, and personalized stats.
+- [x] **Decorator Dashboard**: Implemented with specialized service collections and experience highlights.
+- [x] **Bento Profile**: Vendor Profile refactored to a modern 4-card bento grid with categorized business actions.
+- [x] **Inventory Hub**: Functional editorial showcase for venue/decorator highlights.
+- [x] **Booking Calendar**: M3-standard calendar grid with detail-view bottom sheets.
 
 ## 🔍 Validation Checklist
-1. **Registration Flow**: SignUp -> OTP -> Category -> Form -> Dashboard.
-2. **Backstack**: Back button on dashboard must not go back to registration.
-3. **Bottom Nav**: Present on Dashboard/Profile/Inventory; Absent on Signup/OTP/Registration.
+- [x] **Registration Flow**: SignUp -> OTP -> Category -> Form -> Dashboard.
+- [x] **Backstack Integrity**: Back button on dashboard must not go back to registration.
+- [x] **Bottom Nav Safety**: Present only on Dashboard, Calendar, Gallery, Inventory, and Profile screens.
+- [x] **Role Awareness**: Venue Registration leads to Venue Dashboard; Decorator Registration leads to Decorator Dashboard.

@@ -1,7 +1,7 @@
 package com.example.vedika.core.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Collections
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Inventory2
@@ -23,6 +23,8 @@ sealed class VedikaDestination(val route: String) {
     object DecoratorRegistration : VedikaDestination("decorator_registration")
     object NewBooking : VedikaDestination("new_booking")
     object AuthGraph  : VedikaDestination("auth_graph")
+    object DecoratorsGallery : VedikaDestination("decorators_gallery")
+    object InventoryHub : VedikaDestination("inventory_hub")
 }
 
 data class BottomNavItem(
@@ -34,7 +36,7 @@ data class BottomNavItem(
 val bottomNavItems = listOf(
     BottomNavItem(VedikaDestination.Dashboard, "Dashboard", Icons.Default.Dashboard),
     BottomNavItem(VedikaDestination.Calendar,  "Calendar",  Icons.Default.CalendarMonth),
+    BottomNavItem(VedikaDestination.DecoratorsGallery, "Gallery", Icons.Default.Collections),
     BottomNavItem(VedikaDestination.Inventory, "Inventory", Icons.Default.Inventory2),
-    BottomNavItem(VedikaDestination.Finance,   "Finance",   Icons.Default.AccountBalanceWallet),
     BottomNavItem(VedikaDestination.Profile,   "Profile",   Icons.Default.Person),
 )
