@@ -57,7 +57,7 @@ fun VedikaAppShell() {
     val currentRoute = currentBackStack?.destination?.route
 
     val topLevelRoutes = bottomNavItems.map { it.destination.route }
-    val showBottomBar = currentRoute in topLevelRoutes || currentRoute == VedikaDestination.DecoratorRegistration.route
+    val showBottomBar = currentRoute in topLevelRoutes
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -204,6 +204,7 @@ fun VedikaAppShell() {
                     val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
                     CategorySelectionScreen(
                         viewModel = authViewModel,
+                        onNavigateBack = { navController.popBackStack() },
                         onNavigateToVenueRegistration = { navController.navigate(VedikaDestination.VenueRegistration.route) },
                         onNavigateToDecoratorRegistration = { navController.navigate(VedikaDestination.DecoratorRegistration.route) },
                         onNavigateToDashboard = {
@@ -219,6 +220,7 @@ fun VedikaAppShell() {
                     }
                     val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
                     VenueRegistrationScreen(
+                        viewModel = authViewModel,
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateToDashboard = {
                             navController.navigate(VedikaDestination.Dashboard.route) {
@@ -233,6 +235,7 @@ fun VedikaAppShell() {
                     }
                     val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
                     DecoratorRegistrationScreen(
+                        viewModel = authViewModel,
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateToDashboard = {
                             navController.navigate(VedikaDestination.Dashboard.route) {

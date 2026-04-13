@@ -1,8 +1,11 @@
 package com.example.vedika.core.data.repository.firebase
 
 import com.example.vedika.core.data.model.VendorUser
+import com.example.vedika.core.data.model.VendorMockState
 import com.example.vedika.core.data.repository.VendorRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -38,5 +41,15 @@ class FirebaseVendorRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    override fun getMockVendor(): Flow<VendorMockState?> {
+        // Firebase implementation currently doesn't use mock state, returning empty
+        return flowOf(null)
+    }
+
+    override suspend fun saveMockVendor(state: VendorMockState): Result<Unit> {
+        // Firebase implementation currently doesn't use mock state, returning success
+        return Result.success(Unit)
     }
 }

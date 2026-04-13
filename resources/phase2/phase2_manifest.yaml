@@ -1,0 +1,76 @@
+version: v2_phase2
+source_of_truth: resources/phase2
+description: "This manifest defines the scope for Vedika V2 Phase 2. Registration screens are carried over from Phase 1, while new vendor shell screens are placeholders pending Phase2.zip integration."
+
+phase2_screens:
+  # Phase 2A: Registration Refinements (Source: resources/phase1)
+  - id: category_selection
+    source: resources/phase1/kalyanavedika_category_selection_no_nav
+    route: registration/category
+    bottom_nav: disallowed
+    action: MODIFY
+    notes: "Source remains Phase 1. Shell rule: Remove bottom nav."
+
+  - id: venue_registration
+    source: resources/phase1/venue_registration_refined_flow
+    route: registration/venue
+    bottom_nav: disallowed
+    action: MODIFY
+    notes: "Source remains Phase 1. Shell rule: Remove bottom nav."
+
+  - id: decorator_registration
+    source: resources/phase1/decorator_registration_expanded_expertise
+    route: registration/decorator
+    bottom_nav: disallowed
+    action: MODIFY
+    notes: "Source remains Phase 1. Shell rule: Remove bottom nav (strict correction)."
+
+  # Phase 2B: New Vendor Shell Screens (Placeholders - Pending Phase2.zip)
+  - id: venue_dashboard
+    source: PENDING_PHASE2_ZIP
+    route: dashboard/venue
+    bottom_nav: allowed
+    action: CREATE
+    notes: "Central command center for venue partners."
+
+  - id: vendor_calendar
+    source: PENDING_PHASE2_ZIP
+    route: calendar
+    bottom_nav: allowed
+    action: CREATE
+    notes: "Availability and booking management."
+
+  - id: vendor_inventory
+    source: PENDING_PHASE2_ZIP
+    route: inventory
+    bottom_nav: allowed
+    action: CREATE
+    notes: "Stock and service management."
+
+  - id: inventory_hub
+    source: PENDING_PHASE2_ZIP
+    route: inventory/hub
+    bottom_nav: allowed
+    action: CREATE
+    notes: "Centralized inventory overview."
+
+  - id: decorators_gallery
+    source: PENDING_PHASE2_ZIP
+    route: gallery/decorators
+    bottom_nav: allowed
+    action: CREATE
+    notes: "Portfolio management for decorators."
+
+  - id: vendor_profile
+    source: PENDING_PHASE2_ZIP
+    route: profile/vendor
+    bottom_nav: allowed
+    action: CREATE
+    notes: "Business details and branding management."
+
+engineering_rules:
+  - "Registration Screens: Use resources/phase1 exports only. Match visuals exactly."
+  - "Shell Policy: Bottom nav MUST be hidden on all routes prefixed with 'registration/'."
+  - "Shell Policy: Bottom nav MUST appear only after successful registration-to-dashboard navigation."
+  - "Navigation: Registration screens must use close/back behavior (AuthGraph scope)."
+  - "Data: Venue registration and dashboard must share the mock vendor data contract."

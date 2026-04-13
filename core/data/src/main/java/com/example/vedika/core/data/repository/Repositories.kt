@@ -4,6 +4,7 @@ import com.example.vedika.core.data.model.VendorUser
 import com.example.vedika.core.data.model.Booking
 import com.example.vedika.core.data.model.BookingStatus
 import com.example.vedika.core.data.model.InventoryItem
+import com.example.vedika.core.data.model.VendorMockState
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -17,6 +18,10 @@ interface AuthRepository {
 interface VendorRepository {
     suspend fun getVendorProfile(vendorId: String): Result<VendorUser>
     suspend fun updateBusinessName(vendorId: String, newName: String): Result<Unit>
+    
+    // Mock continuity methods
+    fun getMockVendor(): Flow<VendorMockState?>
+    suspend fun saveMockVendor(state: VendorMockState): Result<Unit>
 }
 
 interface BookingRepository {

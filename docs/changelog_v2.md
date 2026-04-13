@@ -1,6 +1,18 @@
 # Changelog — Vedika V2
 
 A record of significant architectural and feature milestones in the Vedika V2 project.
+6: 
+7: ## [2026-04-14] — Phase 2A: Registration Shell & Data Contract Locked
+8: ### Added
+9: - **Shell Isolation**: Fully isolated the registration flow by removing the Bottom Navigation Bar from all screens within the `auth_graph`.
+10: - **Navigation Refinement**: Implemented `popUpTo(AuthGraph) { inclusive = true }` for registration completion to prevent back-navigation into completed forms.
+11: - **UI Fidelity Pass**: Refined `VenueRegistrationScreen` and `DecoratorRegistrationScreen` to match Phase 1 pixel-perfect designs, including dash-border portfolio placeholders.
+12: - **Data Continuity Contract**: Established `VendorMockState` and `VendorRepository` to ensure data persists from registration to the vendor dashboard.
+13: - **State Hoisting**: Moved registration form state into `AuthViewModel`, enabling data preservation during navigation within the onboarding funnel.
+14: 
+15: ### Fixed
+16: - **Decorator Route Correction**: Removed legacy special-case logic that showed the bottom bar on the decorator registration route.
+17: - **Navigation Icons**: Standardized `ArrowBack` behavior across all registration-related screens.
 
 ## [2026-04-10] — Phase 1 Interactivity Complete
 ### Added

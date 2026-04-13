@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.FaceRetouchingNatural
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +48,7 @@ import coil.compose.AsyncImage
 @Composable
 fun CategorySelectionScreen(
     viewModel: AuthViewModel,
+    onNavigateBack: () -> Unit,
     onNavigateToVenueRegistration: () -> Unit,
     onNavigateToDecoratorRegistration: () -> Unit,
     onNavigateToDashboard: () -> Unit
@@ -60,14 +63,20 @@ fun CategorySelectionScreen(
                 title = {
                     Text(
                         text = "KalyanaVedika",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = Color(0xFFC2410C), // Matching Tailwind orange-700
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontFamily = FontFamily.Serif,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = Color(0xFF8F4E00), // Brown Saffron
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Menu */ }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color(0xFFEA580C))
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color(0xFF8F4E00)
+                        )
                     }
                 },
                 actions = {
@@ -127,8 +136,8 @@ fun CategorySelectionScreen(
                         modifier = Modifier.height(56.dp).padding(start = 16.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
+                            containerColor = Color(0xFF8F4E00),
+                            contentColor = Color.White
                         ),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
                     ) {
@@ -169,15 +178,19 @@ fun CategorySelectionScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = buildAnnotatedString {
-                        append("What service are you ")
-                        withStyle(SpanStyle(fontStyle = FontStyle.Normal)) {
-                            append("\n")
+                        withStyle(SpanStyle(fontFamily = FontFamily.Serif)) {
+                            append("What service are you ")
                         }
-                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, fontStyle = FontStyle.Italic)) {
+                        append("\n")
+                        withStyle(SpanStyle(
+                            color = Color(0xFF8F4E00),
+                            fontStyle = FontStyle.Italic,
+                            fontFamily = FontFamily.Serif
+                        )) {
                             append("looking for today?")
                         }
                     },
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.displaySmall,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 44.sp
@@ -310,7 +323,9 @@ fun CategoryCard(
                     Spacer(modifier = Modifier.height(if (isLarge) 24.dp else 16.dp))
                     Text(
                         text = title,
-                        style = if (isLarge) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.headlineSmall,
+                        style = (if (isLarge) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.headlineSmall).copy(
+                            fontFamily = FontFamily.Serif
+                        ),
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )

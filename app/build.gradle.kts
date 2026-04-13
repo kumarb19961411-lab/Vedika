@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.example.vedika"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.vedika"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 

@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.example.vedika.feature.auth"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

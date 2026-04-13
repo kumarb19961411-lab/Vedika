@@ -10,8 +10,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,30 +25,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.ui.draw.drawBehind
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VenueRegistrationScreen(
+    viewModel: AuthViewModel,
     onNavigateBack: () -> Unit,
     onNavigateToDashboard: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
-    
-    // Form State
-    var venueName by remember { mutableStateOf("") }
-    var capacity by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
-    var basePrice by remember { mutableStateOf("") }
-    val selectedAmenities = remember { mutableStateListOf("Catering") }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    val isFormValid = venueName.isNotBlank() && location.isNotBlank()
+    val isFormValid = uiState.venueName.isNotBlank() && uiState.venueLocation.isNotBlank()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -63,7 +64,11 @@ fun VenueRegistrationScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color(0xFF78716A))
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color(0xFF8F4E00)
+                        )
                     }
                 },
                 actions = {
@@ -113,18 +118,22 @@ fun VenueRegistrationScreen(
                             modifier = Modifier.clickable { onNavigateToDashboard() }
                         )
                         Button(
-                            onClick = onNavigateToDashboard,
+                            onClick = { 
+                                viewModel.saveRegistrationData {
+                                    onNavigateToDashboard()
+                                }
+                            },
                             enabled = isFormValid,
                             modifier = Modifier.height(56.dp).padding(start = 8.dp),
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
+                                containerColor = Color(0xFF8F4E00), // Solid Brown
                                 disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
                             )
                         ) {
                             Text("Continue", fontWeight = FontWeight.Bold)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Icon(Icons.Default.ArrowForward, contentDescription = null)
+                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
                         }
                     }
                 }
@@ -155,7 +164,7 @@ fun VenueRegistrationScreen(
             // Hero Title
             Text(
                 text = "Host your heritage venue",
-                style = MaterialTheme.typography.displaySmall,
+                style = MaterialTheme.typography.displaySmall.copy(fontFamily = FontFamily.Serif),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -183,16 +192,16 @@ fun VenueRegistrationScreen(
                             RegistrationField(
                                 label = "Venue Identity", 
                                 placeholder = "The Royal Orchid Garden",
-                                value = venueName,
-                                onValueChange = { venueName = it }
+                                value = uiState.venueName,
+                                onValueChange = { viewModel.updateVenueName(it) }
                             )
                             RegistrationField(
                                 label = "Guest Capacity", 
                                 placeholder = "Number of guests", 
                                 icon = Icons.Default.Groups, 
                                 keyboardType = KeyboardType.Number,
-                                value = capacity,
-                                onValueChange = { capacity = it }
+                                value = uiState.venueCapacity,
+                                onValueChange = { viewModel.updateVenueCapacity(it) }
                             )
                         }
                     }
@@ -208,8 +217,8 @@ fun VenueRegistrationScreen(
                                 label = "Location", 
                                 placeholder = "Street address, City, State", 
                                 actionIcon = Icons.Default.Map,
-                                value = location,
-                                onValueChange = { location = it }
+                                value = uiState.venueLocation,
+                                onValueChange = { viewModel.updateVenueLocation(it) }
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             AsyncImage(
@@ -249,11 +258,8 @@ fun VenueRegistrationScreen(
                         AmenityChip(
                             icon = icon, 
                             label = label, 
-                            isSelected = selectedAmenities.contains(label),
-                            onClick = {
-                                if (selectedAmenities.contains(label)) selectedAmenities.remove(label)
-                                else selectedAmenities.add(label)
-                            }
+                            isSelected = uiState.venueAmenities.contains(label),
+                            onClick = { viewModel.updateVenueAmenities(label) }
                         )
                     }
                 }
@@ -270,8 +276,8 @@ fun VenueRegistrationScreen(
                         Spacer(modifier = Modifier.height(24.dp))
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             OutlinedTextField(
-                                value = basePrice,
-                                onValueChange = { basePrice = it },
+                                value = uiState.venuePrice,
+                                onValueChange = { viewModel.updateVenuePrice(it) },
                                 placeholder = { Text("50,000", fontSize = 20.sp, fontWeight = FontWeight.Bold) },
                                 leadingIcon = { Text("₹", fontWeight = FontWeight.Bold, color = Color.Gray) },
                                 modifier = Modifier.weight(1f),
@@ -295,13 +301,23 @@ fun VenueRegistrationScreen(
                 }
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     repeat(4) { index ->
-                        Surface(
-                            modifier = Modifier.weight(1f).aspectRatio(1f),
-                            shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colorScheme.surfaceContainer,
-                            border = BorderStroke(2.dp, Brush.linearGradient(listOf(MaterialTheme.colorScheme.outlineVariant, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))))
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(16.dp))
+                                .drawBehind {
+                                    drawRoundRect(
+                                        color = Color.Gray.copy(alpha = 0.5f),
+                                        style = Stroke(
+                                            width = 2.dp.toPx(),
+                                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                                        ),
+                                        cornerRadius = androidx.compose.ui.geometry.CornerRadius(16.dp.toPx())
+                                    )
+                                },
+                            contentAlignment = Alignment.Center
                         ) {
-                            Box(contentAlignment = Alignment.Center) {
                                 if (index == 0) {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Icon(Icons.Default.AddAPhoto, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
@@ -313,7 +329,6 @@ fun VenueRegistrationScreen(
                             }
                         }
                     }
-                }
                 Text(
                     text = "* High-quality photos of the main hall, outdoor areas, and amenities increase booking chances by 45%.",
                     style = MaterialTheme.typography.labelSmall,

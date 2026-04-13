@@ -15,6 +15,7 @@ This document contains the strictly enforced build and configuration policies fo
 
 ## 3. Toolchain & Standard Guard
 - **Java Version**: Always use **Java 17**.
+    - **IDE Setting**: Ensure `Settings -> Build, Execution, Deployment -> Build Tools -> Gradle -> Gradle JDK` is set to the **embedded JBR 17 or 21**.
     - `gradle.properties`: `org.gradle.java.home` should point to a valid JDK 17 (JBR recommended).
     - `compileOptions`: `sourceCompatibility` and `targetCompatibility` = `JavaVersion.VERSION_17`.
     - `kotlinOptions`: `jvmTarget = "17"`.

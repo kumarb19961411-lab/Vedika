@@ -29,3 +29,19 @@ data class InventoryItem(
     val price: Double,
     val isAvailable: Boolean
 )
+
+enum class VendorType { VENUE, DECORATOR }
+
+data class VendorMockState(
+    val businessName: String,
+    val venueName: String? = null,    // Only for Venue type
+    val location: String,
+    val capacity: String? = null,     // Only for Venue type
+    val pricing: String,              // Base price or starting from
+    val amenities: List<String>,      // List of feature IDs/names
+    val coverImage: String,           // URI or asset reference
+    val galleryImages: List<String>,  // List of URIs/asset references
+    val vendorType: VendorType,       // VENUE or DECORATOR
+    val primaryCategory: String,      // Category name from Selection
+    val ownerName: String             // Contact person
+)

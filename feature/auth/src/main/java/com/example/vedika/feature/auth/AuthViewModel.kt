@@ -2,7 +2,10 @@ package com.example.vedika.feature.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vedika.core.data.model.VendorMockState
+import com.example.vedika.core.data.model.VendorType
 import com.example.vedika.core.data.repository.AuthRepository
+import com.example.vedika.core.data.repository.VendorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +18,8 @@ enum class AuthFlow { SIGN_IN, SIGN_UP }
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val vendorRepository: VendorRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -115,6 +119,69 @@ class AuthViewModel @Inject constructor(
     fun updateSelectedCategory(category: String?) {
         _uiState.value = _uiState.value.copy(selectedCategory = category)
     }
+
+    // Venue Registration State Updates
+    fun updateVenueName(name: String) { _uiState.value = _uiState.value.copy(venueName = name) }
+    fun updateVenueCapacity(capacity: String) { _uiState.value = _uiState.value.copy(venueCapacity = capacity) }
+    fun updateVenueLocation(location: String) { _uiState.value = _uiState.value.copy(venueLocation = location) }
+    fun updateVenuePrice(price: String) { _uiState.value = _uiState.value.copy(venuePrice = price) }
+    fun updateVenueAmenities(amenity: String) {
+        val current = _uiState.value.venueAmenities.toMutableList()
+        if (current.contains(amenity)) current.remove(amenity) else current.add(amenity)
+        _uiState.value = _uiState.value.copy(venueAmenities = current)
+    }
+
+    // Decorator Registration State Updates
+    fun updateDecoratorBusinessName(name: String) { _uiState.value = _uiState.value.copy(decoratorBusinessName = name) }
+    fun updateDecoratorExperience(exp: String) { _uiState.value = _uiState.value.copy(decoratorExperience = exp) }
+    fun updateDecoratorExpertise(expertise: String) {
+        val current = _uiState.value.decoratorExpertise.toMutableList()
+        if (current.contains(expertise)) current.remove(expertise) else current.add(expertise)
+        _uiState.value = _uiState.value.copy(decoratorExpertise = current)
+    }
+    fun updateDecoratorTier1Price(price: String) { _uiState.value = _uiState.value.copy(decoratorTier1Price = price) }
+    fun updateDecoratorTier1Inclusions(inc: String) { _uiState.value = _uiState.value.copy(decoratorTier1Inclusions = inc) }
+    fun updateDecoratorTier2Price(price: String) { _uiState.value = _uiState.value.copy(decoratorTier2Price = price) }
+    fun updateDecoratorTier2Inclusions(inc: String) { _uiState.value = _uiState.value.copy(decoratorTier2Inclusions = inc) }
+
+    fun saveRegistrationData(onSuccess: () -> Unit) {
+        val state = _uiState.value
+        val vendorType = if (state.selectedCategory?.lowercase()?.contains("venue") == true) VendorType.VENUE else VendorType.DECORATOR
+        
+        val mockState = if (vendorType == VendorType.VENUE) {
+            VendorMockState(
+                businessName = state.venueName,
+                venueName = state.venueName,
+                location = state.venueLocation,
+                capacity = state.venueCapacity,
+                pricing = state.venuePrice,
+                amenities = state.venueAmenities,
+                coverImage = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3", // Mock default
+                galleryImages = emptyList(),
+                vendorType = VendorType.VENUE,
+                primaryCategory = state.selectedCategory ?: "Venue",
+                ownerName = "Heritage Partner Admin" // Mock default
+            )
+        } else {
+            VendorMockState(
+                businessName = state.decoratorBusinessName,
+                location = "Main Market, Hyderabad", // Mock default
+                pricing = state.decoratorTier1Price,
+                amenities = state.decoratorExpertise,
+                coverImage = "https://images.unsplash.com/photo-1469334031218-e382a71b716b", // Mock default
+                galleryImages = emptyList(),
+                vendorType = VendorType.DECORATOR,
+                primaryCategory = state.selectedCategory ?: "Decorator",
+                ownerName = "Luxe Decor Admin" // Mock default
+            )
+        }
+
+        viewModelScope.launch {
+            vendorRepository.saveMockVendor(mockState).onSuccess {
+                onSuccess()
+            }
+        }
+    }
 }
 
 data class AuthUiState(
@@ -127,5 +194,21 @@ data class AuthUiState(
     val error: String? = null,
     val isResendEnabled: Boolean = true,
     val countdown: Int = 0,
-    val selectedCategory: String? = null
+    val selectedCategory: String? = null,
+    
+    // Venue Registration Form State
+    val venueName: String = "",
+    val venueCapacity: String = "",
+    val venueLocation: String = "",
+    val venuePrice: String = "",
+    val venueAmenities: List<String> = emptyList(),
+    
+    // Decorator Registration Form State
+    val decoratorBusinessName: String = "",
+    val decoratorExperience: String = "3-7 Years",
+    val decoratorExpertise: List<String> = emptyList(),
+    val decoratorTier1Price: String = "",
+    val decoratorTier1Inclusions: String = "",
+    val decoratorTier2Price: String = "",
+    val decoratorTier2Inclusions: String = ""
 )

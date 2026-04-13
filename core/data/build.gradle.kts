@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.vedika.core.data"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
