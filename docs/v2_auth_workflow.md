@@ -6,67 +6,46 @@ This document defines the deterministic routing and state transitions for the Ve
 
 ### 1. The Entry Branch
 There are two distinct entry points on the **Login** screen:
-- **Case A: Sign In** (Return User/Partner)
-    - **Intent**: Access existing dashboard.
-    - **UI Route**: `auth/login`
-- **Case B: Sign Up** (New User/Partner)
-    - **Intent**: Create a new account and register services.
-    - **UI Route**: `auth/signup` (Accessed via "Register your account" footer).
+- **Case A: Sign In** (Return User/Partner) ➔ `auth/login`
+- **Case B: Sign Up** (New User/Partner) ➔ `auth/signup`
 
 ### 2. OTP Verification (Unified Link)
 Both Case A and B consolidate at the **OTP Verification** screen (`auth/otp`).
 - **Dev Mode**: Use `1234` for instant verification.
-- [**RULE**]: The `AuthViewModel` must preserve the `authFlow` (`SIGN_IN` vs `SIGN_UP`) and `accountMode` (`USER` vs `PARTNER`) across this transition.
+- [**RULE**]: The `AuthViewModel` must preserve the `authFlow` and `accountMode` across this transition.
 
 ### 2.1 Back Navigation (Change Number)
-The "Change Number" action follows a strict "Return to Origin" policy:
 - **Flow: SIGN_IN** ➔ Returns to **Login Screen** (`auth/login`).
 - **Flow: SIGN_UP** ➔ Returns to **Signup Screen** (`auth/signup`).
-- **State**: The `phoneNumber` and `accountMode` must remain cached in the ViewModel to allow the user to quickly correct and re-submit.
 
 ### 3. Post-Verification Routing (Deterministic)
-The destination after a successful OTP verification depends entirely on the entry branch:
 
-| Entry Flow | Account Mode | Next Destination |
-| :--- | :--- | :--- |
-| **SIGN_IN** | **USER** | **Dashboard** |
-| **SIGN_UP** | **USER** | **Dashboard** (Self-service Setup) |
-| **SIGN_IN** | **PARTNER** | **Dashboard** (Partner Home) |
-| **SIGN_UP** | **PARTNER** | **Category Selection** |
+| Entry Flow | Account Mode | Next Destination | Note |
+| :--- | :--- | :--- | :--- |
+| **SIGN_IN** | **USER** | **Dashboard** | |
+| **SIGN_UP** | **USER** | **Dashboard** | Self-service Setup |
+| **SIGN_IN** | **PARTNER** | **Dashboard** | Partner Home |
+| **SIGN_UP** | **PARTNER** | **Category Selection** | Start Onboarding |
 
-### 4. Registration Sub-graph (Signup Only)
-If the user is in `SIGN_UP` mode, they follow this branch:
-1. **Category Selection**: User chooses their vendor category (Venues, Decorators, etc.).
+### 4. Registration Sub-graph (Partner Signup Only)
+1. **Category Selection**: Partner chooses their vendor profile (Venues, Decorators, etc.).
 2. **Category Branching**:
-    - **Selection: Venues** -> Navigates to `registration/venue`
-    - **Selection: Decorators** -> Navigates to `registration/decorator`
-    - **Other Categories** -> (Future Work) Maps to generic registration.
+    - **Selection: Venues** ➔ `registration/venue`
+    - **Selection: Decorators** ➔ `registration/decorator`
+3. **Completion**: Navigates to `dashboard` via `popUpTo(AuthGraph)`.
 
 ---
 
-## 💾 State Preservation Guide
-To ensure a "Premium" feel, the following state must be tracked in the **Shared `AuthViewModel`**:
-- `phoneNumber`: String (Prefilled if returning from Back stack).
-- `authFlow`: `AuthFlow` Enum (`SIGN_IN`, `SIGN_UP`).
-- `accountMode`: `AccountMode` Enum (`USER`, `PARTNER`).
-- `selectedCategory`: `ServiceCategory?` (Preserved if navigating back from a registration form).
+## 💾 State Preservation (Shared ViewModel)
+To ensure zero data loss during onboarding, the following state is tracked in the `AuthViewModel` scoped to the `auth_graph`:
+- `ownerName`: Captured during Signup.
+- `phoneNumber`: Prefilled for correction.
+- `authFlow` / `accountMode`: Branch controls.
+- `selectedCategory`: Used for branching.
 
 ---
 
-## 🏗 Technical Implementation: Nested Graph & Scoping
-To prevent state loss during the Partner onboarding funnel, the authentication flow is implemented as a **Nested Navigation Graph** (`auth_graph`).
+## 🏗 Implementation Pattern
+Auth logic relies on a single source of truth in `AuthViewModel.handleOtpSuccess()`. This method calculates the next destination based on the cached state variables, ensuring that role-aware routing is centralized and testable.
 
-### Scoping Rule:
-- The `AuthViewModel` is **not** scoped to individual destinations.
-- Instead, it is scoped to the **parent `auth_graph`** entry.
-- **Retrieval Logic** (in `MainActivity.kt`):
-  ```kotlin
-  val parentEntry = remember(it) {
-      navController.getBackStackEntry(VedikaDestination.AuthGraph.route)
-  }
-  val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
-  ```
-- **Benefit**: This guarantees that the exact same instance is shared across Login ➔ Signup ➔ OTP ➔ Category ➔ Registration, preventing reset to default values during transitions.
-
----
-*Note: Any modification to the `MainActivity` NavHost logic must be audited against this workflow.*
+*Reference: [Role Behavior Matrix](role_behavior_matrix.md) for a condensed view.*

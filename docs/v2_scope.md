@@ -1,32 +1,37 @@
-# V2 Project Scope — Vedika V2
+# Project Scope & Roadmap — Vedika V2
 
-This document defines the implementation boundaries for the Vedika V2 frontend-first development pass.
+Vedika V2 focuses on providing a premium, role-aware onboarding journey and a high-fidelity vendor shell experienced through modern Material 3 and Bento-style design.
 
-## 🎯 Current Focus: Phase 1 (Auth & Onboarding Enhancement)
-The primary goal of Phase 1 is to deliver a premium, bug-free, and deterministic authentication and registration journey.
+## 🏁 Phase 2 Status: COMPLETE ✅
 
-### ✅ In-Scope (Phase 1)
-1. **Premium UI Fidelity**: Correcting screen layouts, typography, and "glassmorphism" effects to match V2 designs.
-2. **Auth Workflow**: Implementing a distinct Signup vs. Sign In flow with deterministic routing.
-3. **State Persistence**: Ensuring phone numbers and flow intent (User/Partner) survive across navigation.
-4. **Interaction Polish**: Implementing snackbars, form validation, and reactive button states.
-5. **Build Stability**: Protecting the repository from Gradle, Hilt, and Firebase package regressions.
-6. **Mock Integration**: Validating all 4 primary flows using `FakeAuthRepository` in `dev` mode.
+### Phase 2A: Registration Shell
+- **Isolation**: Bottom bar hidden during onboarding.
+- **Fidelity**: Pixel-perfect entry forms for Venues and Decorators.
+- **Backstack**: Correct history clearing upon completion.
 
-### ⏳ Future Scope (Phase 2+)
-1. **Real Firebase Auth**: Transitioning from `FakeAuthRepository` to actual Firebase Auth providers.
-2. **Dashboard Logic**: Implementing actual booking lists and profile management.
-3. **Cloud Sync**: Connecting registration forms to Firestore.
-4. **Social Login**: Logic for Google/Social sign-in handlers.
-5. **Deep Linking**: Routing users directly into specific venues or registration steps.
+### Phase 2B: Vendor Shell & Data Continuity
+- **Dashboards**: Specialized Bento-style dashboards for Venue and Decorator roles.
+- **Profiles**: Modern grid-based profile management.
+- **Continuity**: End-to-end data flow from Signup to Dashboard.
+- **Global Shell**: Persistence of the 5-tab navigation (Dashboard, Calendar, Gallery, Inventory, Profile).
 
 ---
 
-## 🚫 Strictly Out of Scope (Phase 1)
-- Modification of Legacy modules (`calendar`, `finance`, `gallery`).
-- Implementation of real payment gateways.
-- Significant changes to the `VedikaTheme` base tokens (unless requested).
-- Backend deployment or CI/CD pipeline modifications.
+## 🚀 Phase 3: Cloud Integration & Real-time Operations (Future)
+
+Phase 3 will transition the project from high-fidelity mocks to a live production-ready system.
+
+### 1. Firebase Live-Sync
+- Replace `VendorRepository` in-memory mocks with real-time Firestore listeners.
+- Implement **Firebase Auth** production phone verification (reCAPTCHA/SMS).
+
+### 2. Media Operations
+- Implement real **Image Uploads** for portolios and profile banners.
+- Support video asset previews in the Inventory Hub.
+
+### 3. Business Logic
+- **Booking Engine**: Real-time conflict detection and status transitions (Pending ➔ Confirmed).
+- **Leads Integration**: Automated lead generation and inquiry tracking.
 
 ---
-*Note: This scope is driven by the `resources/phase1/phase1_manifest.yaml` which serves as the screen-level source of truth.*
+*Note: This scope document is updated per phase milestone.*
