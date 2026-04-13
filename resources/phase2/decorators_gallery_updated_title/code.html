@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KalyanaVedika | Decorators Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#ff9933",
+                        "surface": "#fff8ef",
+                        "on-surface-variant": "#554336",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "inverse-surface": "#343026",
+                        "on-tertiary-fixed": "#261a00",
+                        "surface-bright": "#fff8ef",
+                        "on-primary-fixed": "#2e1500",
+                        "outline": "#887364",
+                        "tertiary": "#795900",
+                        "surface-container-highest": "#e9e2d3",
+                        "on-primary-fixed-variant": "#6d3a00",
+                        "background": "#fff8ef",
+                        "secondary-container": "#90efef",
+                        "on-error": "#ffffff",
+                        "on-background": "#1e1b13",
+                        "tertiary-fixed-dim": "#fbbc00",
+                        "primary": "#8f4e00",
+                        "on-secondary-container": "#006e6e",
+                        "secondary": "#006a6a",
+                        "surface-container-high": "#efe7d9",
+                        "on-secondary-fixed": "#002020",
+                        "tertiary-container": "#e2a900",
+                        "surface-variant": "#e9e2d3",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "surface-tint": "#8f4e00",
+                        "outline-variant": "#dbc2b0",
+                        "on-tertiary-fixed-variant": "#5c4300",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#fbf3e4",
+                        "inverse-primary": "#ffb77a",
+                        "tertiary-fixed": "#ffdfa0",
+                        "secondary-fixed": "#93f2f2",
+                        "surface-container": "#f5edde",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdcc2",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#ffb77a",
+                        "on-surface": "#1e1b13",
+                        "inverse-on-surface": "#f8f0e1",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#e1d9cb",
+                        "on-primary-container": "#693800",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#594000"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Accordion transition logic */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 2000px;
+            opacity: 1;
+        }
+        .accordion-item.active .chevron-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-background selection:bg-primary-container/30">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md shadow-sm flex items-center justify-between px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="Venue Owner Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxU_PVP1kTgANVXAoRnRvu68BcDQjV8mcKqZJeHJpMn75fpfuWBp_8RfNT6goyk3E_CCzNVBRxc2VzzYTHPrzoVbYl6oZuxI88eFWQF5DcFLiQZX5mUIcKW0H6i9gKQ0rq-ChRYH0OqtekIJByQUz44HKWzdBIXviVoSmP1bSFxqwq6fTjgDtjkJWAmO6IsHuQLr1hW6MFCFX7bZgXv-z3Uwx_sZsEWMQfgjXtB5OqyWme3ZbB0vHH4srP0_sv7CUhBJnMDmN_2_CJ"/>
+</div>
+<span class="font-serif text-2xl font-bold tracking-tight text-orange-800 dark:text-orange-400 italic">KalyanaVedika</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-orange-700 dark:text-orange-500 p-2 active:scale-95">notifications</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-7xl mx-auto">
+<!-- Hero Section -->
+<section class="mb-10">
+<p class="font-label text-[12px] uppercase tracking-[0.2em] text-tertiary mb-2 font-semibold">Visual Portfolio</p>
+<h1 class="font-headline text-4xl md:text-5xl font-bold text-on-surface leading-tight">Decorators Gallery</h1>
+</section>
+<!-- Accordion Gallery -->
+<section class="space-y-4">
+<!-- Main Hall Section -->
+<div class="accordion-item active bg-surface-container-low rounded-2xl border border-outline/10 overflow-hidden" id="section-main-hall">
+<button class="w-full px-6 py-5 flex items-center justify-between hover:bg-surface-container transition-colors" onclick="toggleAccordion('section-main-hall')">
+<div class="flex items-center gap-4">
+<div class="bg-primary/10 p-3 rounded-xl text-primary">
+<span class="material-symbols-outlined">temple_hindu</span>
+</div>
+<h2 class="font-headline text-xl font-bold">Marriage</h2>
+</div>
+<span class="material-symbols-outlined chevron-icon transition-transform duration-300">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="px-6 pb-6">
+<div class="flex flex-wrap gap-3 mb-6">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-sm active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">add_a_photo</span> Add Photos
+                            </button>
+<button class="bg-outline text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-sm active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">video_call</span> Add Videos
+                            </button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+<div class="col-span-2 group relative overflow-hidden rounded-xl aspect-[16/9]">
+<img alt="Main Hall" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQZs7zevQkhjxaU_VldrUg1VWMZzv-q_6h9NoTMKxHveAPa3gK8gi89Dd2uFOqQo_4GQRbwQDxnSTLmllY59NS2FpRtfPvmzlv318zGhg5zzpjkTa7c5fq7ey1iH1xRfotwnGjSCbzUHMzWI-lD8TmEB2kqLXvNLJQukxDsqau3vCIdLmNzY0d6-C5oCdZMxgHSo6srfvujHZIr5xRVhWyBNnoSHhfFucncZycbHkNaoArxArGmgHtVd18vTvOkos9p8Xu0LJAnnuT"/>
+<div class="absolute top-4 left-4 bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 shadow-md">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">stars</span> FEATURED
+                                </div>
+</div>
+<div class="group relative overflow-hidden rounded-xl aspect-square">
+<img alt="Setup" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAa7FrGTtpKWhOfy2vM7XZ8kke5AJWXu9H9FrWtBfuX5RAKdtcWzB_SDu4Q-IMXYiaEQ0aWcsoKh1XVQZMlwDG9qCSRU3zRQ2fKG2_WVjH3OVbl4BZ11323_EZmBfyCX02Zd__5MkiHNsl0cgD0aSQ2uX-4r2tz9A31vN7Te2tnwxHj-dZqtAVjdUfZvun_PfX66DWU3v_qwYiCgE-6FPffxPB6hA1hM_Q7xHYMOEMU6EVl29KLLqa4P7k1_FOzrbjsxyNN1sqfXLhn"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bridal Suite Section -->
+<div class="accordion-item bg-surface-container-low rounded-2xl border border-outline/10 overflow-hidden" id="section-bridal-suite">
+<button class="w-full px-6 py-5 flex items-center justify-between hover:bg-surface-container transition-colors" onclick="toggleAccordion('section-bridal-suite')">
+<div class="flex items-center gap-4">
+<div class="bg-secondary/10 p-3 rounded-xl text-secondary">
+<span class="material-symbols-outlined">face_3</span>
+</div>
+<h2 class="font-headline text-xl font-bold">Reception</h2>
+</div>
+<span class="material-symbols-outlined chevron-icon transition-transform duration-300">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="px-6 pb-6">
+<div class="flex flex-wrap gap-3 mb-6">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">add_a_photo</span> Add Photos
+                            </button>
+<button class="bg-outline text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">video_call</span> Add Videos
+                            </button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="group relative overflow-hidden rounded-xl aspect-square">
+<img alt="Bridal Suite" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4r2YWfszioxUjzLdUxZL3l_Id1mmbjbRqaAd_zqXBNnb9Yhr9TGv7hppgUWAOaA2fD-y2hJxfB_RTDzApqVHPrGuwUuicOkFXhalNkVemyL1lGhAIYhUNCjqLKOiYA-ahAiasLUSEi04m82RejWWH5yUMxt3NJHsBjVl-W2nVUA2EjrY86Zrl8E-W0Ek2OF1a7QZcLPTY2meEdXQ05SmyAm26KU5h9bhGhVhoTCr0tcl2TdpgbQ-eybqf0LUjq-UN5K21Fbi1k4Zl"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Dining Area Section -->
+<div class="accordion-item bg-surface-container-low rounded-2xl border border-outline/10 overflow-hidden" id="section-dining">
+<button class="w-full px-6 py-5 flex items-center justify-between hover:bg-surface-container transition-colors" onclick="toggleAccordion('section-dining')">
+<div class="flex items-center gap-4">
+<div class="bg-tertiary/10 p-3 rounded-xl text-tertiary">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<h2 class="font-headline text-xl font-bold">Haldi</h2>
+</div>
+<span class="material-symbols-outlined chevron-icon transition-transform duration-300">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="px-6 pb-6">
+<div class="flex flex-wrap gap-3 mb-6">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">add_a_photo</span> Add Photos
+                            </button>
+<button class="bg-outline text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">video_call</span> Add Videos
+                            </button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="group relative overflow-hidden rounded-xl aspect-square">
+<img alt="Dining Area" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8FD7TA5z4smYPnjDqne6uqrhdJ9VRiLalWNhSK27U2GNYkOY9wsCiExMOX1WSZoM58V3_SChK2HcJbiozAsedpUk4UED3sHOTOWGfeqBZPLDjt9EE72d-ZsNY4RXijQ-I0a7wjLeZBYVtLn8oCWQIMlPgXhPIXUrguDWXxfam5du7S0dea9wyVkH-QOt00PokfNs8mnKSi_CjnJr1KSFr1aUdF2YGnhYy8Y6q_2FaFwTyQCOyGWyUK2-uQLLL_oIMDPG4VL7xuJLQ"/>
+</div>
+<div class="group relative overflow-hidden rounded-xl aspect-square">
+<img alt="Buffet" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7JKHah6wznH1gQdLtPIBuHrgIcub9gUc1T1bC4UIekh74OrG4jzRkOiJsJGdKe7J0unwOGZNlSEUbz8pDSRoiPhSzZWG3E2Pfdn9HGlJBhGdd0O_dtNhT6iTAFgyFwoNsKkdTefJCNTPWJhceR38_hDmbrB2Ky96ksTIsW7lqM2oY8lJcnmyqZTOYKhMdYYsNHTh-ADN0WXzuUfd4Sw0ju0Oj-9_b4aHEZ-0DEZrgjaadllrBVx_tZTt6EdidEorxADt77PYQw2cP"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Kitchen Section -->
+<div class="accordion-item bg-surface-container-low rounded-2xl border border-outline/10 overflow-hidden" id="section-kitchen">
+<button class="w-full px-6 py-5 flex items-center justify-between hover:bg-surface-container transition-colors" onclick="toggleAccordion('section-kitchen')">
+<div class="flex items-center gap-4">
+<div class="bg-secondary/10 p-3 rounded-xl text-secondary">
+<span class="material-symbols-outlined">skillet</span>
+</div>
+<h2 class="font-headline text-xl font-bold">Birthday</h2>
+</div>
+<span class="material-symbols-outlined chevron-icon transition-transform duration-300">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="px-6 pb-6 text-center py-12">
+<div class="mb-4">
+<span class="material-symbols-outlined text-5xl text-outline/30">add_photo_alternate</span>
+</div>
+<p class="text-on-surface-variant mb-6">No photos in Kitchen yet. Start showcasing your facility!</p>
+<div class="flex justify-center gap-3">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">add_a_photo</span> Add Photos
+                            </button>
+<button class="bg-outline text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">video_call</span> Add Videos
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section class="mt-16 bg-surface-container-low rounded-2xl p-8 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+<div class="max-w-md">
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-2">Portfolio Analytics</h3>
+<p class="text-on-surface-variant text-sm">Your featured gallery has received 2,450 views this month. High-quality photos increase booking inquiries by up to 40%.</p>
+</div>
+<div class="flex gap-8">
+<div>
+<p class="font-headline text-3xl font-bold text-primary">124</p>
+<p class="text-[10px] uppercase tracking-widest text-outline">Total Photos</p>
+</div>
+<div>
+<p class="font-headline text-3xl font-bold text-secondary">12</p>
+<p class="text-[10px] uppercase tracking-widest text-outline">Albums</p>
+</div>
+<div>
+<p class="font-headline text-3xl font-bold text-tertiary">15</p>
+<p class="text-[10px] uppercase tracking-widest text-outline">Featured</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-white/80 dark:bg-stone-950/80 backdrop-blur-lg shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-2xl z-50">
+<a class="flex flex-col items-center justify-center text-stone-400 px-3 py-1.5 hover:bg-stone-50 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-widest">Showcase</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 px-3 py-1.5 hover:bg-stone-50 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">event_available</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-widest">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-orange-50 text-orange-800 rounded-xl px-3 py-1.5 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">collections</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-widest">Gallery</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 px-3 py-1.5 hover:bg-stone-50 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">calendar_month</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-widest">Calendar</span>
+</a>
+</nav>
+<script>
+        function toggleAccordion(id) {
+            const items = document.querySelectorAll('.accordion-item');
+            const target = document.getElementById(id);
+            const isActive = target.classList.contains('active');
+
+            items.forEach(item => {
+                item.classList.remove('active');
+            });
+
+            if (!isActive) {
+                target.classList.add('active');
+            }
+        }
+    </script>
+</body></html>

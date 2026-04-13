@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings - KalyanaVedika</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#fbbc00",
+              "surface-bright": "#fff8ef",
+              "outline-variant": "#dbc2b0",
+              "inverse-on-surface": "#f8f0e1",
+              "primary-fixed-dim": "#ffb77a",
+              "on-tertiary-container": "#594000",
+              "outline": "#887364",
+              "on-primary-fixed-variant": "#6d3a00",
+              "on-primary-container": "#693800",
+              "surface-tint": "#8f4e00",
+              "primary-container": "#ff9933",
+              "secondary": "#006a6a",
+              "on-tertiary-fixed": "#261a00",
+              "on-tertiary": "#ffffff",
+              "on-surface": "#1e1b13",
+              "on-secondary-fixed-variant": "#004f4f",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed-variant": "#5c4300",
+              "tertiary-container": "#e2a900",
+              "secondary-fixed": "#93f2f2",
+              "on-error": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-primary-fixed": "#2e1500",
+              "primary": "#8f4e00",
+              "surface-container-lowest": "#ffffff",
+              "inverse-surface": "#343026",
+              "error": "#ba1a1a",
+              "tertiary-fixed": "#ffdfa0",
+              "tertiary": "#795900",
+              "surface-container-high": "#efe7d9",
+              "on-surface-variant": "#554336",
+              "on-secondary-container": "#006e6e",
+              "on-background": "#1e1b13",
+              "surface-container-low": "#fbf3e4",
+              "on-secondary": "#ffffff",
+              "on-secondary-fixed": "#002020",
+              "surface": "#fff8ef",
+              "inverse-primary": "#ffb77a",
+              "background": "#fff8ef",
+              "surface-container": "#f5edde",
+              "secondary-fixed-dim": "#76d6d5",
+              "surface-variant": "#e9e2d3",
+              "surface-container-highest": "#e9e2d3",
+              "surface-dim": "#e1d9cb",
+              "secondary-container": "#90efef",
+              "primary-fixed": "#ffdcc2",
+              "on-error-container": "#93000a"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-serif { font-family: 'Noto Serif', serif; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .tap-highlight-transparent { -webkit-tap-highlight-color: transparent; }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-orange-50 dark:hover:bg-orange-950/30 transition-colors rounded-full active:scale-95">
+<span class="material-symbols-outlined text-stone-500" data-icon="menu">menu</span>
+</button>
+<h1 class="text-2xl font-serif italic text-orange-800 dark:text-orange-500">KalyanaVedika</h1>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center overflow-hidden border-2 border-primary-container">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional male business owner in a tailored suit with a warm confident smile and soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCARGvDMkWuUcVJTX0DYL3EXcmWiIObMpqyVoq69Mg5Cb95S4ueRCUS9takIsVyaer1mcO05M2EdN63dCu94JGYoHcetK0pL5HnwCkFQKRDnMmmt8TbYIWDsj0-MJFNMEbrNMdnsG-yTtYVjCSA_MwEnsW2n25edeC78-pwPf8J0tCgkPFGT8BYwp-3KJVg055v6OblM4_UiHSNkKHbKOZAArx-MYpS-bNABqf78k1wZPDm9EKQEZ94RENIy6k9gSD10wF7d3EL2xV"/>
+</div>
+</div>
+</header>
+<main class="pt-20 px-4 md:px-8 max-w-4xl mx-auto">
+<!-- High Impact Header Section -->
+<section class="relative mb-10 mt-6">
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-sm overflow-hidden relative border-outline-variant/10">
+<!-- Background Mandala Motif -->
+<div class="absolute -right-16 -top-16 opacity-[0.03] text-primary">
+<span class="material-symbols-outlined text-[240px]" data-icon="settings_accessibility">settings_accessibility</span>
+</div>
+<div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+<div class="relative">
+<div class="w-28 h-28 rounded-2xl bg-primary-container p-1 shadow-lg transform -rotate-3">
+<div class="w-full h-full rounded-xl overflow-hidden bg-white">
+<img alt="Venue" class="w-full h-full object-cover" data-alt="stunning architectural view of a luxury Indian palace courtyard with intricate stone carvings and golden evening sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5hn3xE_tKCnmy9mxE35m8Xf6SymZ2BhVpFQbbr7vCcechuDnRGazTKzYx76iMKZXUa91MnqKvTmyKqhfEpmgowwZlBowbYcLhtW6Fbw9PC1Y52wArnAmp_qKr3zv-FemfgOEHzRji_E1mJk973VT13vOFigkq_huic9g9_ppm8RLz4E96iGU06B3TXcrFlU0B8_-vz1SLRQ1CZiwngmRE-oRdBB9c8CsG2Yz9jbP3A7VDuTgxYAg1n0UJxUK7MSabmWZmqNnuj-xF"/>
+</div>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-secondary text-on-secondary px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md">
+<span class="material-symbols-outlined text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        VERIFIED
+                    </div>
+</div>
+<div class="text-center md:text-left">
+<span class="label-md uppercase tracking-widest text-primary font-bold mb-2 block">Settings</span>
+<h2 class="text-4xl md:text-5xl font-serif font-bold text-on-surface leading-tight">The Grand Heritage Estate</h2>
+<div class="flex flex-wrap justify-center md:justify-start gap-4 mt-3">
+<span class="flex items-center gap-1 text-sm text-on-surface-variant font-medium bg-surface-container rounded-full px-3 py-1">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="location_on">location_on</span>
+                            Udaipur, Rajasthan
+                        </span>
+<span class="flex items-center gap-1 text-sm text-on-surface-variant font-medium bg-surface-container rounded-full px-3 py-1">
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                            4.9 (248 Reviews)
+                        </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Navigation Bento List -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Profile Details -->
+<div class="group bg-surface-container-low hover:bg-surface-container-highest transition-all duration-300 rounded-xl p-6 cursor-pointer flex items-center justify-between border-b-0">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-800">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Profile Details</h3>
+<p class="text-sm text-on-surface-variant">Manage business information and contact details</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-stone-400 group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- My Bookings -->
+<div class="group bg-surface-container-low hover:bg-surface-container-highest transition-all duration-300 rounded-xl p-6 cursor-pointer flex items-center justify-between border-b-0">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/30 flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="book_online">book_online</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">My Bookings</h3>
+<p class="text-sm text-on-surface-variant">Review active and historical event reservations</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-stone-400 group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Payments -->
+<div class="group bg-surface-container-low hover:bg-surface-container-highest transition-all duration-300 rounded-xl p-6 cursor-pointer flex items-center justify-between border-b-0">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Payments</h3>
+<p class="text-sm text-on-surface-variant">Earnings, payouts, and billing methods</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-stone-400 group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Help & Support -->
+<div class="group bg-surface-container-low hover:bg-surface-container-highest transition-all duration-300 rounded-xl p-6 cursor-pointer flex items-center justify-between border-b-0">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-stone-200 flex items-center justify-center text-stone-700">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Help &amp; Support</h3>
+<p class="text-sm text-on-surface-variant">Get assistance and read FAQs</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-stone-400 group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</section>
+<!-- Danger Zone / Actions -->
+<section class="mt-12 mb-8">
+<button class="w-full flex items-center justify-center gap-2 py-4 px-6 bg-surface-container-highest text-error font-bold rounded-xl hover:bg-error-container/20 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+            Sign Out
+        </button>
+<p class="text-center text-xs text-on-surface-variant/60 mt-6 font-medium">Version 2.4.1 • © 2024 KalyanaVedika Vendor Suite</p>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-white/80 dark:bg-stone-900/80 backdrop-blur-md z-50 rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] tap-highlight-transparent">
+<!-- Dashboard -->
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-3 py-1.5 hover:text-teal-600 dark:hover:text-teal-300 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-wider">Dashboard</span>
+</a>
+<!-- Calendar -->
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-3 py-1.5 hover:text-teal-600 dark:hover:text-teal-300 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="calendar_month">calendar_month</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-wider">Calendar</span>
+</a>
+<!-- Gallery -->
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-3 py-1.5 hover:text-teal-600 dark:hover:text-teal-300 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="photo_library">photo_library</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-wider">Gallery</span>
+</a>
+<!-- Inventory -->
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-3 py-1.5 hover:text-teal-600 dark:hover:text-teal-300 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="inventory_2">inventory_2</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-wider">Inventory</span>
+</a>
+<!-- Profile (Active) -->
+<a class="flex flex-col items-center justify-center bg-orange-100 dark:bg-orange-950/40 text-orange-900 dark:text-orange-200 rounded-xl px-3 py-1.5" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-wider">Profile</span>
+</a>
+</nav>
+</body></html>

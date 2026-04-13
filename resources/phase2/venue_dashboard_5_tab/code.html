@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KalyanaVedika - Venue Owner Showcase</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#ff9933",
+              "on-secondary-container": "#006e6e",
+              "surface-bright": "#fff8ef",
+              "on-tertiary-container": "#594000",
+              "on-primary-fixed-variant": "#6d3a00",
+              "surface-container": "#f5edde",
+              "secondary-fixed": "#93f2f2",
+              "on-surface": "#1e1b13",
+              "on-error-container": "#93000a",
+              "tertiary": "#795900",
+              "surface-variant": "#e9e2d3",
+              "on-secondary-fixed": "#002020",
+              "on-background": "#1e1b13",
+              "tertiary-container": "#e2a900",
+              "surface-tint": "#8f4e00",
+              "primary-fixed": "#ffdcc2",
+              "on-primary-container": "#693800",
+              "secondary-fixed-dim": "#76d6d5",
+              "error": "#ba1a1a",
+              "primary": "#8f4e00",
+              "inverse-primary": "#ffb77a",
+              "surface-container-high": "#efe7d9",
+              "primary-fixed-dim": "#ffb77a",
+              "surface": "#fff8ef",
+              "on-secondary": "#ffffff",
+              "inverse-on-surface": "#f8f0e1",
+              "tertiary-fixed-dim": "#fbbc00",
+              "outline-variant": "#dbc2b0",
+              "secondary": "#006a6a",
+              "on-surface-variant": "#554336",
+              "on-tertiary-fixed": "#261a00",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#887364",
+              "error-container": "#ffdad6",
+              "on-primary-fixed": "#2e1500",
+              "on-tertiary-fixed-variant": "#5c4300",
+              "on-secondary-fixed-variant": "#004f4f",
+              "background": "#fff8ef",
+              "secondary-container": "#90efef",
+              "surface-dim": "#e1d9cb",
+              "inverse-surface": "#343026",
+              "surface-container-highest": "#e9e2d3",
+              "on-tertiary": "#ffffff",
+              "surface-container-low": "#fbf3e4",
+              "on-primary": "#ffffff",
+              "tertiary-fixed": "#ffdfa0",
+              "on-error": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3 { font-family: 'Noto Serif', serif; }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface mb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md shadow-sm dark:shadow-none">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-stone-500 cursor-pointer scale-95 active:duration-150">menu</span>
+<h1 class="font-serif font-bold text-orange-800 dark:text-orange-300 italic text-xl tracking-tight">KalyanaVedika</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm transition-all hover:bg-primary/20">
+<span class="material-symbols-outlined text-sm">visibility</span>
+                Public View
+            </button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border-2 border-primary-container overflow-hidden">
+<img alt="Owner Profile" class="w-full h-full object-cover" data-alt="professional headshot of a middle aged south asian venue owner with a friendly smile and warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoFF3eyDtK8L_jyXEuWunCHWJmuVeibDjTUsQPwtxKTLixDEm-HJKxmFjea4qPqPSDfxBkZe739WOCWf5QD2D98Av_pJp8MClPVW8btYn6T2VC1T4CzwfG6v0iiAjKnmyJG9OwSSJfLve4Xg2l8xPw35P03uYo80UgyAY9aDKaA90YwRHteqKcEUGJp3IeZW_gZ7m87IInll5A2PIUO_5ivSQzgltLw9xnK49heptRkmNFEl33qwwT_J3PdH8FNnVcSdWHsR00SdxW"/>
+</div>
+</div>
+</header>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative h-[530px] md:h-[618px] w-full overflow-hidden"><button class="absolute top-6 right-6 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-sm border border-white/20 text-white hover:bg-black/60 transition-colors shadow-lg group" title="Update Cover Photo">
+<span class="material-symbols-outlined !text-xl">photo_camera</span>
+</button>
+<img alt="Grand Heritage Hall" class="w-full h-full object-cover brightness-75" data-alt="opulent grand ballroom with intricate gold ceiling details, majestic chandeliers, and a central stage decorated with marigolds" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxFR-rDAO7QxFvV514cGoVseEOGpPwKLmzYuTAgRwz58duqECqiyL_KjajKmK0RlBbZe8CJXsdO1tOhQUh0_GGi6mcCOGeBmzb8SFpKAoU_79k6ltY8ownLBm6aK1W8C0DWi_R4rQBO94DGT2SBL6sTo5LyHUKPvz9jRaX0JD2dQwb3MCCL1aU0c3MBP147HA3z1ullgv_FjAjQvl9rU-0MV-oz3izmmox7CJRur_hwgRfwdJy1F_xsRWAEL92p2gNsKtItM7Nmw-h"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8 md:p-16 w-full max-w-4xl">
+<div class="inline-block px-3 py-1 mb-4 rounded-full bg-tertiary/20 backdrop-blur-md text-tertiary-fixed border border-tertiary/30 text-xs font-bold uppercase tracking-widest">
+                    Featured Venue
+                </div>
+<h2 class="text-4xl md:text-6xl text-white font-bold leading-tight mb-4">The Grand Heritage Hall</h2>
+<div class="flex items-center gap-2 text-surface-container-low font-medium">
+<span class="material-symbols-outlined text-primary-container">location_on</span>
+<span>No. 42, Heritage Enclave, Jubilee Hills, Hyderabad</span>
+</div>
+</div>
+</section>
+<!-- Stats & Action Bar -->
+<section class="px-6 -mt-8 relative z-10">
+<div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="md:col-span-3 bg-surface-container-lowest rounded-xl shadow-lg p-6 flex flex-wrap gap-8 items-center">
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-xs font-bold uppercase tracking-tighter">Capacity</span>
+<span class="text-2xl font-serif text-primary">1200 Guests</span>
+</div>
+<div class="h-10 w-px bg-outline-variant/30 hidden md:block"></div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-xs font-bold uppercase tracking-tighter">Area</span>
+<span class="text-2xl font-serif text-primary">15,000 Sq Ft</span>
+</div>
+<div class="h-10 w-px bg-outline-variant/30 hidden md:block"></div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-xs font-bold uppercase tracking-tighter">Type</span>
+<span class="text-2xl font-serif text-primary">Indoor/Outdoor</span>
+</div>
+</div>
+<button class="bg-primary text-on-primary rounded-xl font-bold py-4 px-6 shadow-xl flex items-center justify-center gap-2 hover:bg-on-primary-fixed-variant transition-transform active:scale-95">
+<span class="material-symbols-outlined">visibility</span>
+                    Public View
+                </button>
+</div>
+</section>
+<!-- Main Content Grid -->
+<section class="px-6 py-12 max-w-6xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<!-- Left Column: Gallery & Amenities -->
+<div class="lg:col-span-8 space-y-12">
+<!-- Gallery Bento -->
+<div>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-3xl font-serif text-on-surface italic">Visual Heritage</h3>
+<button class="text-secondary font-bold flex items-center gap-1 hover:underline">
+                                Manage Photos
+                                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="aspect-[4/3] rounded-xl overflow-hidden shadow-md">
+<img alt="Venue Interior" class="w-full h-full object-cover" data-alt="stunning indoor reception area with circular floral mandap center stage and warm amber mood lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANjWJoVbaj9DmYTTUoVKcuYVUpwmBCeVdSFd1inUvml0QAZuJ1xvVPoSimz3bBJnkW_AY6zgc37wefQ3mEdlNow2LD9rBf0PXPhL4Jw5QnXBpLrvks9wu4XZDcCt7l65WqFBkRDWSwBiNQqOUS7W2gciNin9V5vpK0r_kycuB0kbI6ikkUVdH_iDwLNBz4bCMqGlLwUrTII-rq6Cdzpp0N8rSVfD9hFBjgFvpolHT1RsRDxajOHVgtpjO12Yyy_irfzbBIna5vCYjQ"/>
+</div>
+<div class="aspect-[4/3] rounded-xl overflow-hidden shadow-md">
+<img alt="Outdoor View" class="w-full h-full object-cover" data-alt="sweeping outdoor lawn area decorated with fairy lights and white silk drapes for a night wedding celebration" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCku4ZmlZKXm2U9IYckjLOA_dFI2NqOTjTXLlQWaG6vTDHxJawZQQrLDVCx6oeAeTtbI8v7NhFFsiiArr6qsVHu5YpKCWE5FxbLUN1WwQCxx5LIlR7j7q9w55h3mjkNEpWFxgY9vj9jTH6EZ2BqFvRCIhYmx4OTHV64TjM85av-FhsMrc2rzDVqeJL_sNwPS7XKltEBbQiwqGm7MsXc1QH_viHa8msq7G0GPRtwSupELFG6UgFbQGNbA2Qm-gOIETtdzHexhCzseima"/>
+</div>
+</div>
+</div>
+<!-- Amenities Redesign -->
+<div>
+<h3 class="text-3xl font-serif text-on-surface mb-8 italic">Luxury Amenities</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><!-- Bridal Suite -->
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10 flex items-center gap-4 hover:shadow-md transition-shadow group">
+<div class="w-10 h-10 shrink-0 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary group-hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined !text-xl">king_bed</span>
+</div>
+<div>
+<h4 class="font-bold text-sm text-on-surface">Bridal Suite</h4>
+<p class="text-xs text-on-surface-variant line-clamp-1">Private AC sanctuary</p>
+</div>
+</div>
+<!-- Gourmet Kitchen -->
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10 flex items-center gap-4 hover:shadow-md transition-shadow group">
+<div class="w-10 h-10 shrink-0 rounded-lg bg-secondary-container/20 flex items-center justify-center text-secondary group-hover:bg-secondary-container transition-colors">
+<span class="material-symbols-outlined !text-xl">restaurant</span>
+</div>
+<div>
+<h4 class="font-bold text-sm text-on-surface">Gourmet Kitchen</h4>
+<p class="text-xs text-on-surface-variant line-clamp-1">Industrial equipment</p>
+</div>
+</div>
+<!-- Central AC -->
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/10 flex items-center gap-4 hover:shadow-md transition-shadow group">
+<div class="w-10 h-10 shrink-0 rounded-lg bg-tertiary-container/20 flex items-center justify-center text-tertiary group-hover:bg-tertiary-container transition-colors">
+<span class="material-symbols-outlined !text-xl">ac_unit</span>
+</div>
+<div>
+<h4 class="font-bold text-sm text-on-surface">Central AC</h4>
+<p class="text-xs text-on-surface-variant line-clamp-1">Climate control</p>
+</div>
+</div>
+<!-- Add Amenity Card -->
+<button class="border-2 border-dashed border-primary/20 p-4 rounded-xl flex items-center gap-4 hover:bg-primary/5 hover:border-primary transition-all group">
+<div class="w-10 h-10 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined !text-xl">add</span>
+</div>
+<div class="text-left">
+<h4 class="font-bold text-sm text-primary">Add Amenity</h4>
+<p class="text-xs text-on-surface-variant/70">Expand listing</p>
+</div>
+</button></div>
+</div>
+<!-- Upcoming Bookings Section -->
+<div>
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-3xl font-serif text-on-surface italic">Upcoming Bookings</h3>
+<button class="text-secondary font-bold flex items-center gap-1 hover:underline">
+                    View Calendar
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="space-y-4">
+<!-- Event 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl border border-outline-variant/20 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="bg-primary/5 text-primary p-3 rounded-xl text-center min-w-[70px]">
+<span class="block text-xl font-bold leading-none">12</span>
+<span class="block text-[10px] uppercase font-bold tracking-widest mt-1">Nov</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface text-lg">Sharma Engagement</h4>
+<p class="text-sm text-on-surface-variant">Client: Ravi Sharma</p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-6">
+<div class="text-right hidden sm:block">
+<span class="block text-xs font-bold uppercase tracking-tighter text-on-surface-variant">Event Type</span>
+<span class="text-sm font-medium">Engagement</span>
+</div>
+<span class="px-4 py-1.5 rounded-full bg-green-100 text-green-800 text-[11px] font-bold uppercase tracking-wider">Confirmed</span>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl border border-outline-variant/20 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="bg-primary/5 text-primary p-3 rounded-xl text-center min-w-[70px]">
+<span class="block text-xl font-bold leading-none">28</span>
+<span class="block text-[10px] uppercase font-bold tracking-widest mt-1">Nov</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface text-lg">Tech Corporate Meet</h4>
+<p class="text-sm text-on-surface-variant">Client: Infosys Ltd.</p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-6">
+<div class="text-right hidden sm:block">
+<span class="block text-xs font-bold uppercase tracking-tighter text-on-surface-variant">Event Type</span>
+<span class="text-sm font-medium">Corporate</span>
+</div>
+<span class="px-4 py-1.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold uppercase tracking-wider">Pending Payment</span>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl border border-outline-variant/20 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="bg-primary/5 text-primary p-3 rounded-xl text-center min-w-[70px]">
+<span class="block text-xl font-bold leading-none">05</span>
+<span class="block text-[10px] uppercase font-bold tracking-widest mt-1">Dec</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface text-lg">Reddy Wedding</h4>
+<p class="text-sm text-on-surface-variant">Client: Anjali Reddy</p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-6">
+<div class="text-right hidden sm:block">
+<span class="block text-xs font-bold uppercase tracking-tighter text-on-surface-variant">Event Type</span>
+<span class="text-sm font-medium">Wedding</span>
+</div>
+<span class="px-4 py-1.5 rounded-full bg-green-100 text-green-800 text-[11px] font-bold uppercase tracking-wider">Confirmed</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Quick Stats & Insights -->
+<div class="lg:col-span-4 space-y-8">
+<div class="bg-surface-container rounded-2xl p-8 border border-outline-variant/20">
+<h4 class="text-xl font-serif mb-6 text-on-tertiary-container">Owner Insights</h4>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+<span class="text-sm font-medium">Profile Views</span>
+</div>
+<span class="font-bold">1,284</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">pending_actions</span>
+<span class="text-sm font-medium">Leads</span>
+</div>
+<span class="font-bold text-primary">12 New</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">star</span>
+<span class="text-sm font-medium">Rating</span>
+</div>
+<span class="font-bold">4.8 (212)</span>
+</div>
+</div>
+<div class="mt-8 pt-8 border-t border-outline-variant/30">
+<p class="text-sm italic text-on-surface-variant mb-4 leading-relaxed">"Your listing is performing 20% better than average halls in Jubilee Hills."</p>
+<button class="w-full py-3 bg-secondary text-on-secondary rounded-xl font-bold shadow-md hover:bg-on-secondary-fixed-variant transition-colors">
+                                View Full Analytics
+                            </button>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-2xl p-8 shadow-sm border border-outline-variant/10">
+<h4 class="text-lg font-serif mb-4 italic">Next Event</h4>
+<div class="flex gap-4">
+<div class="bg-primary-container/20 text-on-primary-container p-3 rounded-lg text-center min-w-[60px]">
+<span class="block text-2xl font-bold">24</span>
+<span class="block text-[10px] uppercase font-bold tracking-widest">Oct</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Kapoor Wedding</h5>
+<p class="text-xs text-on-surface-variant mt-1">Muhurtham: 10:30 AM</p>
+<span class="inline-block mt-2 px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase">Paid</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Decorative Heritage Element -->
+<div class="flex justify-center items-center gap-8 py-12">
+<div class="h-px w-24 bg-gradient-to-r from-transparent to-outline-variant"></div>
+<span class="material-symbols-outlined text-primary scale-150">filter_vintage</span>
+<div class="h-px w-24 bg-gradient-to-l from-transparent to-outline-variant"></div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 pb-6 pt-3 bg-stone-100/90 dark:bg-stone-800/90 backdrop-blur-lg rounded-t-2xl z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<div class="flex flex-col items-center justify-center bg-orange-100 dark:bg-orange-900/40 text-orange-900 dark:text-orange-200 rounded-xl px-4 py-1.5 transition-all active:scale-90 cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-widest mt-1">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-4 py-1.5 active:scale-90 transition-transform duration-200 cursor-pointer hover:bg-stone-200/50 dark:hover:bg-stone-700/50 rounded-xl">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-widest mt-1">Calendar</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-4 py-1.5 active:scale-90 transition-transform duration-200 cursor-pointer hover:bg-stone-200/50 dark:hover:bg-stone-700/50 rounded-xl">
+<span class="material-symbols-outlined">gallery_thumbnail</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-widest mt-1">Gallery</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-4 py-1.5 active:scale-90 transition-transform duration-200 cursor-pointer hover:bg-stone-200/50 dark:hover:bg-stone-700/50 rounded-xl">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-widest mt-1">Inventory</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 px-4 py-1.5 active:scale-90 transition-transform duration-200 cursor-pointer hover:bg-stone-200/50 dark:hover:bg-stone-700/50 rounded-xl">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-sans text-[10px] font-semibold uppercase tracking-widest mt-1">Profile</span>
+</div>
+</nav>
+</body></html>
