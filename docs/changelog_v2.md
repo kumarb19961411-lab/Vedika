@@ -14,13 +14,20 @@ A record of significant architectural and feature milestones in the Vedika V2 pr
     - **Final Audit**: Verified all 6 Phase 2B screens for pixel fidelity and role-appropriate content.
     - **Acceptance Locked**: Updated `docs/v2_phase2_acceptance.md` and created formal verification report.
     - **Regression Guard**: Re-verified Hilt, Kapt, and Navigation scoping after continuity changes.
-- **Data Continuity Binding (Run C)**:
-    - **Specialized Dashboards**: Implemented `VenueDashboardScreen` and `DecoratorDashboardScreen` with Bento-style layouts and M3 components.
-    - **Editorial Inventory**: Rebuilt Inventory Hub as an editorial asset showcase with performance metrics.
-    - **Bento Profile**: Refactored `ProfileScreen` into a modern Bento grid grid with categorized action cards.
-    - **Booking Calendar**: Rebuilt the Calendar screen with a professional grid and M3 Bottom Sheet for booking details.
+- **Refinement & Polish Pass (Run E)**:
+    - **Shell Standardization**: Created `VedikaTopAppBar` for a consistent, role-aware top bar (NotoSerif typography, heritage branding) across all root vendor screens.
+    - **Navigation Safety**: Enforced zero-back-arrow policy on all 5 root tab screens (Dashboard, Calendar, Gallery, Inventory, Profile).
+    - **Role-Aware Gallery**: Refactored `GalleryScreen` to dynamically load content and styling for Venues vs. Decorators.
+    - **Role-Aware Inventory**: Refactored `InventoryScreen` with seeded demo data specific to the vendor type.
+    - **Finance Cleanup**: Removed finance-centric cards from the `ProfileScreen` bento grid to align with Phase 2B scope.
+    - **Interactive Calendar**: Wired the calendar "Add" action to a snackbar-driven mock interaction.
+    - **Data Continuity**: Verified and bound registration data (Full Name, Business Name, Location) across all refined screens.
 
 ### Fixed
+- **Build Stability (Run F)**: 
+    - Resolved critical brace nesting errors in `VenueDashboardScreen` and `DecoratorDashboardScreen` following UI wrapping.
+    - Fixed unresolved reference 'id' in `InventoryViewModel` by standardizing on a consistent mock vendor key.
+    - Verified full application build via `./gradlew assembleDebug` (Build Successful).
 - **UI Syntax Guard**: Resolved invalid `RoundedCornerShape(full = 999.dp)` and `ContentScale` errors across the dashboard module.
 - **Dependency Guard**: Added missing `coil-compose` to the inventory module to resolve image rendering issues.
 

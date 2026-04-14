@@ -273,9 +273,7 @@ fun VedikaAppShell() {
                 InventoryScreen()
             }
             composable(VedikaDestination.DecoratorsGallery.route) {
-                DecoratorsGalleryScreen(
-                    onNavigateBack = { navController.popBackStack() }
-                )
+                DecoratorsGalleryScreen()
             }
             composable(VedikaDestination.Profile.route) {
                 ProfileScreen(

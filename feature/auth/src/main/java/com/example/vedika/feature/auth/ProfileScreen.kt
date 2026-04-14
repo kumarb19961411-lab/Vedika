@@ -15,16 +15,15 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.example.vedika.core.design.components.VedikaTabTopAppBar
 import com.example.vedika.core.design.theme.NotoSerif
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
@@ -47,38 +46,7 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "KalyanaVedika",
-                        fontFamily = NotoSerif,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF8B4513)
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Menu, contentDescription = null, tint = Color.Gray)
-                    }
-                },
-                actions = {
-                    Surface(
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .size(40.dp),
-                        shape = CircleShape,
-                        border = BorderStroke(2.dp, Color(0xFFFF9933))
-                    ) {
-                        AsyncImage(
-                            model = "https://lh3.googleusercontent.com/aida-public/AB6AXuBCARGvDMkWuUcVJTX0DYL3EXcmWiIObMpqyVoq69Mg5Cb95S4ueRCUS9takIsVyaer1mcO05M2EdN63dCu94JGYoHcetK0pL5HnwCkFQKRDnMmmt8TbYIWDsj0-MJFNMEbrNMdnsG-yTtYVjCSA_MwEnsW2n25edeC78-pwPf8J0tCgkPFGT8BYwp-3KJVg055v6OblM4_UiHSNkKHbKOZAArx-MYpS-bNABqf78k1wZPDm9EKQEZ94RENIy6k9gSD10wF7d3EL2xV",
-                            contentDescription = "Profile",
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White.copy(alpha = 0.8f))
-            )
+            VedikaTabTopAppBar(title = "Partner Command")
         },
         containerColor = surfaceColor
     ) { padding ->
@@ -127,7 +95,7 @@ fun ProfileScreen(
                                 shadowElevation = 8.dp
                             ) {
                                 AsyncImage(
-                                    model = vendor?.coverImage ?: "https://lh3.googleusercontent.com/aida-public/AB6AXuB5hn3xE_tKCnmy9mxE35m8Xf6SymZ2BhVpFQbbr7vCcechuDnRGazTKzYx76iMKZXUa91MnqKvTmyKqhfEpmgowwZlBowbYcLhtW6Fbw9PC1Y52wArnAmp_qKr3zv-FemfgOEHzRji_E1mJk973VT13vOFigkq_huic9g9_ppm8RLz4E96iGU06B3TXcrFlU0B8_-vz1SLRQ1CZiwngmRE-oRdBB9c8CsG2Yz9jbP3A7VDuTgxYAg1n0UJxUK7MSabmWZmqNnuj-xF",
+                                    model = vendor?.coverImage ?: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3",
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
@@ -142,7 +110,6 @@ fun ProfileScreen(
                                     .align(Alignment.BottomEnd)
                                     .offset(x = 8.dp, y = 8.dp),
                                 shape = CircleShape,
-                                // Wait, I already fixed this in a previous turn. Use CircleShape.
                                 color = secondaryColor,
                                 shadowElevation = 4.dp
                             ) {
@@ -166,26 +133,19 @@ fun ProfileScreen(
                                 letterSpacing = 2.sp
                             )
                             Text(
-                                vendor?.businessName ?: "Grand Heritage Estate",
+                                vendor?.businessName ?: "Luxe Heritage Partner",
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontFamily = NotoSerif,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onSurface,
+                                lineHeight = 32.sp
                             )
                             
                             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
                                 Icon(Icons.Default.LocationOn, contentDescription = null, tint = secondaryColor, modifier = Modifier.size(16.dp))
                                 Text(
-                                    vendor?.location ?: "Udaipur, Rajasthan",
+                                    vendor?.location ?: "Registered Location",
                                     style = MaterialTheme.typography.bodySmall,
-                                    modifier = Modifier.padding(start = 4.dp)
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Icon(Icons.Default.Star, contentDescription = null, tint = Color(0xFF795900), modifier = Modifier.size(16.dp))
-                                Text(
-                                    "4.9",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(start = 4.dp)
                                 )
                             }
@@ -209,9 +169,9 @@ fun ProfileScreen(
                     )
                     BentoCard(
                         modifier = Modifier.weight(1f),
-                        title = "My Bookings",
-                        subtitle = "Review reservations",
-                        icon = Icons.Default.BookOnline,
+                        title = "Portfolio",
+                        subtitle = "Curate your showcase",
+                        icon = Icons.Default.Collections,
                         iconContainerColor = Color(0xFF90EFEF).copy(alpha = 0.2f),
                         iconColor = Color(0xFF006E6E)
                     )
@@ -219,9 +179,9 @@ fun ProfileScreen(
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
                     BentoCard(
                         modifier = Modifier.weight(1f),
-                        title = "Payments",
-                        subtitle = "Earnings & payouts",
-                        icon = Icons.Default.AccountBalanceWallet,
+                        title = "My Bookings",
+                        subtitle = "Review reservations",
+                        icon = Icons.Default.BookOnline,
                         iconContainerColor = Color(0xFFFFDFA0).copy(alpha = 0.2f),
                         iconColor = Color(0xFF795900)
                     )
@@ -253,7 +213,7 @@ fun ProfileScreen(
             }
 
             Text(
-                text = "Version 2.4.1 • © 2024 KalyanaVedika Vendor Suite",
+                text = "Version 2.4.2 • © 2024 Vedika V2 Suite",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp),

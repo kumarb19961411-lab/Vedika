@@ -31,3 +31,7 @@ build_err.txt
 
 # Google services (don't commit real keys — commit google-services.json only for dev)
 # google-services.json
+
+# Debug reports and toolkit session state
+/debug_reports/
+/tools/debug/.active_session.json

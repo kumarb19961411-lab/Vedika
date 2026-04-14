@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.vedika.core.data.model.Booking
 import com.example.vedika.core.data.model.BookingStatus
+import com.example.vedika.core.design.components.VedikaTabTopAppBar
 import com.example.vedika.core.design.theme.NotoSerif
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -45,26 +46,24 @@ fun CalendarScreen(
     val blockedColor = Color(0xFFBA1A1A)
     val surfaceColor = Color(0xFFFFF8EF)
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "KalyanaVedika",
-                        fontFamily = NotoSerif,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF8B4513)
-                    )
-                },
+            VedikaTabTopAppBar(
+                title = "Heritage Calendar",
                 actions = {
-                    IconButton(onClick = { /* Add booking */ }) {
-                        Icon(Icons.Default.AddCircle, contentDescription = "Add", tint = primaryColor)
+                    IconButton(onClick = { 
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Feature coming soon: Manual Booking Entry")
+                        }
+                    }) {
+                        Icon(Icons.Default.AddCircle, contentDescription = "Add", tint = Color(0xFF8F4E00))
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White.copy(alpha = 0.8f))
+                }
             )
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = surfaceColor
     ) { innerPadding ->
         Column(

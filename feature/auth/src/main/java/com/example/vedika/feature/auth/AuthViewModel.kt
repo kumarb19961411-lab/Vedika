@@ -1,5 +1,6 @@
 package com.example.vedika.feature.auth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vedika.core.data.model.VendorMockState
@@ -25,11 +26,17 @@ class AuthViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
+    private fun logDebug(message: String) {
+        Log.d("VedikaDebug", "AuthViewModel: $message")
+    }
+
     fun selectAccountMode(mode: AccountMode) {
+        logDebug("Account Mode selected: $mode")
         _uiState.value = _uiState.value.copy(accountMode = mode, error = null)
     }
 
     fun setAuthFlow(flow: AuthFlow) {
+        logDebug("Auth Flow set: $flow")
         _uiState.value = _uiState.value.copy(authFlow = flow, error = null)
     }
 
@@ -55,6 +62,7 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result = authRepository.sendOtp(_uiState.value.phoneNumber)
+            logDebug("Sending OTP to ${_uiState.value.phoneNumber}...")
             _uiState.value = _uiState.value.copy(isLoading = false)
             result.onSuccess { verificationId ->
                 _uiState.value = _uiState.value.copy(
@@ -117,6 +125,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun updateSelectedCategory(category: String?) {
+        logDebug("Category selected: $category")
         _uiState.value = _uiState.value.copy(selectedCategory = category)
     }
 
@@ -201,8 +210,10 @@ class AuthViewModel @Inject constructor(
             )
         }
 
+        logDebug("Saving Registration for: $vendorType (Owner: ${state.ownerName})")
         viewModelScope.launch {
             vendorRepository.saveMockVendor(mockState).onSuccess {
+                logDebug("Registration saved successfully in mock repository.")
                 onSuccess()
             }
         }

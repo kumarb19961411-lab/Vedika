@@ -1,5 +1,6 @@
 package com.example.vedika.feature.dashboard
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vedika.core.data.model.Booking
@@ -49,15 +50,21 @@ class DashboardViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
 
+    private fun logDebug(message: String) {
+        Log.d("VedikaDebug", "DashboardViewModel: $message")
+    }
+
     init {
         loadDashboard()
     }
 
     private fun loadDashboard() {
         viewModelScope.launch {
+            logDebug("Loading Dashboard...")
             // First, try to get the mock vendor state for continuity
             vendorRepository.getMockVendor().collect { mockState ->
                 if (mockState != null) {
+                    logDebug("Resolved role from MockState: ${mockState.vendorType} (Business: ${mockState.businessName})")
                     _uiState.value = _uiState.value.copy(
                         businessName = mockState.businessName,
                         venueName = mockState.venueName,
@@ -66,10 +73,10 @@ class DashboardViewModel @Inject constructor(
                         pricing = mockState.pricing,
                         yearsExperience = mockState.yearsExperience,
                         packageTiers = mockState.packageTiers,
-                        area = mockState.area,
-                        venueType = mockState.venueType,
-                        rating = mockState.rating,
-                        leadsCount = mockState.leadsCount,
+                        area = mockState.area ?: if (mockState.vendorType == VendorType.VENUE) "15,000 Sq Ft" else null,
+                        venueType = mockState.venueType ?: if (mockState.vendorType == VendorType.VENUE) "Indoor/Outdoor" else null,
+                        rating = mockState.rating ?: if (mockState.vendorType == VendorType.VENUE) "4.8 (212)" else "4.9 (86)",
+                        leadsCount = mockState.leadsCount ?: if (mockState.vendorType == VendorType.VENUE) "12 New" else "8 New",
                         analyticsSummary = mockState.analyticsSummary,
                         amenities = mockState.amenities,
                         coverImage = mockState.coverImage,
@@ -99,8 +106,10 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun loadBookings(vendorId: String) {
+        logDebug("Fetching bookings for Vendor: $vendorId")
         viewModelScope.launch {
             bookingRepository.getBookingsForVendor(vendorId).collect { bookings ->
+                logDebug("Retrieved ${bookings.size} bookings from repository.")
                 _uiState.value = _uiState.value.copy(
                     upcomingBookings = bookings
                         .filter { it.status != BookingStatus.CANCELLED && it.eventDate > System.currentTimeMillis() }

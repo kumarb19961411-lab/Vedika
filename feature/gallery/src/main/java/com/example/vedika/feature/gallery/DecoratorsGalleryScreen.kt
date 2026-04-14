@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -14,111 +15,93 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.example.vedika.core.data.model.VendorType
+import com.example.vedika.core.design.components.VedikaTabTopAppBar
 import com.example.vedika.core.design.theme.NotoSerif
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DecoratorsGalleryScreen(
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: GalleryViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { 
-                    Text(
-                        "Visual Heritage", 
-                        style = MaterialTheme.typography.titleLarge,
-                        fontFamily = NotoSerif,
-                        fontWeight = FontWeight.Bold
-                    ) 
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
+            VedikaTabTopAppBar(title = "Visual Heritage")
         },
         containerColor = MaterialTheme.colorScheme.surface
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentPadding = PaddingValues(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                Column {
-                    Text(
-                        text = "CURATED PORTFOLIO",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFFD4AF37), // Heritage Saffron
-                        letterSpacing = 2.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Your Showcase",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontFamily = NotoSerif,
-                        fontWeight = FontWeight.Bold
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentPadding = PaddingValues(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    Column {
+                        Text(
+                            text = if (uiState.vendorType == VendorType.VENUE) "VENUE SHOWCASE" else "CURATED PORTFOLIO",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFFD4AF37), // Heritage Gold
+                            letterSpacing = 2.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = if (uiState.vendorType == VendorType.VENUE) "Property Views" else "Design Portfolio",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontFamily = NotoSerif,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                items(uiState.albums) { album ->
+                    GalleryAccordion(
+                        title = album.title,
+                        icon = getIconForName(album.iconName),
+                        images = album.images
                     )
                 }
-            }
 
-            item {
-                GalleryAccordion(
-                    title = "Marriage",
-                    icon = Icons.Default.TempleHindu,
-                    initiallyExpanded = true,
-                    images = listOf(
-                        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3",
-                        "https://images.unsplash.com/photo-1469334031218-e382a71b716b"
-                    )
-                )
-            }
-
-            item {
-                GalleryAccordion(
-                    title = "Reception",
-                    icon = Icons.Default.Face,
-                    images = listOf(
-                        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622"
-                    )
-                )
-            }
-
-            item {
-                GalleryAccordion(
-                    title = "Haldi",
-                    icon = Icons.Default.WaterDrop,
-                    images = listOf(
-                        "https://images.unsplash.com/photo-1519741497674-611481863552"
-                    )
-                )
-            }
-
-            item {
-                PortfolioAnalytics()
+                item {
+                    PortfolioAnalytics(uiState.vendorType)
+                }
             }
         }
+    }
+}
+
+private fun getIconForName(name: String): ImageVector {
+    return when (name) {
+        "Home" -> Icons.Default.Home
+        "Spa" -> Icons.Default.Spa
+        "Checkroom" -> Icons.Default.Checkroom
+        "TempleHindu" -> Icons.Default.TempleHindu
+        "Face" -> Icons.Default.Face
+        "WaterDrop" -> Icons.Default.WaterDrop
+        "Restaurant" -> Icons.Default.Restaurant
+        else -> Icons.Default.Collections
     }
 }
 
 @Composable
 fun GalleryAccordion(
     title: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     images: List<String>,
     initiallyExpanded: Boolean = false
 ) {
@@ -218,7 +201,7 @@ fun GalleryAccordion(
 }
 
 @Composable
-fun PortfolioAnalytics() {
+fun PortfolioAnalytics(vendorType: VendorType) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         shape = RoundedCornerShape(16.dp),
@@ -227,23 +210,25 @@ fun PortfolioAnalytics() {
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Text(
-                text = "Portfolio Analytics", 
+                text = if (vendorType == VendorType.VENUE) "Property Analytics" else "Portfolio Analytics", 
                 style = MaterialTheme.typography.titleLarge, 
                 fontFamily = NotoSerif,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF006064)
             )
             Text(
-                text = "Your featured gallery has received 2,450 views this month. High-quality photos increase booking inquiries by up to 40%.",
+                text = if (vendorType == VendorType.VENUE) 
+                    "Your property views are up 25% this month. Clear hall photos and amenity shots are driving inquiries." 
+                    else "Your design portfolio is trending! High-quality thematic shots are increasing booking inquiries by up to 40%.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                AnalyticsItem(value = "124", label = "Total Photos", color = Color(0xFFD4AF37))
-                AnalyticsItem(value = "12", label = "Albums", color = Color(0xFF006064))
-                AnalyticsItem(value = "15", label = "Featured", color = Color(0xFF7B1FA2))
+                AnalyticsItem(value = if (vendorType == VendorType.VENUE) "48" else "124", label = "Photos", color = Color(0xFFD4AF37))
+                AnalyticsItem(value = if (vendorType == VendorType.VENUE) "6" else "12", label = "Albums", color = Color(0xFF006064))
+                AnalyticsItem(value = if (vendorType == VendorType.VENUE) "4" else "15", label = "Featured", color = Color(0xFF7B1FA2))
             }
         }
     }

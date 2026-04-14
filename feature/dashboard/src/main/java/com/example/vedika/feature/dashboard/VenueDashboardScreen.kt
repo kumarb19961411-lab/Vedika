@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -21,8 +20,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.vedika.core.data.model.Booking
 import com.example.vedika.core.data.model.BookingStatus
+import com.example.vedika.core.design.components.VedikaTabTopAppBar
 import com.example.vedika.core.design.theme.NotoSerif
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,209 +38,207 @@ fun VenueDashboardScreen(
     val secondaryColor = Color(0xFF006A6A)
     val surfaceColor = Color(0xFFFFF8EF)
 
-    Box(modifier = modifier.fillMaxSize().background(surfaceColor)) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-        ) {
-            // Hero Section
-            Box(
+    Scaffold(
+        topBar = {
+            VedikaTabTopAppBar(title = "Venue Command")
+        },
+        containerColor = surfaceColor,
+        modifier = modifier
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(450.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
             ) {
-                AsyncImage(
-                    model = if (!state.coverImage.isNullOrEmpty()) state.coverImage else "https://lh3.googleusercontent.com/aida-public/AB6AXuAxFR-rDAO7QxFvV514cGoVseEOGpPwKLmzYuTAgRwz58duqECqiyL_KjajKmK0RlBbZe8CJXsdO1tOhQUh0_GGi6mcCOGeBmzb8SFpKAoU_79k6ltY8ownLBm6aK1W8C0DWi_R4rQBO94DGT2SBL6sTo5LyHUKPvz9jRaX0JD2dQwb3MCCL1aU0c3MBP147HA3z1ullgv_FjAjQvl9rU-0MV-oz3izmmox7CJRur_hwgRfwdJy1F_xsRWAEL92p2gNsKtItM7Nmw-h",
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+                // Hero Section
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
+                        .fillMaxWidth()
+                        .height(450.dp)
+                ) {
+                    AsyncImage(
+                        model = if (!state.coverImage.isNullOrEmpty()) state.coverImage else "https://images.unsplash.com/photo-1519167758481-83f550bb49b3",
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
+                                )
                             )
-                        )
-                )
-                
-                // Top Action
-                IconButton(
-                    onClick = {},
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(24.dp)
-                        .size(40.dp)
-                        .background(Color.Black.copy(alpha = 0.4f), CircleShape)
-                ) {
-                    Icon(Icons.Default.PhotoCamera, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
-                }
-
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(24.dp)
-                        .padding(bottom = 32.dp)
-                ) {
-                    Surface(
-                        color = Color(0xFFC59E3D).copy(alpha = 0.3f), // Gold accent
-                        shape = CircleShape,
-                        border = BorderStroke(1.dp, Color(0xFFC59E3D).copy(alpha = 0.5f))
+                    )
+                    
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(24.dp)
+                            .padding(bottom = 32.dp)
                     ) {
-                        Text(
-                            text = "FEATURED VENUE",
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFFFFDCC2),
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.sp
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Namaste, ${state.vendorName.ifBlank { "Partner" }}",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.White.copy(alpha = 0.8f),
-                        fontWeight = FontWeight.Medium
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = state.venueName ?: state.businessName,
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontFamily = NotoSerif,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 40.sp
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.LocationOn,
-                            contentDescription = null,
-                            tint = Color(0xFFFF9933),
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = state.location,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.9f)
-                        )
-                    }
-                }
-            }
-
-            // Stats & Action Bar (Overlapping)
-            Surface(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .offset(y = (-24).dp)
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                color = Color.White,
-                shadowElevation = 8.dp
-            ) {
-                Row(
-                    modifier = Modifier.padding(20.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                        Surface(
+                            color = Color(0xFFC59E3D).copy(alpha = 0.3f),
+                            shape = CircleShape,
+                            border = BorderStroke(1.dp, Color(0xFFC59E3D).copy(alpha = 0.5f))
                         ) {
-                            StatItem(label = "Capacity", value = state.capacity ?: "1200 Guests", color = primaryColor)
-                            VerticalDivider(modifier = Modifier.height(32.dp).width(1.dp), color = Color.LightGray.copy(alpha = 0.5f))
-                            StatItem(label = "Area", value = state.area ?: "15,000 Sq Ft", color = primaryColor)
-                            VerticalDivider(modifier = Modifier.height(32.dp).width(1.dp), color = Color.LightGray.copy(alpha = 0.5f))
-                            StatItem(label = "Type", value = state.venueType ?: "Indoor/Outdoor", color = primaryColor)
+                            Text(
+                                text = "FEATURED VENUE",
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color(0xFFFFDCC2),
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Namaste, ${state.vendorName.ifBlank { "Partner" }}",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White.copy(alpha = 0.8f),
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = state.venueName ?: state.businessName,
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontFamily = NotoSerif,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 40.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp)) {
+                            Icon(
+                                imageVector = Icons.Default.LocationOn,
+                                contentDescription = null,
+                                tint = Color(0xFFFF9933),
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = state.location,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.9f)
+                            )
                         }
                     }
                 }
-            }
 
-            // Main Content
-            Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                
-                // Analytics Row
-                AnalyticsSection(state)
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                // Gallery Section
-                SectionTitle(title = "Visual Heritage", actionText = "Manage Photos")
-                Row(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    AsyncImage(
-                        model = "https://lh3.googleusercontent.com/aida-public/AB6AXuANjWJoVbaj9DmYTTUoVKcuYVUpwmBCeVdSFd1inUvml0QAZuJ1xvVPoSimz3bBJnkW_AY6zgc37wefQ3mEdlNow2LD9rBf0PXPhL4Jw5QnXBpLrvks9wu4XZDcCt7l65WqFBkRDWSwBiNQqOUS7W2gciNin9V5vpK0r_kycuB0kbI6ikkUVdH_iDwLNBz4bCMqGlLwUrTII-rq6Cdzpp0N8rSVfD9hFBjgFvpolHT1RsRDxajOHVgtpjO12Yyy_irfzbBIna5vCYjQ",
-                        contentDescription = null,
-                        modifier = Modifier.weight(1f).aspectRatio(4/3f).clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                    AsyncImage(
-                        model = "https://lh3.googleusercontent.com/aida-public/AB6AXuCku4ZmlZKXm2U9IYckjLOA_dFI2NqOTjTXLlQWaG6vTDHxJawZQQrLDVCx6oeAeTtbI8v7NhFFsiiArr6qsVHu5YpKCWE5FxbLUN1WwQCxx5LIlR7j7q9w55h3mjkNEpWFxgY9vj9jTH6EZ2BqFvRCIhYmx4OTHV64TjM85av-FhsMrc2rzDVqeJL_sNwPS7XKltEBbQiwqGm7MsXc1QH_viHa8msq7G0GPRtwSupELFG6UgFbQGNbA2Qm-gOIETtdzHexhCzseima",
-                        contentDescription = null,
-                        modifier = Modifier.weight(1f).aspectRatio(4/3f).clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Crop
-                    )
+                // Stats & Action Bar (Overlapping)
+                Surface(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .offset(y = (-24).dp)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color.White,
+                    shadowElevation = 8.dp
+                ) {
+                    Row(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        StatItem(label = "Capacity", value = if (!state.capacity.isNullOrBlank()) state.capacity!! else "1200 Guests", color = primaryColor)
+                        VerticalDivider(modifier = Modifier.height(32.dp).width(1.dp), color = Color.LightGray.copy(alpha = 0.5f))
+                        StatItem(label = "Area", value = if (!state.area.isNullOrBlank()) state.area!! else "15,000 Sq Ft", color = primaryColor)
+                        VerticalDivider(modifier = Modifier.height(32.dp).width(1.dp), color = Color.LightGray.copy(alpha = 0.5f))
+                        StatItem(label = "Type", value = if (!state.venueType.isNullOrBlank()) state.venueType!! else "Indoor/Outdoor", color = primaryColor)
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                // Main Content
+                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                    AnalyticsSection(state)
 
-                // Amenities
-                SectionTitle(title = "Luxury Amenities")
-                Column(modifier = Modifier.padding(top = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        AmenityCard(icon = Icons.Default.KingBed, title = "Bridal Suite", subtitle = "Private AC sanctuary", color = primaryColor, modifier = Modifier.weight(1f))
-                        AmenityCard(icon = Icons.Default.Restaurant, title = "Gourmet Kitchen", subtitle = "Industrial equipment", color = secondaryColor, modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    SectionTitle(title = "Visual Heritage", actionText = "Manage Photos")
+                    Row(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        AsyncImage(
+                            model = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3",
+                            contentDescription = null,
+                            modifier = Modifier.weight(1f).aspectRatio(4/3f).clip(RoundedCornerShape(16.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                        AsyncImage(
+                            model = "https://images.unsplash.com/photo-1469334031218-e382a71b716b",
+                            contentDescription = null,
+                            modifier = Modifier.weight(1f).aspectRatio(4/3f).clip(RoundedCornerShape(16.dp)),
+                            contentScale = ContentScale.Crop
+                        )
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        AmenityCard(icon = Icons.Default.AcUnit, title = "Central AC", subtitle = "Climate control", color = Color(0xFF795900), modifier = Modifier.weight(1f))
-                        Surface(
-                            modifier = Modifier.weight(1f).height(72.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            color = Color.Transparent,
-                            border = BorderStroke(2.dp, primaryColor.copy(alpha = 0.2f)),
-                            onClick = {}
-                        ) {
-                            Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.Add, contentDescription = null, tint = primaryColor)
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Column {
-                                    Text("Add Amenity", style = MaterialTheme.typography.titleSmall, color = primaryColor, fontWeight = FontWeight.Bold)
-                                    Text("Expand listing", style = MaterialTheme.typography.bodySmall, color = primaryColor.copy(alpha = 0.6f))
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    SectionTitle(title = "Luxury Amenities")
+                    Column(modifier = Modifier.padding(top = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            AmenityCard(icon = Icons.Default.KingBed, title = "Bridal Suite", subtitle = "Private AC sanctuary", color = primaryColor, modifier = Modifier.weight(1f))
+                            AmenityCard(icon = Icons.Default.Restaurant, title = "Gourmet Kitchen", subtitle = "Industrial equipment", color = secondaryColor, modifier = Modifier.weight(1f))
+                        }
+                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            AmenityCard(icon = Icons.Default.AcUnit, title = "Central AC", subtitle = "Climate control", color = Color(0xFF795900), modifier = Modifier.weight(1f))
+                            Surface(
+                                modifier = Modifier.weight(1f).height(72.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                color = Color.Transparent,
+                                border = BorderStroke(2.dp, primaryColor.copy(alpha = 0.2f)),
+                                onClick = {}
+                            ) {
+                                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.Default.Add, contentDescription = null, tint = primaryColor)
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Column {
+                                        Text("Add Amenity", style = MaterialTheme.typography.titleSmall, color = primaryColor, fontWeight = FontWeight.Bold)
+                                        Text("Expand listing", style = MaterialTheme.typography.bodySmall, color = primaryColor.copy(alpha = 0.6f))
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(40.dp))
 
-                // Upcoming Bookings
-                SectionTitle(title = "Upcoming Bookings", actionText = "View Calendar")
-                Column(modifier = Modifier.padding(top = 20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                   UpcomingBookingItem(date = "12", month = "Nov", title = "Sharma Engagement", client = "Ravi Sharma", type = "Engagement", status = "Confirmed")
-                   UpcomingBookingItem(date = "28", month = "Nov", title = "Tech Corporate Meet", client = "Infosys Ltd.", type = "Corporate", status = "Pending Payment")
-                }
-                
-                // Add a CTA for New Booking
-                Spacer(modifier = Modifier.height(32.dp))
-                Button(
-                    onClick = onNavigateToNewBooking,
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text("Create New Booking", fontWeight = FontWeight.Bold)
-                }
+                    SectionTitle(title = "Upcoming Bookings", actionText = "View Calendar")
+                    Column(modifier = Modifier.padding(top = 20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        if (state.upcomingBookings.isNotEmpty()) {
+                            state.upcomingBookings.take(2).forEach { booking ->
+                                val dateStr = SimpleDateFormat("dd", Locale.getDefault()).format(Date(booking.eventDate))
+                                val monthStr = SimpleDateFormat("MMM", Locale.getDefault()).format(Date(booking.eventDate))
+                                UpcomingBookingItem(
+                                    date = dateStr,
+                                    month = monthStr,
+                                    title = booking.customerName,
+                                    client = booking.customerName,
+                                    type = "Wedding Event",
+                                    status = if (booking.status == BookingStatus.CONFIRMED) "Confirmed" else "Pending"
+                                )
+                            }
+                        } else {
+                            UpcomingBookingItem(date = "12", month = "Nov", title = "Sharma Engagement", client = "Ravi Sharma", type = "Engagement", status = "Confirmed")
+                            UpcomingBookingItem(date = "28", month = "Nov", title = "Tech Corporate Meet", client = "Infosys Ltd.", type = "Corporate", status = "Pending Payment")
+                        }
+                    }
 
-                Spacer(modifier = Modifier.height(100.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Button(
+                        onClick = onNavigateToNewBooking,
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("Create New Booking", fontWeight = FontWeight.Bold)
+                    }
+
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
             }
         }
     }
