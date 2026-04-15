@@ -21,30 +21,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 import com.example.vedika.core.data.model.Booking
 import com.example.vedika.core.data.model.BookingStatus
 import com.example.vedika.core.design.components.VedikaTabTopAppBar
 import com.example.vedika.core.design.theme.NotoSerif
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.TextStyle
 import java.util.*
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
+    onNavigateToNewBooking: (Long?) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    var selectedBooking by remember { mutableStateOf<Booking?>(null) }
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    val primaryColor = Color(0xFF8F4E00)
-    val secondaryColor = Color(0xFF006A6A)
-    val blockedColor = Color(0xFFBA1A1A)
-    val surfaceColor = Color(0xFFFFF8EF)
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val secondaryColor = MaterialTheme.colorScheme.secondary
+    val blockedColor = MaterialTheme.colorScheme.error
+    val surfaceColor = MaterialTheme.colorScheme.background
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -53,12 +56,11 @@ fun CalendarScreen(
             VedikaTabTopAppBar(
                 title = "Heritage Calendar",
                 actions = {
-                    IconButton(onClick = { 
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Feature coming soon: Manual Booking Entry")
-                        }
+                    IconButton(onClick = {
+                        val epoch = state.selectedDate?.atStartOfDay(java.time.ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+                        onNavigateToNewBooking(epoch)
                     }) {
-                        Icon(Icons.Default.AddCircle, contentDescription = "Add", tint = Color(0xFF8F4E00))
+                        Icon(Icons.Default.AddCircle, contentDescription = "Add Booking", tint = primaryColor)
                     }
                 }
             )
@@ -73,21 +75,39 @@ fun CalendarScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
-            // Header
-            Text(
-                "BOOKING CALENDAR",
-                style = MaterialTheme.typography.labelSmall,
-                color = secondaryColor,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 2.sp
-            )
-            Text(
-                "November 2024",
-                style = MaterialTheme.typography.displaySmall,
-                fontFamily = NotoSerif,
-                fontWeight = FontWeight.Bold,
-                color = Color.DarkGray
-            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Column {
+                    Text(
+                        "BOOKING CALENDAR",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = secondaryColor,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 2.sp
+                    )
+                    Text(
+                        text = YearMonth.of(state.selectedYear, state.selectedMonth).month.getDisplayName(TextStyle.FULL, Locale.getDefault()) + " ${state.selectedYear}",
+                        style = MaterialTheme.typography.displaySmall,
+                        fontFamily = NotoSerif,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                
+                Row {
+                    IconButton(onClick = {
+                        val prev = YearMonth.of(state.selectedYear, state.selectedMonth).minusMonths(1)
+                        viewModel.onMonthChange(prev.monthValue, prev.year)
+                    }) {
+                        Icon(Icons.Default.ChevronLeft, contentDescription = "Previous Month")
+                    }
+                    IconButton(onClick = {
+                        val next = YearMonth.of(state.selectedYear, state.selectedMonth).plusMonths(1)
+                        viewModel.onMonthChange(next.monthValue, next.year)
+                    }) {
+                        Icon(Icons.Default.ChevronRight, contentDescription = "Next Month")
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -98,49 +118,58 @@ fun CalendarScreen(
             ) {
                 LegendItem(label = "Available", color = Color.LightGray.copy(alpha = 0.4f))
                 LegendItem(label = "Booked", color = primaryColor)
+                LegendItem(label = "Partial/Pending", color = Color(0xFFFF9933)) // Heritage Orange
                 LegendItem(label = "Blocked", color = blockedColor)
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Calendar Grid UI (Mocked for Visuals)
+            // Calendar Grid UI
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
                 color = Color.White,
                 shadowElevation = 2.dp
             ) {
+                val yearMonth = YearMonth.of(state.selectedYear, state.selectedMonth)
+                val firstDayOfMonth = yearMonth.atDay(1).dayOfWeek.value
+                val paddingDays = (firstDayOfMonth - 1) % 7
+                val daysInMonth = yearMonth.lengthOfMonth()
+                val totalCells = paddingDays + daysInMonth
+                val rows = (totalCells + 6) / 7
+
                 Column(modifier = Modifier.padding(20.dp)) {
-                    // Weekdays
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                        "MTWTFSS".forEach { day ->
-                            Text(day.toString(), style = MaterialTheme.typography.labelMedium, color = Color.Gray)
+                        listOf("M", "T", "W", "T", "F", "S", "S").forEach { day ->
+                            Text(day, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // Grid Rows (Mocked 5 weeks)
-                    repeat(5) { weekIndex ->
+                    repeat(rows) { rowIndex ->
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
                             repeat(7) { dayIndex ->
-                                val dayNum = (weekIndex * 7 + dayIndex + 1) % 31
-                                CalendarDayItem(
-                                    day = if (dayNum == 0) "31" else dayNum.toString(),
-                                    status = when {
-                                        dayNum == 12 || dayNum == 28 -> "Booked"
-                                        dayNum == 15 -> "Blocked"
-                                        else -> "Available"
-                                    },
-                                    isSelected = dayNum == 12,
-                                    primaryColor = primaryColor,
-                                    blockedColor = blockedColor,
-                                    onClick = {
-                                        if (dayNum == 12) {
-                                            selectedBooking = state.allBookings.firstOrNull()
+                                val cellIndex = rowIndex * 7 + dayIndex
+                                val dayNum = cellIndex - paddingDays + 1
+                                
+                                if (dayNum in 1..daysInMonth) {
+                                    val date = yearMonth.atDay(dayNum)
+                                    val dayState = state.monthCalendar[date]
+                                    
+                                    CalendarDayItem(
+                                        day = dayNum.toString(),
+                                        dayState = dayState,
+                                        isSelected = state.selectedDate == date,
+                                        primaryColor = primaryColor,
+                                        blockedColor = blockedColor,
+                                        onClick = {
+                                            viewModel.onDateClick(date)
                                             showBottomSheet = true
                                         }
-                                    }
-                                )
+                                    )
+                                } else {
+                                    Spacer(modifier = Modifier.size(40.dp))
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(12.dp))
@@ -166,7 +195,10 @@ fun CalendarScreen(
                     BookingLogCard(
                         booking = booking,
                         onClick = {
-                            selectedBooking = booking
+                            val localDate = java.time.Instant.ofEpochMilli(booking.eventDate)
+                                .atZone(java.time.ZoneId.systemDefault())
+                                .toLocalDate()
+                            viewModel.onDateClick(localDate)
                             showBottomSheet = true
                         }
                     )
@@ -177,16 +209,28 @@ fun CalendarScreen(
             Spacer(modifier = Modifier.height(100.dp))
         }
 
-        // Booking Detail Bottom Sheet
-        if (showBottomSheet) {
+        // Day Detail Bottom Sheet
+        if (showBottomSheet && state.selectedDate != null) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
                 containerColor = Color.White,
                 dragHandle = { BottomSheetDefaults.DragHandle(color = Color.LightGray) }
             ) {
-                BookingDetailContent(
-                    booking = selectedBooking,
+                DayDetailContent(
+                    date = state.selectedDate!!,
+                    dayState = state.monthCalendar[state.selectedDate],
+                    onConfirmBooking = { id -> viewModel.confirmBooking(id) },
+                    onCancelBooking = { id -> viewModel.cancelBooking(id) },
+                    onBlockDate = { date -> viewModel.blockDate(date, "Manual Block") },
+                    onUnblockDate = { date -> viewModel.unblockDate(date) },
+                    onAddBooking = {
+                        val epoch = state.selectedDate?.atStartOfDay(java.time.ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            showBottomSheet = false
+                            onNavigateToNewBooking(epoch)
+                        }
+                    },
                     onClose = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) showBottomSheet = false
@@ -201,12 +245,15 @@ fun CalendarScreen(
 @Composable
 private fun CalendarDayItem(
     day: String,
-    status: String,
+    dayState: com.example.vedika.core.data.model.CalendarDayState?,
     isSelected: Boolean,
     primaryColor: Color,
     blockedColor: Color,
     onClick: () -> Unit
 ) {
+    val pendingColor = Color(0xFFFF9933) // Saffron/Orange
+    val status = dayState?.status ?: com.example.vedika.core.data.model.DayAvailabilityStatus.AVAILABLE
+
     Box(
         modifier = Modifier
             .size(40.dp)
@@ -224,8 +271,10 @@ private fun CalendarDayItem(
                     .clip(CircleShape)
                     .background(
                         when (status) {
-                            "Booked" -> primaryColor
-                            "Blocked" -> blockedColor
+                            com.example.vedika.core.data.model.DayAvailabilityStatus.BOOKED -> primaryColor
+                            com.example.vedika.core.data.model.DayAvailabilityStatus.PENDING, 
+                            com.example.vedika.core.data.model.DayAvailabilityStatus.LIMITED -> pendingColor
+                            com.example.vedika.core.data.model.DayAvailabilityStatus.BLOCKED -> blockedColor
                             else -> Color.Transparent
                         }
                     )
@@ -252,8 +301,8 @@ fun BookingLogCard(booking: Booking, onClick: () -> Unit) {
         border = BorderStroke(1.dp, Color.Black.copy(alpha = 0.05f))
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Surface(modifier = Modifier.size(44.dp), shape = RoundedCornerShape(12.dp), color = Color(0xFF8F4E00).copy(alpha = 0.05f)) {
-                Icon(Icons.Default.Event, contentDescription = null, modifier = Modifier.padding(10.dp), tint = Color(0xFF8F4E00))
+            Surface(modifier = Modifier.size(44.dp), shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)) {
+                Icon(Icons.Default.Event, contentDescription = null, modifier = Modifier.padding(10.dp), tint = MaterialTheme.colorScheme.primary)
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -266,57 +315,142 @@ fun BookingLogCard(booking: Booking, onClick: () -> Unit) {
 }
 
 @Composable
-fun BookingDetailContent(booking: Booking?, onClose: () -> Unit) {
+fun DayDetailContent(
+    date: LocalDate,
+    dayState: com.example.vedika.core.data.model.CalendarDayState?,
+    onConfirmBooking: (String) -> Unit,
+    onCancelBooking: (String) -> Unit,
+    onBlockDate: (LocalDate) -> Unit,
+    onUnblockDate: (LocalDate) -> Unit,
+    onAddBooking: () -> Unit,
+    onClose: () -> Unit
+) {
+    val formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")
+    val isBlocked = dayState?.status == com.example.vedika.core.data.model.DayAvailabilityStatus.BLOCKED && dayState.manualBlocks.isNotEmpty()
+
     Column(modifier = Modifier.padding(24.dp).padding(bottom = 32.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text("Booking Details", style = MaterialTheme.typography.headlineSmall, fontFamily = NotoSerif, fontWeight = FontWeight.Bold)
+            Column {
+                Text("Day Details", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold)
+                Text(date.format(formatter), style = MaterialTheme.typography.headlineSmall, fontFamily = NotoSerif, fontWeight = FontWeight.Bold)
+            }
             IconButton(onClick = onClose) {
                 Icon(Icons.Default.Close, contentDescription = "Close")
             }
         }
         
         Spacer(modifier = Modifier.height(24.dp))
-        
-        Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), color = Color(0xFFF5EDDE)) {
-            Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(booking?.customerName ?: "Ravi Sharma", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                    Text("Sharma Engagement Party", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                }
-                Surface(color = Color(0xFF006A6A), shape = CircleShape) {
-                    Text("CONFIRMED", modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), style = MaterialTheme.typography.labelSmall, color = Color.White, fontWeight = FontWeight.Bold)
+
+        // Capacity/Occupancy Summary
+        Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceContainer) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                dayState?.venueOccupancy?.let { occ ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        OccupancyChip(label = "Morning", isBooked = occ.morningBooked)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        OccupancyChip(label = "Evening", isBooked = occ.eveningBooked)
+                    }
+                } ?: dayState?.decoratorCapacity?.let { cap ->
+                    Text(
+                        text = "Capacity: ${cap.busyCrew} / ${cap.totalCrew} crews busy",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                } ?: run {
+                    Text("No active occupancy scheduled", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                 }
             }
         }
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
-        DetailField(icon = Icons.Default.Event, label = "Event Date", value = "Tuesday, November 12, 2024")
-        DetailField(icon = Icons.Default.Schedule, label = "Time Slot", value = "04:00 PM - 11:00 PM")
-        DetailField(icon = Icons.Default.Group, label = "Guest Count", value = "450 Guests")
-        DetailField(icon = Icons.Default.CurrencyRupee, label = "Total Amount", value = "₹2,50,000")
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            OutlinedButton(
-                onClick = {},
-                modifier = Modifier.weight(1f).height(56.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Icon(Icons.Default.Message, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Chat")
+
+        // Bookings List
+        if (dayState?.bookings?.isNotEmpty() == true) {
+            Text("Bookings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(12.dp))
+            dayState.bookings.forEach { booking ->
+                BookingItem(booking, onConfirm = { onConfirmBooking(booking.id) }, onCancel = { onCancelBooking(booking.id) })
+                Spacer(modifier = Modifier.height(8.dp))
             }
+        } else {
+            Text("No bookings for this date", style = MaterialTheme.typography.bodyMedium, color = Color.Gray, fontStyle = FontStyle.Italic)
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Actions
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            if (isBlocked) {
+                Button(
+                    onClick = { onUnblockDate(date) },
+                    modifier = Modifier.weight(1f).height(56.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Unblock Date")
+                }
+            } else {
+                val hasConfirmed = dayState?.bookings?.any { it.status == com.example.vedika.core.data.model.BookingStatus.CONFIRMED } == true
+                OutlinedButton(
+                    onClick = { onBlockDate(date) },
+                    modifier = Modifier.weight(1f).height(56.dp),
+                    enabled = !hasConfirmed,
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Block Date")
+                }
+            }
+            
             Button(
-                onClick = {},
+                onClick = onAddBooking,
+                enabled = !isBlocked,
                 modifier = Modifier.weight(1f).height(56.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006A6A))
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
             ) {
-                Icon(Icons.Default.Call, contentDescription = null)
+                Icon(Icons.Default.Add, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Call Client")
+                Text("Add Booking")
+            }
+        }
+    }
+}
+
+@Composable
+private fun OccupancyChip(label: String, isBooked: Boolean) {
+    val color = if (isBooked) MaterialTheme.colorScheme.primary else Color.LightGray.copy(alpha = 0.3f)
+    val textColor = if (isBooked) MaterialTheme.colorScheme.onPrimary else Color.Gray
+    Surface(
+        color = color,
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = textColor,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+private fun BookingItem(booking: Booking, onConfirm: () -> Unit, onCancel: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = Color.White,
+        border = BorderStroke(1.dp, Color.Black.copy(alpha = 0.05f))
+    ) {
+        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(booking.customerName, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(booking.status.name, style = MaterialTheme.typography.labelSmall, color = if (booking.status == com.example.vedika.core.data.model.BookingStatus.CONFIRMED) MaterialTheme.colorScheme.primary else Color.Gray)
+            }
+            if (booking.status == com.example.vedika.core.data.model.BookingStatus.PENDING) {
+                TextButton(onClick = onConfirm) { Text("Confirm", color = MaterialTheme.colorScheme.primary) }
+                TextButton(onClick = onCancel) { Text("Cancel", color = MaterialTheme.colorScheme.error) }
+            } else if (booking.status == com.example.vedika.core.data.model.BookingStatus.CONFIRMED) {
+                TextButton(onClick = onCancel) { Text("Cancel", color = Color.Gray) }
             }
         }
     }

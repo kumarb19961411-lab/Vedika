@@ -9,7 +9,7 @@ $PACKAGE_NAME = "com.example.vedika"
 
 # Debug Capture Settings
 $REPORT_ROOT = "debug_reports"
-$DEVICE_VIDEO_PATH = "/sdcard/vedika_debug.mp4"
+$DEVICE_VIDEO_PATH = "/downloads/vedika_debug.mp4"
 
 # Developer Visuals (Visualizing taps and pointers)
 $AutoEnableShowTaps = $true

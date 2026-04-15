@@ -6,6 +6,7 @@ import com.example.vedika.core.data.repository.VendorRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,15 +23,28 @@ class FakeVendorRepository @Inject constructor() : VendorRepository {
     }
     
     override suspend fun getVendorProfile(vendorId: String): Result<VendorUser> {
+        val mock = _mockVendorState.value
         return Result.success(
             VendorUser(
                 id = vendorId,
-                businessName = "Heritage Halls & Catering",
+                businessName = mock?.venueName ?: "Heritage Halls & Catering",
                 ownerName = "Dev Vendor",
                 isVerified = true,
-                primaryServiceCategory = "Venue"
+                primaryServiceCategory = mock?.vendorType?.name ?: "Venue"
             )
         )
+    }
+
+    override fun getVendorProfileStream(vendorId: String): Flow<VendorUser?> {
+        return _mockVendorState.map { mock ->
+            VendorUser(
+                id = vendorId,
+                businessName = mock?.venueName ?: "Heritage Halls & Catering",
+                ownerName = "Dev Vendor",
+                isVerified = true,
+                primaryServiceCategory = mock?.vendorType?.name ?: "Venue"
+            )
+        }
     }
 
     override suspend fun updateBusinessName(vendorId: String, newName: String): Result<Unit> {

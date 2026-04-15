@@ -41,7 +41,7 @@ fun DecoratorsGalleryScreen(
     ) { innerPadding ->
         if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
         } else {
             LazyColumn(
@@ -56,7 +56,7 @@ fun DecoratorsGalleryScreen(
                         Text(
                             text = if (uiState.vendorType == VendorType.VENUE) "VENUE SHOWCASE" else "CURATED PORTFOLIO",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFFD4AF37), // Heritage Gold
+                            color = MaterialTheme.colorScheme.primary, // Saffron
                             letterSpacing = 2.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -126,14 +126,14 @@ fun GalleryAccordion(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
-                        color = Color(0xFFD4AF37).copy(alpha = 0.1f),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = Color(0xFFD4AF37),
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(8.dp)
                         )
                     }
@@ -158,6 +158,7 @@ fun GalleryAccordion(
                         Button(
                             onClick = {},
                             shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                         ) {
                             Icon(Icons.Default.AddAPhoto, contentDescription = null, modifier = Modifier.size(16.dp))
@@ -205,8 +206,8 @@ fun PortfolioAnalytics(vendorType: VendorType) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         shape = RoundedCornerShape(16.dp),
-        color = Color(0xFF006064).copy(alpha = 0.05f), // Heritage Teal
-        border = BorderStroke(1.dp, Color(0xFF006064).copy(alpha = 0.1f))
+        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f))
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Text(
@@ -214,7 +215,7 @@ fun PortfolioAnalytics(vendorType: VendorType) {
                 style = MaterialTheme.typography.titleLarge, 
                 fontFamily = NotoSerif,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF006064)
+                color = MaterialTheme.colorScheme.secondary
             )
             Text(
                 text = if (vendorType == VendorType.VENUE) 
@@ -226,9 +227,9 @@ fun PortfolioAnalytics(vendorType: VendorType) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                AnalyticsItem(value = if (vendorType == VendorType.VENUE) "48" else "124", label = "Photos", color = Color(0xFFD4AF37))
-                AnalyticsItem(value = if (vendorType == VendorType.VENUE) "6" else "12", label = "Albums", color = Color(0xFF006064))
-                AnalyticsItem(value = if (vendorType == VendorType.VENUE) "4" else "15", label = "Featured", color = Color(0xFF7B1FA2))
+                AnalyticsItem(value = if (vendorType == VendorType.VENUE) "48" else "124", label = "Photos", color = MaterialTheme.colorScheme.primary)
+                AnalyticsItem(value = if (vendorType == VendorType.VENUE) "6" else "12", label = "Albums", color = MaterialTheme.colorScheme.secondary)
+                AnalyticsItem(value = if (vendorType == VendorType.VENUE) "4" else "15", label = "Featured", color = MaterialTheme.colorScheme.tertiary)
             }
         }
     }

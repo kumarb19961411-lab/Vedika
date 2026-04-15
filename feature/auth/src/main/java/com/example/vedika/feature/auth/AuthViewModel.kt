@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +26,21 @@ class AuthViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
+
+    init {
+        logDebug("Initializing reactive profile observation...")
+        viewModelScope.launch {
+            authRepository.getActiveVendor().collect { vendor ->
+                if (vendor != null) {
+                    logDebug("Hydrated Vendor found: ${vendor.ownerName} - ${vendor.primaryServiceCategory}")
+                    _uiState.update { it.copy(
+                        ownerName = vendor.ownerName,
+                        selectedCategory = vendor.primaryServiceCategory
+                    ) }
+                }
+            }
+        }
+    }
 
     private fun logDebug(message: String) {
         Log.d("VedikaDebug", "AuthViewModel: $message")
@@ -55,8 +71,15 @@ class AuthViewModel @Inject constructor(
     }
 
     fun sendOtp(onSuccess: () -> Unit) {
-        if (_uiState.value.phoneNumber.length < 10) {
-            _uiState.value = _uiState.value.copy(error = "Please enter a valid 10-digit phone number")
+        val state = _uiState.value
+        // For Partner Sign-Up, the owner name must be provided before sending OTP
+        if (state.authFlow == AuthFlow.SIGN_UP && state.accountMode == AccountMode.PARTNER
+            && state.ownerName.isBlank()) {
+            _uiState.value = state.copy(error = "Please enter your full name to continue")
+            return
+        }
+        if (state.phoneNumber.length < 10) {
+            _uiState.value = state.copy(error = "Please enter a valid 10-digit phone number")
             return
         }
         viewModelScope.launch {
@@ -133,6 +156,14 @@ class AuthViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(ownerName = name)
     }
 
+    /**
+     * Allows the CategorySelectionScreen to capture a contact name for Partners
+     * who arrived via Sign-In (skipping SignupScreen) and thus have no ownerName.
+     */
+    fun updateOwnerNameForRegistration(name: String) {
+        _uiState.value = _uiState.value.copy(ownerName = name)
+    }
+
     // Venue Registration State Updates
     fun updateVenueName(name: String) { _uiState.value = _uiState.value.copy(venueName = name) }
     fun updateVenueCapacity(capacity: String) { _uiState.value = _uiState.value.copy(venueCapacity = capacity) }
@@ -173,7 +204,7 @@ class AuthViewModel @Inject constructor(
                 galleryImages = emptyList(),
                 vendorType = VendorType.VENUE,
                 primaryCategory = state.selectedCategory ?: "Venue",
-                ownerName = state.ownerName.ifBlank { "Heritage Partner" },
+                ownerName = state.ownerName,
                 area = "12,000 Sq Ft", // Derived mock for demo
                 venueType = "Indoor/Outdoor", // Derived mock for demo
                 rating = "4.8 (124)",
@@ -202,7 +233,7 @@ class AuthViewModel @Inject constructor(
                 galleryImages = emptyList(),
                 vendorType = VendorType.DECORATOR,
                 primaryCategory = state.selectedCategory ?: "Decorator",
-                ownerName = state.ownerName.ifBlank { "Luxe Decor Partner" },
+                ownerName = state.ownerName,
                 yearsExperience = state.decoratorExperience,
                 packageTiers = tiers,
                 rating = "4.9 (86)",
@@ -211,11 +242,31 @@ class AuthViewModel @Inject constructor(
         }
 
         logDebug("Saving Registration for: $vendorType (Owner: ${state.ownerName})")
+
+        // Hard guard: ownerName must be present. The sendOtp and CategorySelection
+        // steps should have already captured this, but we validate here as a safety net.
+        if (state.ownerName.isBlank()) {
+            _uiState.value = _uiState.value.copy(
+                error = "Contact name is required. Please go back and enter your name."
+            )
+            return
+        }
+
+        _uiState.value = _uiState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
-            vendorRepository.saveMockVendor(mockState).onSuccess {
-                logDebug("Registration saved successfully in mock repository.")
-                onSuccess()
-            }
+            vendorRepository.saveMockVendor(mockState)
+                .onSuccess {
+                    logDebug("Registration saved successfully.")
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                    onSuccess()
+                }
+                .onFailure { ex ->
+                    logDebug("Registration failed: ${ex.message}")
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = ex.message ?: "Failed to save registration. Please try again."
+                    )
+                }
         }
     }
 }

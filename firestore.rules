@@ -5,27 +5,33 @@ service cloud.firestore {
     // Core Identity
     match /vendors/{vendorId} {
       // Vendor Profile: Read by self, update heavily restricted to verified params.
-      // Phone number omitted here since it's handled by Auth Provider natively mostly.
       allow read: if request.auth != null && request.auth.uid == vendorId;
       allow update: if request.auth != null && request.auth.uid == vendorId 
-                    && request.resource.data.keys().hasOnly(['businessName', 'primaryServiceCategory', 'imageUrl']);
-      allow create: if false; // Only a trusted Cloud Function can create verified Vendor Profiles.
+                    && request.resource.data.keys().hasOnly(['businessName', 'primaryServiceCategory', 'imageUrl', 'location', 'capacity', 'pricing', 'amenities', 'ownerName', 'vendorType']);
+      // Option B: Allow creation during explicit registration flow.
+      allow create: if request.auth != null && request.auth.uid == vendorId;
     }
 
-    // Bookings Base
+    // Bookings
     match /bookings/{bookingId} {
-      // Bookings: Vendors can read their own bookings.
+      // Vendors can read their own bookings.
       allow read: if request.auth != null && resource.data.vendorId == request.auth.uid;
-      // Staging Note (Phase 2): Create/Update is allowed locally for staging tests, but in PROD this is locked.
-      // Final constraint: Bookings created/updated strictly by Trusted Backend (Cloud Function)
+      // Authoritative Transaction logic: Client writes if they own the vendor scope.
       allow create, update: if request.auth != null && request.resource.data.vendorId == request.auth.uid;
-      allow delete: if false; // Financial audibility requires never deleting bookings
+      allow delete: if false; // Financial audit transparency
+    }
+
+    // Blocked Dates
+    match /blocked_dates/{blockId} {
+      // Rule: allow if current user is the owner of the block.
+      // Use resource.data for existing blocks, and request.resource.data for new ones.
+      allow read: if request.auth != null && (resource == null || resource.data.vendorId == request.auth.uid);
+      allow write: if request.auth != null && (request.resource == null || request.resource.data.vendorId == request.auth.uid);
     }
 
     // Inventory Catalog
     match /inventory/{itemId} {
-      // Inventory Items: Vendor manages their own catalog.
-      allow read: if request.auth != null && resource.data.vendorId == request.auth.uid;
+      allow read: if request.auth != null && (resource == null || resource.data.vendorId == request.auth.uid);
       allow create, update: if request.auth != null && request.resource.data.vendorId == request.auth.uid;
       allow delete: if request.auth != null && resource.data.vendorId == request.auth.uid;
     }

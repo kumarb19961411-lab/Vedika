@@ -12,13 +12,43 @@ enum class BookingStatus {
     PENDING, CONFIRMED, CANCELLED, COMPLETED
 }
 
+enum class SlotType {
+    MORNING, EVENING, FULL_DAY
+}
+
+enum class DayAvailabilityStatus {
+    AVAILABLE, PENDING, LIMITED, BOOKED, BLOCKED, UNAVAILABLE
+}
+
+data class VenueOccupancy(
+    val morningBooked: Boolean = false,
+    val eveningBooked: Boolean = false,
+    val isFullDay: Boolean = false
+)
+
+data class DecoratorCapacity(
+    val totalCrew: Int,
+    val busyCrew: Int
+)
+
+data class CalendarDayState(
+    val date: java.time.LocalDate,
+    val status: DayAvailabilityStatus,
+    val bookings: List<Booking> = emptyList(),
+    val manualBlocks: List<String> = emptyList(),
+    val venueOccupancy: VenueOccupancy? = null,
+    val decoratorCapacity: DecoratorCapacity? = null,
+    val inventoryConflicts: List<String> = emptyList()
+)
+
 data class Booking(
     val id: String,
     val vendorId: String,
     val customerName: String,
     val eventDate: Long,
     val status: BookingStatus,
-    val totalAmount: Double
+    val totalAmount: Double,
+    val slotType: SlotType = SlotType.FULL_DAY
 )
 
 data class InventoryItem(

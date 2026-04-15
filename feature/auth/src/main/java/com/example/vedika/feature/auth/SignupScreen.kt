@@ -168,7 +168,7 @@ fun SignupScreen(
                                         Text(
                                             "User Sign Up",
                                             fontWeight = FontWeight.Bold,
-                                            color = if (!isPartnerMode) Color(0xFFC2410C) else Color.White
+                                            color = if (!isPartnerMode) MaterialTheme.colorScheme.primary else Color.White
                                         )
                                     }
                                     Box(
@@ -184,7 +184,7 @@ fun SignupScreen(
                                         Text(
                                             "Partner Sign Up",
                                             fontWeight = FontWeight.Bold,
-                                            color = if (isPartnerMode) Color(0xFFC2410C) else Color.White
+                                            color = if (isPartnerMode) MaterialTheme.colorScheme.primary else Color.White
                                         )
                                     }
                                 }
@@ -212,7 +212,7 @@ fun SignupScreen(
                                 OutlinedTextField(
                                     value = uiState.ownerName,
                                     onValueChange = { viewModel.updateOwnerName(it) },
-                                    placeholder = { Text("Enter Your Full Name", color = Color.LightGray) },
+                                    placeholder = { Text("Enter Your Full Name", color = Color.White.copy(alpha = 0.5f)) },
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(12.dp),
                                     singleLine = true,
@@ -236,10 +236,10 @@ fun SignupScreen(
                                 OutlinedTextField(
                                     value = uiState.phoneNumber,
                                     onValueChange = { viewModel.updatePhoneNumber(it) },
-                                    placeholder = { Text("Enter Phone Number", color = Color.LightGray) },
+                                    placeholder = { Text("Enter Phone Number", color = Color.White.copy(alpha = 0.5f)) },
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(12.dp),
-                                    prefix = { Text("+91 ", color = Color.LightGray) },
+                                    prefix = { Text("+91 ", color = Color.White) },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                                     singleLine = true,
                                     isError = uiState.error != null,
@@ -267,7 +267,7 @@ fun SignupScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(56.dp),
-                                shape = RoundedCornerShape(8.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary

@@ -14,7 +14,7 @@ class FirebaseInventoryRepositoryImpl @Inject constructor(
 ) : InventoryRepository {
 
     override fun getInventoryForVendor(vendorId: String): Flow<List<InventoryItem>> = callbackFlow {
-        val subscription = firestore.collection("inventory")
+        val subscription = firestore.collection(FirestorePaths.COL_INVENTORY)
             .whereEqualTo("vendorId", vendorId)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -52,7 +52,7 @@ class FirebaseInventoryRepositoryImpl @Inject constructor(
                 "price" to item.price,
                 "isAvailable" to item.isAvailable
             )
-            firestore.collection("inventory").add(data).await()
+            firestore.collection(FirestorePaths.COL_INVENTORY).add(data).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -61,7 +61,7 @@ class FirebaseInventoryRepositoryImpl @Inject constructor(
 
     override suspend fun updateInventoryAvailability(itemId: String, isAvailable: Boolean): Result<Unit> {
         return try {
-            firestore.collection("inventory").document(itemId)
+            firestore.collection(FirestorePaths.COL_INVENTORY).document(itemId)
                 .update("isAvailable", isAvailable).await()
             Result.success(Unit)
         } catch (e: Exception) {

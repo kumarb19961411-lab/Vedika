@@ -33,7 +33,7 @@ $session = @{
     OriginalShowTaps = $origShowTaps
     OriginalPointerLocation = $origPointerLoc
     LogcatPid = $null
-    StartTime = (Get-Date).ToString()
+    StartTime = (Get-Date).ToString("o")
 }
 
 # 4. Apply Debug Visuals

@@ -40,6 +40,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.withStyle
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -67,7 +69,7 @@ fun CategorySelectionScreen(
                             fontFamily = FontFamily.Serif,
                             fontWeight = FontWeight.Bold
                         ),
-                        color = Color(0xFF8F4E00), // Brown Saffron
+                        color = MaterialTheme.colorScheme.primary, // Saffron
                     )
                 },
                 navigationIcon = {
@@ -75,7 +77,7 @@ fun CategorySelectionScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color(0xFF8F4E00)
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -100,7 +102,7 @@ fun CategorySelectionScreen(
         bottomBar = {
             Surface(
                 modifier = Modifier.fillMaxWidth().height(96.dp),
-                color = MaterialTheme.colorScheme.white.copy(alpha = 0.9f),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
                 tonalElevation = 8.dp,
                 shadowElevation = 16.dp,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant)
@@ -136,8 +138,8 @@ fun CategorySelectionScreen(
                         modifier = Modifier.height(56.dp).padding(start = 16.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF8F4E00),
-                            contentColor = Color.White
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
                     ) {
@@ -183,7 +185,7 @@ fun CategorySelectionScreen(
                         }
                         append("\n")
                         withStyle(SpanStyle(
-                            color = Color(0xFF8F4E00),
+                            color = MaterialTheme.colorScheme.primary,
                             fontStyle = FontStyle.Italic,
                             fontFamily = FontFamily.Serif
                         )) {
@@ -205,6 +207,49 @@ fun CategorySelectionScreen(
                 )
 
                 Spacer(modifier = Modifier.height(48.dp))
+
+                // Sign-In partner name capture: shown only when ownerName was not captured
+                // during Signup (i.e., partner logged in not signed up)
+                if (uiState.ownerName.isBlank()) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 32.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                    ) {
+                        Column(modifier = Modifier.padding(20.dp)) {
+                            Text(
+                                text = "CONTACT IDENTITY",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Enter your full name to continue registration",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            OutlinedTextField(
+                                value = uiState.ownerName,
+                                onValueChange = { viewModel.updateOwnerNameForRegistration(it) },
+                                label = { Text("Full Name") },
+                                singleLine = true,
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                    focusedLabelColor = MaterialTheme.colorScheme.primary
+                                )
+                            )
+                        }
+                    }
+                }
 
                 // Bento Grid
                 Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
@@ -386,13 +431,13 @@ fun DisabledCategoryCard(
             Surface(
                 modifier = Modifier.size(48.dp),
                 shape = CircleShape,
-                color = Color(0xFFE7E5E4) // Stone 200
+                color = MaterialTheme.colorScheme.secondary,
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         icon,
                         contentDescription = null,
-                        tint = Color(0xFF78716A), // Stone 500
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -402,7 +447,7 @@ fun DisabledCategoryCard(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF44403C) // Stone 700
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Surface(
@@ -412,7 +457,7 @@ fun DisabledCategoryCard(
                 Text(
                     text = "Coming Soon",
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color(0xFF78716A),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                     fontWeight = FontWeight.Bold
                 )
@@ -433,17 +478,17 @@ fun DisabledChip(icon: androidx.compose.ui.graphics.vector.ImageVector, label: S
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Icon(icon, contentDescription = null, tint = Color(0xFF78716A))
-            Text(label, style = MaterialTheme.typography.labelLarge, color = Color(0xFF44403C), fontWeight = FontWeight.Bold)
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(label, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
             Surface(
                 color = Color.Transparent,
-                border = BorderStroke(1.dp, Color(0xFFD6D3D1)),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                 shape = RoundedCornerShape(4.dp)
             ) {
                 Text(
                     text = "Soon",
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color(0xFFA8A29E),
+                    color = MaterialTheme.colorScheme.outlineVariant,
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                     fontWeight = FontWeight.Bold
                 )

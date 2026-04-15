@@ -30,9 +30,9 @@ fun DecoratorDashboardScreen(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
-    val primaryColor = Color(0xFF006A6A) // Teal for Decorators
-    val secondaryColor = Color(0xFF8F4E00) // Saffron accent
-    val surfaceColor = Color(0xFFFFF8EF)
+    val primaryColor = MaterialTheme.colorScheme.secondary // Teal for Decorators
+    val secondaryColor = MaterialTheme.colorScheme.primary // Saffron accent
+    val surfaceColor = MaterialTheme.colorScheme.background
 
     Scaffold(
         topBar = {
@@ -51,7 +51,7 @@ fun DecoratorDashboardScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(450.dp)
+                        .height(320.dp)
                 ) {
                     AsyncImage(
                         model = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622",
@@ -214,7 +214,7 @@ private fun SocialReachSection(state: DashboardUiState, primary: Color, secondar
     Surface(
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
         shape = RoundedCornerShape(20.dp),
-        color = Color(0xFFF5EDDE),
+        color = MaterialTheme.colorScheme.surfaceContainer,
         border = BorderStroke(1.dp, Color.Black.copy(alpha = 0.05f))
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
@@ -285,9 +285,9 @@ private fun DesignPackageCard(name: String, price: String, tag: String, color: C
 @Composable
 private fun SectionHeader(title: String, actionText: String? = null, onAction: () -> Unit = {}) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Text(title, style = MaterialTheme.typography.headlineSmall, fontFamily = NotoSerif, fontStyle = FontStyle.Italic, color = Color(0xFF1E1B13))
+        Text(title, style = MaterialTheme.typography.headlineSmall, fontFamily = NotoSerif, fontStyle = FontStyle.Italic, color = MaterialTheme.colorScheme.onSurface)
         if (actionText != null) {
-            Text(actionText, modifier = Modifier.clickable { onAction() }, style = MaterialTheme.typography.labelLarge, color = Color(0xFF8F4E00), fontWeight = FontWeight.Bold)
+            Text(actionText, modifier = Modifier.clickable { onAction() }, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
         }
     }
 }

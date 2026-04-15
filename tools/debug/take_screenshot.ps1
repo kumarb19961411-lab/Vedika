@@ -16,9 +16,15 @@ $reportDir = $session.ReportPath
 $ssDir = Join-Path $reportDir "screenshots"
 if (!(Test-Path $ssDir)) { New-Item -ItemType Directory -Path $ssDir | Out-Null }
 
-$count = (Get-ChildItem $ssDir -Filter "screen_*.png").Count + 1
-$name = "screen_$($count.ToString('D3')).png"
-$devicePath = "/sdcard/$name"
+$screenName = Read-Host "Enter screen name (or leave empty for default 'screen')"
+if ([string]::IsNullOrWhiteSpace($screenName)) {
+    $screenName = "screen"
+}
+$screenName = $screenName -replace ' ', '_'
+
+$count = @(Get-ChildItem $ssDir -Filter "${screenName}_*.png").Count + 1
+$name = "${screenName}_$($count.ToString('D3')).png"
+$devicePath = "/data/local/tmp/$name"
 $destPath = Join-Path $ssDir $name
 
 Write-Host "Capturing screenshot $name..." -NoNewline

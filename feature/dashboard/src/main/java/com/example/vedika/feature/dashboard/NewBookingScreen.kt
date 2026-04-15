@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -152,7 +153,9 @@ fun NewBookingScreen(
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface
                     )
                 )
             }
@@ -183,6 +186,26 @@ fun NewBookingScreen(
                         unfocusedBorderColor = MaterialTheme.colorScheme.outline
                     )
                 )
+            }
+
+            // Slot Selection (Only for Venues)
+            if (formState.vendorType == com.example.vedika.core.data.model.VendorType.VENUE) {
+                FormField(label = "Time Slot") {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        com.example.vedika.core.data.model.SlotType.values().forEach { slot ->
+                            FilterChip(
+                                selected = formState.slotType == slot,
+                                onClick = { viewModel.onSlotChange(slot) },
+                                label = { Text(slot.name.replace("_", " ")) },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                        }
+                    }
+                }
             }
 
             // Total Amount field
@@ -231,6 +254,43 @@ fun NewBookingScreen(
                 )
             }
 
+            // Conflict Banner
+            if (formState.isSlotConflict) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    modifier = Modifier.fillMaxWidth(),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle, // Using checkcircle as warning surrogate here or error
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                        Column {
+                            val msg = if (formState.vendorType == com.example.vedika.core.data.model.VendorType.VENUE) 
+                                "Slot already occupied or blocked." else "Full capacity reached for this date."
+                            Text(
+                                text = "Strict Conflict Detected",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                            Text(
+                                text = msg,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
+                    }
+                }
+            }
+
             // Error banner
             formState.submitError?.let { error ->
                 Surface(
@@ -252,11 +312,11 @@ fun NewBookingScreen(
             // Submit button
             Button(
                 onClick = { viewModel.submitBooking(onNavigateBack) },
-                enabled = !formState.isSubmitting,
+                enabled = !formState.isSubmitting && !formState.isSlotConflict,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant

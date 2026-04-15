@@ -36,15 +36,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtpVerificationScreen(
+    viewModel: AuthViewModel,
     onVerificationSuccess: () -> Unit,
     onNavigateBack: () -> Unit,
-    viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
@@ -56,14 +55,14 @@ fun OtpVerificationScreen(
                     Text(
                         text = "KalyanaVedika",
                         style = MaterialTheme.typography.titleLarge,
-                        color = Color(0xFFC2410C),
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
                         fontStyle = FontStyle.Italic
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF78716A))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -128,8 +127,14 @@ fun OtpVerificationScreen(
                     Box(modifier = Modifier.padding(32.dp), contentAlignment = Alignment.Center) {
                         androidx.compose.foundation.text.BasicTextField(
                             value = uiState.otp,
-                            onValueChange = { 
-                                if (it.length <= 4) viewModel.updateOtp(it)
+                            onValueChange = { newOtp ->
+                                if (newOtp.length <= 4) {
+                                    viewModel.updateOtp(newOtp)
+                                    // Auto-submit on 4th digit entry
+                                    if (newOtp.length == 4) {
+                                        viewModel.verifyOtp { onVerificationSuccess() }
+                                    }
+                                }
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                             decorationBox = {
@@ -194,7 +199,7 @@ fun OtpVerificationScreen(
                         .fillMaxWidth()
                         .widthIn(max = 448.dp)
                         .height(56.dp),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
                     enabled = !uiState.isLoading && uiState.otp.length == 4

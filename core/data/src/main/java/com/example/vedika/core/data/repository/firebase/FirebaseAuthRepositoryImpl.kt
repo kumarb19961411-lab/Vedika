@@ -2,38 +2,33 @@ package com.example.vedika.core.data.repository.firebase
 
 import com.example.vedika.core.data.model.VendorUser
 import com.example.vedika.core.data.repository.AuthRepository
+import com.example.vedika.core.data.repository.VendorRepository
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 class FirebaseAuthRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val vendorRepository: VendorRepository
 ) : AuthRepository {
 
-    override fun getActiveVendor(): Flow<VendorUser?> = callbackFlow {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getActiveVendor(): Flow<VendorUser?> = callbackFlow<String?> {
         val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-            val user = firebaseAuth.currentUser
-            if (user != null) {
-                // Return a basic shell, but Vendor properties must come from Firestore.
-                // For Phase 2 we assume the vendor is derived in combination.
-                // Since this method just returns the state, we pass basic info.
-                trySend(
-                    VendorUser(
-                        id = user.uid,
-                        ownerName = user.displayName ?: "Live Vendor",
-                        businessName = "Configuring...",
-                        primaryServiceCategory = "",
-                        isVerified = false
-                    )
-                )
-            } else {
-                trySend(null)
-            }
+            trySend(firebaseAuth.currentUser?.uid)
         }
         auth.addAuthStateListener(listener)
         awaitClose { auth.removeAuthStateListener(listener) }
+    }.flatMapLatest { uid ->
+        if (uid != null) {
+            vendorRepository.getVendorProfileStream(uid)
+        } else {
+            kotlinx.coroutines.flow.flowOf(null)
+        }
     }
 
     override suspend fun sendOtp(phoneNumber: String): Result<String> {

@@ -21,7 +21,11 @@ sealed class VedikaDestination(val route: String) {
     object CategorySelection : VedikaDestination("category_selection")
     object VenueRegistration : VedikaDestination("venue_registration")
     object DecoratorRegistration : VedikaDestination("decorator_registration")
-    object NewBooking : VedikaDestination("new_booking")
+    data object NewBooking : VedikaDestination("new_booking?selectedDate={selectedDate}") {
+        fun createRoute(selectedDate: Long? = null): String {
+            return if (selectedDate != null) "new_booking?selectedDate=$selectedDate" else "new_booking"
+        }
+    }
     object AuthGraph  : VedikaDestination("auth_graph")
     object DecoratorsGallery : VedikaDestination("decorators_gallery")
     object InventoryHub : VedikaDestination("inventory_hub")

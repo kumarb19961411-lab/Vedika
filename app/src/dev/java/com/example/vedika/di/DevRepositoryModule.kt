@@ -4,10 +4,12 @@ import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.BookingRepository
 import com.example.vedika.core.data.repository.InventoryRepository
 import com.example.vedika.core.data.repository.VendorRepository
+import com.example.vedika.core.data.repository.CalendarRepository
 import com.example.vedika.data.fake.FakeAuthRepository
 import com.example.vedika.data.fake.FakeBookingRepository
 import com.example.vedika.data.fake.FakeInventoryRepository
 import com.example.vedika.data.fake.FakeVendorRepository
+import com.example.vedika.data.fake.FakeCalendarRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -41,4 +43,10 @@ abstract class DevRepositoryModule {
     abstract fun bindInventoryRepository(
         fakeInventoryRepository: FakeInventoryRepository
     ): InventoryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCalendarRepository(
+        fakeCalendarRepository: FakeCalendarRepository
+    ): CalendarRepository
 }

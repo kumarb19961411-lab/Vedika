@@ -50,6 +50,12 @@ fun DecoratorRegistrationScreen(
 
     val isFormValid = uiState.decoratorBusinessName.isNotBlank()
 
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let {
+            snackbarHostState.showSnackbar(it)
+        }
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -61,7 +67,7 @@ fun DecoratorRegistrationScreen(
                             fontFamily = FontFamily.Serif,
                             fontWeight = FontWeight.Bold
                         ),
-                        color = Color(0xFF8F4E00), // Brown Saffron
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 },
                 navigationIcon = {
@@ -69,7 +75,7 @@ fun DecoratorRegistrationScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color(0xFF8F4E00)
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -86,7 +92,7 @@ fun DecoratorRegistrationScreen(
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.White.copy(alpha = 0.8f)
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
                 )
             )
         },
@@ -134,7 +140,7 @@ fun DecoratorRegistrationScreen(
                         Text(
                             text = "Elevate Every Celebration",
                             style = MaterialTheme.typography.displaySmall.copy(fontFamily = FontFamily.Serif),
-                            color = Color(0xFF8F4E00),
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -170,8 +176,8 @@ fun DecoratorRegistrationScreen(
                             shape = RoundedCornerShape(16.dp),
                             trailingIcon = { Icon(Icons.Default.ExpandMore, contentDescription = null) },
                             colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedBorderColor = Color.Transparent,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
                             ),
                             readOnly = true
                         )
@@ -222,13 +228,13 @@ fun DecoratorRegistrationScreen(
                         // Essential Tier
                         Surface(modifier = Modifier.weight(1f), shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surface) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Text("ESSENTIAL TIER", style = MaterialTheme.typography.labelSmall, color = Color(0xFF8F4E00).copy(alpha = 0.6f), fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                                Text("ESSENTIAL TIER", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f), fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                                 Text("Base Setup", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 OutlinedTextField(
                                     value = uiState.decoratorTier1Price,
                                     onValueChange = { viewModel.updateDecoratorTier1Price(it) },
-                                    leadingIcon = { Text("₹", color = Color(0xFF8F4E00), fontWeight = FontWeight.Bold) },
+                                    leadingIcon = { Text("₹", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold) },
                                     placeholder = { Text("Starts at", fontSize = 12.sp) },
                                     modifier = Modifier.fillMaxWidth().height(48.dp),
                                     shape = RoundedCornerShape(16.dp),
@@ -238,15 +244,15 @@ fun DecoratorRegistrationScreen(
                         }
 
                         // Premium Tier
-                        Surface(modifier = Modifier.weight(2f), shape = RoundedCornerShape(16.dp), color = Color(0xFFEDFDFD)) { // Light cyan-ish as per visual
+                        Surface(modifier = Modifier.weight(2f), shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)) { 
                             Column(modifier = Modifier.padding(24.dp)) {
-                                Text("MOST POPULAR", style = MaterialTheme.typography.labelSmall, color = Color(0xFF0D9488), fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                                Text("MOST POPULAR", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                                 Text("Signature Heritage", style = MaterialTheme.typography.headlineSmall.copy(fontFamily = FontFamily.Serif), fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(16.dp))
                                 OutlinedTextField(
                                     value = uiState.decoratorTier2Price,
                                     onValueChange = { viewModel.updateDecoratorTier2Price(it) },
-                                    leadingIcon = { Text("Premium Price", fontSize = 12.sp, color = Color(0xFF0D9488)) },
+                                    leadingIcon = { Text("Premium Price", fontSize = 12.sp, color = MaterialTheme.colorScheme.secondary) },
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(16.dp),
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -257,7 +263,7 @@ fun DecoratorRegistrationScreen(
                                     onValueChange = { viewModel.updateDecoratorTier2Inclusions(it) },
                                     placeholder = { Text("List key inclusions (e.g. Fresh Marigolds, 40ft Mandap)", fontSize = 12.sp) },
                                     modifier = Modifier.fillMaxWidth().height(80.dp),
-                                    shape = RoundedCornerShape(16.dp)
+                                    shape = RoundedCornerShape(12.dp)
                                 )
                             }
                         }
@@ -268,7 +274,7 @@ fun DecoratorRegistrationScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             // Section 4: Portfolio Gallery
-            ServiceSection(number = 4, title = "Portfolio Gallery", color = Color(0xFF8F4E00)) {
+            ServiceSection(number = 4, title = "Portfolio Gallery", color = MaterialTheme.colorScheme.primary) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -290,10 +296,10 @@ fun DecoratorRegistrationScreen(
                         Surface(
                             modifier = Modifier.size(64.dp),
                             shape = CircleShape,
-                            color = Color(0xFF8F4E00).copy(alpha = 0.1f)
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                         ) {
                             Box(contentAlignment = Alignment.Center) {
-                                Icon(Icons.Default.CloudUpload, contentDescription = null, tint = Color(0xFF8F4E00), modifier = Modifier.size(32.dp))
+                                Icon(Icons.Default.CloudUpload, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
                             }
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -308,7 +314,7 @@ fun DecoratorRegistrationScreen(
                         Button(
                             onClick = { /* Browse */ },
                             shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8F4E00))
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                         ) {
                             Text("Browse Files")
                         }
@@ -322,22 +328,26 @@ fun DecoratorRegistrationScreen(
             Button(
                 onClick = {
                     viewModel.saveRegistrationData {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Registration Complete! Welcome to Vedika.")
-                            kotlinx.coroutines.delay(1500)
-                            onNavigateToDashboard()
-                        }
+                        onNavigateToDashboard()
                     }
                 }, 
-                enabled = isFormValid,
+                enabled = isFormValid && !uiState.isLoading,
                 shape = CircleShape, 
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF8F4E00),
-                    contentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 modifier = Modifier.fillMaxWidth().height(56.dp)
             ) {
-                Text("Complete Registration", fontWeight = FontWeight.Bold)
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text("Complete Registration", fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
@@ -382,7 +392,7 @@ fun ExpertiseCard(icon: androidx.compose.ui.graphics.vector.ImageVector, label: 
 
 @Composable
 fun BottomNavIcon(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, isSelected: Boolean = false) {
-    val color = if (isSelected) Color(0xFF8F4E00) else Color(0xFF78716A)
+    val color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(icon, contentDescription = null, tint = color)
         Text(label.uppercase(), style = MaterialTheme.typography.labelSmall, fontSize = 9.sp, color = color)

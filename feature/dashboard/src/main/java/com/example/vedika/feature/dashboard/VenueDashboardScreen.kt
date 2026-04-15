@@ -34,9 +34,9 @@ fun VenueDashboardScreen(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
-    val primaryColor = Color(0xFF8F4E00)
-    val secondaryColor = Color(0xFF006A6A)
-    val surfaceColor = Color(0xFFFFF8EF)
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val secondaryColor = MaterialTheme.colorScheme.secondary
+    val surfaceColor = MaterialTheme.colorScheme.background
 
     Scaffold(
         topBar = {
@@ -55,7 +55,7 @@ fun VenueDashboardScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(450.dp)
+                        .height(320.dp)
                 ) {
                     AsyncImage(
                         model = if (!state.coverImage.isNullOrEmpty()) state.coverImage else "https://images.unsplash.com/photo-1519167758481-83f550bb49b3",
@@ -80,15 +80,15 @@ fun VenueDashboardScreen(
                             .padding(bottom = 32.dp)
                     ) {
                         Surface(
-                            color = Color(0xFFC59E3D).copy(alpha = 0.3f),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                             shape = CircleShape,
-                            border = BorderStroke(1.dp, Color(0xFFC59E3D).copy(alpha = 0.5f))
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
                         ) {
                             Text(
                                 text = "FEATURED VENUE",
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color(0xFFFFDCC2),
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold,
                                 letterSpacing = 1.sp
                             )
@@ -115,7 +115,7 @@ fun VenueDashboardScreen(
                             Icon(
                                 imageVector = Icons.Default.LocationOn,
                                 contentDescription = null,
-                                tint = Color(0xFFFF9933),
+                                tint = MaterialTheme.colorScheme.tertiary,
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
@@ -182,7 +182,7 @@ fun VenueDashboardScreen(
                             AmenityCard(icon = Icons.Default.Restaurant, title = "Gourmet Kitchen", subtitle = "Industrial equipment", color = secondaryColor, modifier = Modifier.weight(1f))
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            AmenityCard(icon = Icons.Default.AcUnit, title = "Central AC", subtitle = "Climate control", color = Color(0xFF795900), modifier = Modifier.weight(1f))
+                            AmenityCard(icon = Icons.Default.AcUnit, title = "Central AC", subtitle = "Climate control", color = MaterialTheme.colorScheme.tertiary, modifier = Modifier.weight(1f))
                             Surface(
                                 modifier = Modifier.weight(1f).height(72.dp),
                                 shape = RoundedCornerShape(12.dp),
@@ -255,9 +255,9 @@ private fun StatItem(label: String, value: String, color: Color) {
 @Composable
 private fun SectionTitle(title: String, actionText: String? = null) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Text(text = title, style = MaterialTheme.typography.headlineSmall, fontFamily = NotoSerif, fontStyle = FontStyle.Italic, color = Color(0xFF1E1B13))
+        Text(text = title, style = MaterialTheme.typography.headlineSmall, fontFamily = NotoSerif, fontStyle = FontStyle.Italic, color = MaterialTheme.colorScheme.onSurface)
         if (actionText != null) {
-            Text(text = actionText, style = MaterialTheme.typography.labelLarge, color = Color(0xFF8F4E00), fontWeight = FontWeight.Bold)
+            Text(text = actionText, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -294,12 +294,12 @@ private fun UpcomingBookingItem(date: String, month: String, title: String, clie
                 modifier = Modifier
                     .width(48.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFF8F4E00).copy(alpha = 0.05f))
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.05f))
                     .padding(vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(date, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color(0xFF8F4E00))
-                Text(month.uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Color(0xFF8F4E00))
+                Text(date, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                Text(month.uppercase(), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -308,8 +308,8 @@ private fun UpcomingBookingItem(date: String, month: String, title: String, clie
             }
             Surface(
                 shape = CircleShape,
-                color = if (status.contains("Confirmed")) Color(0xFFE8F5E9) else Color(0xFFFFF8E1),
-                contentColor = if (status.contains("Confirmed")) Color(0xFF2E7D32) else Color(0xFFF57F17)
+                color = if (status.contains("Confirmed")) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = if (status.contains("Confirmed")) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onTertiaryContainer
             ) {
                 Text(status.uppercase(), modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
             }
@@ -321,8 +321,8 @@ private fun UpcomingBookingItem(date: String, month: String, title: String, clie
 private fun AnalyticsSection(state: DashboardUiState) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-        shape = RoundedCornerShape(20.dp),
-        color = Color(0xFFF5EDDE),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
         border = BorderStroke(1.dp, Color.Black.copy(alpha = 0.05f))
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
@@ -330,9 +330,9 @@ private fun AnalyticsSection(state: DashboardUiState) {
             Spacer(modifier = Modifier.height(20.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                InsightItem(icon = Icons.Default.TrendingUp, label = "Profile Views", value = state.analyticsSummary?.get("views") ?: "1,284", color = Color(0xFF006A6A))
-                InsightItem(icon = Icons.Default.PendingActions, label = "Leads", value = state.leadsCount ?: "12 New", color = Color(0xFF8F4E00))
-                InsightItem(icon = Icons.Default.Star, label = "Rating", value = state.rating ?: "4.8 (212)", color = Color(0xFF795900))
+                InsightItem(icon = Icons.Default.TrendingUp, label = "Profile Views", value = state.analyticsSummary?.get("views") ?: "1,284", color = MaterialTheme.colorScheme.secondary)
+                InsightItem(icon = Icons.Default.PendingActions, label = "Leads", value = state.leadsCount ?: "12 New", color = MaterialTheme.colorScheme.primary)
+                InsightItem(icon = Icons.Default.Star, label = "Rating", value = state.rating ?: "4.8 (212)", color = MaterialTheme.colorScheme.tertiary)
             }
             
             Spacer(modifier = Modifier.height(24.dp))
@@ -350,7 +350,7 @@ private fun AnalyticsSection(state: DashboardUiState) {
             Button(
                 onClick = {},
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006A6A)),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("View Full Analytics", fontWeight = FontWeight.Bold)

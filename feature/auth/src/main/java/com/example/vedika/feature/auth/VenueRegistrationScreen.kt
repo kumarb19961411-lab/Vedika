@@ -49,6 +49,12 @@ fun VenueRegistrationScreen(
 
     val isFormValid = uiState.venueName.isNotBlank() && uiState.venueLocation.isNotBlank()
 
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let {
+            snackbarHostState.showSnackbar(it)
+        }
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -57,7 +63,7 @@ fun VenueRegistrationScreen(
                     Text(
                         text = "KalyanaVedika",
                         style = MaterialTheme.typography.titleLarge,
-                        color = Color(0xFFC2410C),
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
                         fontStyle = FontStyle.Italic
                     )
@@ -67,7 +73,7 @@ fun VenueRegistrationScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color(0xFF8F4E00)
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -123,17 +129,25 @@ fun VenueRegistrationScreen(
                                     onNavigateToDashboard()
                                 }
                             },
-                            enabled = isFormValid,
+                            enabled = isFormValid && !uiState.isLoading,
                             modifier = Modifier.height(56.dp).padding(start = 8.dp),
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF8F4E00), // Solid Brown
+                                containerColor = MaterialTheme.colorScheme.primary,
                                 disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
                             )
                         ) {
-                            Text("Continue", fontWeight = FontWeight.Bold)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
+                            if (uiState.isLoading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            } else {
+                                Text("Continue", fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
+                            }
                         }
                     }
                 }
@@ -150,7 +164,7 @@ fun VenueRegistrationScreen(
         ) {
             // Progress Stepper
             Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -175,7 +189,7 @@ fun VenueRegistrationScreen(
                 modifier = Modifier.padding(top = 8.dp)
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // Form Content
             Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
@@ -366,7 +380,7 @@ fun StepItem(number: Int, label: String, isActive: Boolean) {
             color = if (isActive) MaterialTheme.colorScheme.primary else Color.Gray,
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.sp,
-            fontSize = 9.sp
+            fontSize = 11.sp
         )
     }
 }
@@ -391,8 +405,8 @@ fun RegistrationField(
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    unfocusedBorderColor = Color.Transparent
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.1f)
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
             )

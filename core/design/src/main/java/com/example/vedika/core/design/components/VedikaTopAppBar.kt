@@ -23,8 +23,10 @@ fun VedikaTopAppBar(
     },
     actions: @Composable RowScope.() -> Unit = {},
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = Color.White.copy(alpha = 0.95f),
-        titleContentColor = Color(0xFF8B4513) // Heritage Brown
+        containerColor = Color.White.copy(alpha = 0.98f),
+        titleContentColor = Color(0xFF8F4E00), // Heritage Brown (Amber)
+        navigationIconContentColor = Color.Gray,
+        actionIconContentColor = Color.Gray
     )
 ) {
     CenterAlignedTopAppBar(

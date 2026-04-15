@@ -11,7 +11,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navArgument
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -35,9 +37,9 @@ import com.example.vedika.feature.dashboard.DashboardScreen
 import com.example.vedika.feature.dashboard.NewBookingScreen
 import com.example.vedika.feature.finance.FinanceScreen
 import com.example.vedika.feature.gallery.DecoratorsGalleryScreen
-import com.example.vedika.feature.inventory.InventoryScreen
 import com.example.vedika.feature.inventory.InventoryHubScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.vedika.BuildConfig
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -267,10 +269,18 @@ fun VedikaAppShell() {
                 )
             }
             composable(VedikaDestination.Calendar.route) {
-                CalendarScreen()
+                CalendarScreen(
+                    onNavigateToNewBooking = { epoch ->
+                        navController.navigate(VedikaDestination.NewBooking.createRoute(epoch))
+                    }
+                )
             }
             composable(VedikaDestination.Inventory.route) {
-                InventoryScreen()
+                // Tab shell: InventoryHubScreen is the canonical, premium inventory view.
+                // onNavigateBack is a no-op here since root tabs do not have back navigation.
+                InventoryHubScreen(
+                    onNavigateBack = { /* Root tab — no back action */ }
+                )
             }
             composable(VedikaDestination.DecoratorsGallery.route) {
                 DecoratorsGalleryScreen()
@@ -281,10 +291,19 @@ fun VedikaAppShell() {
                         navController.navigate(VedikaDestination.Login.route) {
                             popUpTo(0) { inclusive = true }
                         }
-                    }
+                    },
+                    appVersion = BuildConfig.VERSION_NAME
                 )
             }
-            composable(VedikaDestination.NewBooking.route) {
+            composable(
+                route = VedikaDestination.NewBooking.route,
+                arguments = listOf(
+                    navArgument("selectedDate") {
+                        type = NavType.LongType
+                        defaultValue = -1L
+                    }
+                )
+            ) {
                 NewBookingScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )

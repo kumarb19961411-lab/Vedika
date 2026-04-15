@@ -30,15 +30,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.vedika.feature.auth.BuildConfig
 import coil.compose.AsyncImage
 
 @Composable
 fun LoginScreen(
+    viewModel: AuthViewModel,
     onNavigateToOtp: () -> Unit,
     onNavigateToSignUp: () -> Unit,
     onDevBypassSuccess: () -> Unit,
-    viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val isPartnerMode = uiState.accountMode == AccountMode.PARTNER
@@ -169,7 +169,7 @@ fun LoginScreen(
                                         Text(
                                             "User Login",
                                             fontWeight = FontWeight.Bold,
-                                            color = if (!isPartnerMode) Color(0xFFC2410C) else Color.White
+                                            color = if (!isPartnerMode) MaterialTheme.colorScheme.primary else Color.White
                                         )
                                     }
                                     Box(
@@ -185,7 +185,7 @@ fun LoginScreen(
                                         Text(
                                             "Partner Login",
                                             fontWeight = FontWeight.Bold,
-                                            color = if (isPartnerMode) Color(0xFFC2410C) else Color.White
+                                            color = if (isPartnerMode) MaterialTheme.colorScheme.primary else Color.White
                                         )
                                     }
                                 }
@@ -213,10 +213,10 @@ fun LoginScreen(
                                 OutlinedTextField(
                                     value = uiState.phoneNumber,
                                     onValueChange = { viewModel.updatePhoneNumber(it) },
-                                    placeholder = { Text("Enter Phone Number", color = Color.LightGray) },
+                                    placeholder = { Text("Enter Phone Number", color = Color.White.copy(alpha = 0.5f)) },
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(12.dp),
-                                    prefix = { Text("+91 ", color = Color.LightGray) },
+                                    prefix = { Text("+91 ", color = Color.White) },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                                     singleLine = true,
                                     isError = uiState.error != null,
@@ -244,7 +244,7 @@ fun LoginScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(56.dp),
-                                shape = RoundedCornerShape(8.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -305,9 +305,11 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(48.dp))
 
-                    // Dev Bypass (Debug Only) - Kept from original
-                    TextButton(onClick = { viewModel.loginAsDevBypass(onSuccess = onDevBypassSuccess) }) {
-                        Text("Developer Route (Bypass)", color = Color.White.copy(alpha = 0.3f))
+                    // Dev Bypass: only visible in debug builds — never ships to production
+                    if (BuildConfig.DEBUG) {
+                        TextButton(onClick = { viewModel.loginAsDevBypass(onSuccess = onDevBypassSuccess) }) {
+                            Text("Developer Route (Bypass)", color = Color.White.copy(alpha = 0.3f))
+                        }
                     }
                 }
             }

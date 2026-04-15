@@ -2,24 +2,30 @@ package com.example.vedika.feature.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vedika.core.data.model.Booking
 import com.example.vedika.core.data.model.BookingStatus
+import com.example.vedika.core.data.model.Booking
+import com.example.vedika.core.data.model.SlotType
+import com.example.vedika.core.data.model.VendorType
 import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.BookingRepository
+import com.example.vedika.core.data.repository.VendorRepository
+import com.example.vedika.core.data.repository.CalendarRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import androidx.lifecycle.SavedStateHandle
 import java.util.UUID
 import javax.inject.Inject
 
 data class NewBookingFormState(
     val customerName: String = "",
-    val eventDateMillis: Long = System.currentTimeMillis() + 86400000L * 7, // default: 1 week out
+    val eventDateMillis: Long = System.currentTimeMillis() + 86400000L * 7,
+    val slotType: SlotType = SlotType.FULL_DAY,
+    val vendorType: VendorType = VendorType.VENUE,
     val totalAmount: String = "",
     val customerNameError: String? = null,
     val amountError: String? = null,
+    val isSlotConflict: Boolean = false,
     val isSubmitting: Boolean = false,
     val isSubmitSuccess: Boolean = false,
     val submitError: String? = null
@@ -28,28 +34,72 @@ data class NewBookingFormState(
 @HiltViewModel
 class NewBookingViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val bookingRepository: BookingRepository
+    private val bookingRepository: BookingRepository,
+    private val vendorRepository: VendorRepository,
+    private val calendarRepository: CalendarRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _formState = MutableStateFlow(NewBookingFormState())
+    private val _formState = MutableStateFlow(
+        NewBookingFormState(
+            eventDateMillis = savedStateHandle.get<Long>("selectedDate") ?: (System.currentTimeMillis() + 86400000L * 7)
+        )
+    )
     val formState: StateFlow<NewBookingFormState> = _formState
 
+    init {
+        viewModelScope.launch {
+            authRepository.getActiveVendor().collect { vendor ->
+                if (vendor != null) {
+                    val type = if (vendor.primaryServiceCategory.contains("Venue", ignoreCase = true)) 
+                        VendorType.VENUE else VendorType.DECORATOR
+                    _formState.update { it.copy(vendorType = type) }
+                }
+            }
+        }
+        // Run initial conflict check if prefilled
+        checkConflicts()
+    }
+
     fun onCustomerNameChange(value: String) {
-        _formState.value = _formState.value.copy(
-            customerName = value,
-            customerNameError = null
-        )
+        _formState.update { 
+            it.copy(customerName = value, customerNameError = null) 
+        }
     }
 
     fun onEventDateChange(millis: Long) {
-        _formState.value = _formState.value.copy(eventDateMillis = millis)
+        _formState.update { it.copy(eventDateMillis = millis) }
+        checkConflicts()
+    }
+
+    fun onSlotChange(slot: SlotType) {
+        _formState.update { it.copy(slotType = slot) }
+        checkConflicts()
+    }
+
+    private fun checkConflicts() {
+        viewModelScope.launch {
+            val vendor = authRepository.getActiveVendor().first() ?: return@launch
+            
+            val bookingConflictResult = bookingRepository.checkConflict(
+                vendorId = vendor.id,
+                date = _formState.value.eventDateMillis,
+                slotType = _formState.value.slotType
+            )
+            val bookingConflict = bookingConflictResult.getOrDefault(false)
+
+            val targetDate = java.time.Instant.ofEpochMilli(_formState.value.eventDateMillis)
+                .atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+            val manualBlock = calendarRepository.isDateBlocked(vendor.id, targetDate)
+
+            _formState.update { it.copy(isSlotConflict = bookingConflict || manualBlock) }
+        }
     }
 
     fun onTotalAmountChange(value: String) {
-        _formState.value = _formState.value.copy(
-            totalAmount = value,
-            amountError = null
-        )
+        _formState.update { 
+            it.copy(totalAmount = value, amountError = null) 
+        }
     }
 
     fun submitBooking(onSuccess: () -> Unit) {
@@ -86,7 +136,8 @@ class NewBookingViewModel @Inject constructor(
                 customerName = state.customerName.trim(),
                 eventDate = state.eventDateMillis,
                 status = BookingStatus.PENDING,
-                totalAmount = amount!!
+                totalAmount = amount!!,
+                slotType = state.slotType
             )
 
             bookingRepository.createBooking(booking)
@@ -98,9 +149,15 @@ class NewBookingViewModel @Inject constructor(
                     onSuccess()
                 }
                 .onFailure { e ->
+                    val userMessage = when {
+                        e.message?.contains("SLOT_OCCUPIED") == true -> "This slot overlaps with an existing booking."
+                        e.message?.contains("DATE_BLOCKED") == true -> "This date has been manually blocked and is unavailable."
+                        e.message?.contains("CAPACITY_FULL") == true -> "Full booking capacity reached for this date."
+                        else -> e.message ?: "Failed to create booking. Please try again."
+                    }
                     _formState.value = _formState.value.copy(
                         isSubmitting = false,
-                        submitError = e.message ?: "Failed to create booking"
+                        submitError = userMessage
                     )
                 }
         }

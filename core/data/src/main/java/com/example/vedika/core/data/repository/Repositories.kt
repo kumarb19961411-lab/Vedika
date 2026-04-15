@@ -1,10 +1,12 @@
 package com.example.vedika.core.data.repository
 
-import com.example.vedika.core.data.model.VendorUser
+import com.example.vedika.core.data.model.*
 import com.example.vedika.core.data.model.Booking
 import com.example.vedika.core.data.model.BookingStatus
 import com.example.vedika.core.data.model.InventoryItem
+import com.example.vedika.core.data.model.SlotType
 import com.example.vedika.core.data.model.VendorMockState
+import com.example.vedika.core.data.model.VendorUser
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -17,6 +19,7 @@ interface AuthRepository {
 
 interface VendorRepository {
     suspend fun getVendorProfile(vendorId: String): Result<VendorUser>
+    fun getVendorProfileStream(vendorId: String): Flow<VendorUser?>
     suspend fun updateBusinessName(vendorId: String, newName: String): Result<Unit>
     
     // Mock continuity methods
@@ -28,6 +31,7 @@ interface BookingRepository {
     fun getBookingsForVendor(vendorId: String): Flow<List<Booking>>
     suspend fun createBooking(booking: Booking): Result<Unit>
     suspend fun updateBookingStatus(bookingId: String, status: BookingStatus): Result<Unit>
+    suspend fun checkConflict(vendorId: String, date: Long, slotType: SlotType): Result<Boolean>
 }
 
 interface InventoryRepository {

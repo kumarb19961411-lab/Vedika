@@ -23,31 +23,36 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.vedika.core.design.components.VedikaTabTopAppBar
 import com.example.vedika.core.design.theme.NotoSerif
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
+    appVersion: String = "",
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     if (state.isLoading) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = Color(0xFF8F4E00))
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
         }
         return
     }
 
     val vendor = state.mockVendor
-    val primaryColor = Color(0xFF8F4E00)
-    val secondaryColor = Color(0xFF006A6A)
-    val surfaceColor = Color(0xFFFFF8EF)
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val secondaryColor = MaterialTheme.colorScheme.secondary
+    val surfaceColor = MaterialTheme.colorScheme.background
 
     Scaffold(
         topBar = {
             VedikaTabTopAppBar(title = "Partner Command")
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = surfaceColor
     ) { padding ->
         Column(
@@ -91,7 +96,7 @@ fun ProfileScreen(
                                     .size(112.dp)
                                     .rotate(-3f),
                                 shape = RoundedCornerShape(16.dp),
-                                color = Color(0xFFFF9933),
+                                color = MaterialTheme.colorScheme.primaryContainer,
                                 shadowElevation = 8.dp
                             ) {
                                 AsyncImage(
@@ -117,9 +122,9 @@ fun ProfileScreen(
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(Icons.Default.Verified, contentDescription = null, tint = Color.White, modifier = Modifier.size(12.dp))
+                                    Icon(Icons.Default.Verified, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondary, modifier = Modifier.size(12.dp))
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text("VERIFIED", color = Color.White, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                                    Text("VERIFIED", color = MaterialTheme.colorScheme.onSecondary, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -164,16 +169,26 @@ fun ProfileScreen(
                         title = "Profile Details",
                         subtitle = "Manage business info",
                         icon = Icons.Default.Person,
-                        iconContainerColor = Color(0xFFFFB77A).copy(alpha = 0.2f),
-                        iconColor = Color(0xFF6D3A00)
+                        iconContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
+                        iconColor = MaterialTheme.colorScheme.primary,
+                        onAction = {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Profile editing coming in Phase 3")
+                            }
+                        }
                     )
                     BentoCard(
                         modifier = Modifier.weight(1f),
                         title = "Portfolio",
                         subtitle = "Curate your showcase",
                         icon = Icons.Default.Collections,
-                        iconContainerColor = Color(0xFF90EFEF).copy(alpha = 0.2f),
-                        iconColor = Color(0xFF006E6E)
+                        iconContainerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.2f),
+                        iconColor = MaterialTheme.colorScheme.secondary,
+                        onAction = {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Portfolio management coming in Phase 3")
+                            }
+                        }
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
@@ -182,8 +197,13 @@ fun ProfileScreen(
                         title = "My Bookings",
                         subtitle = "Review reservations",
                         icon = Icons.Default.BookOnline,
-                        iconContainerColor = Color(0xFFFFDFA0).copy(alpha = 0.2f),
-                        iconColor = Color(0xFF795900)
+                        iconContainerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.2f),
+                        iconColor = MaterialTheme.colorScheme.tertiary,
+                        onAction = {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Booking history coming in Phase 3")
+                            }
+                        }
                     )
                     BentoCard(
                         modifier = Modifier.weight(1f),
@@ -191,7 +211,12 @@ fun ProfileScreen(
                         subtitle = "FAQs & Assistance",
                         icon = Icons.Default.SupportAgent,
                         iconContainerColor = Color.Gray.copy(alpha = 0.1f),
-                        iconColor = Color.DarkGray
+                        iconColor = Color.DarkGray,
+                        onAction = {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Support portal coming in Phase 3")
+                            }
+                        }
                     )
                 }
             }
@@ -204,16 +229,17 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE9E2D3)),
-                shape = RoundedCornerShape(16.dp)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                shape = RoundedCornerShape(12.dp)
             ) {
-                Icon(Icons.Default.Logout, contentDescription = null, tint = Color(0xFFBA1A1A))
+                Icon(Icons.Default.Logout, contentDescription = null, tint = MaterialTheme.colorScheme.error)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Sign Out", color = Color(0xFFBA1A1A), fontWeight = FontWeight.Bold)
+                Text("Sign Out", color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
             }
 
             Text(
-                text = "Version 2.4.2 • © 2024 Vedika V2 Suite",
+                text = if (appVersion.isNotBlank()) "Version $appVersion • \u00A9 2025 KalyanaVedika"
+                       else "KalyanaVedika Vendor Suite",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp),
@@ -234,13 +260,14 @@ private fun BentoCard(
     icon: ImageVector,
     iconContainerColor: Color,
     iconColor: Color,
+    onAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier.height(140.dp),
-        shape = RoundedCornerShape(20.dp),
-        color = Color(0xFFFBF3E4).copy(alpha = 0.7f),
-        onClick = {}
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        onClick = onAction
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

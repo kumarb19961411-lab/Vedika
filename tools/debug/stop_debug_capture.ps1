@@ -44,7 +44,9 @@ $info += "Model: " + (& $ADB_PATH -s $serial shell getprop ro.product.model)
 $info += "Android: " + (& $ADB_PATH -s $serial shell getprop ro.build.version.release)
 $info += "SDK: " + (& $ADB_PATH -s $serial shell getprop ro.build.version.sdk)
 $info += "Serial: $serial"
-$span = (Get-Date) - [DateTime]$session.StartTime
+$startTime = $session.StartTime -as [DateTime]
+if ($null -eq $startTime) { $startTime = Get-Date }
+$span = (Get-Date) - $startTime
 $info += "Session Duration: $($span.Minutes)m $($span.Seconds)s"
 $info | Out-File $infoPath
 

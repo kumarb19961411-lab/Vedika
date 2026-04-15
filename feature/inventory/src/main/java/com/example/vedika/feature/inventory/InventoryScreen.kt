@@ -55,7 +55,7 @@ fun InventoryScreen(
                     Text(
                         text = if (state.vendorType == VendorType.VENUE) "VENUE RESOURCES" else "DECOR ASSETS",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFF8F4E00), // Saffron
+                        color = MaterialTheme.colorScheme.primary, // Saffron
                         letterSpacing = 2.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -122,7 +122,7 @@ private fun InventoryItemCard(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (item.isAvailable) 
                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
@@ -149,7 +149,7 @@ private fun InventoryItemCard(
                         text = currencyFormat.format(item.price),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = if (item.isAvailable) Color(0xFF006A6A) else Color(0xFF006A6A).copy(alpha = 0.5f)
+                        color = if (item.isAvailable) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
                     )
                 }
                 Switch(
@@ -157,9 +157,9 @@ private fun InventoryItemCard(
                     onCheckedChange = { _ -> onToggleAvailability() },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
-                        checkedTrackColor = Color(0xFF006A6A),
+                        checkedTrackColor = MaterialTheme.colorScheme.secondary,
                         uncheckedThumbColor = MaterialTheme.colorScheme.outline,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
+                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceContainer
                     )
                 )
             }
@@ -177,8 +177,8 @@ private fun InventoryItemCard(
             Spacer(modifier = Modifier.height(16.dp))
             Surface(
                 shape = CircleShape,
-                color = if (item.isAvailable) Color(0xFFE8F5E9) else Color(0xFFFFEBEE),
-                contentColor = if (item.isAvailable) Color(0xFF2E7D32) else Color(0xFFD32F2F)
+                color = if (item.isAvailable) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.errorContainer,
+                contentColor = if (item.isAvailable) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onErrorContainer
             ) {
                 Text(
                     text = if (item.isAvailable) "AVAILABLE" else "OUT OF STOCK",

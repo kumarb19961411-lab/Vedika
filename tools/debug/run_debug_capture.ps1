@@ -26,7 +26,37 @@ function Show-Menu {
 
 do {
     Show-Menu
-    $choice = Read-Host "`nSelect an option [1-6]"
+    $choice = $null
+    Write-Host "`nSelect an option [1-6] (or wait if capturing) " -NoNewline
+
+    while ($true) {
+        $session = Get-ActiveSession
+        if ($null -ne $session) {
+            $startTime = $session.StartTime -as [DateTime]
+            if ($null -eq $startTime) { $startTime = Get-Date }
+            $duration = (Get-Date) - $startTime
+            if ($duration.TotalSeconds -ge 180) {
+                Write-Host "`n`n[!] 3-minute video limit reached. Auto-stopping capture..." -ForegroundColor Yellow
+                & "$PSScriptRoot\stop_debug_capture.ps1"
+                Write-Host ""
+                $ans = Read-Host "Capture files exported. Start a new capture? (y/n)"
+                if ($ans -notmatch '^[nN]') {
+                    & "$PSScriptRoot\start_debug_capture.ps1"
+                }
+                break
+            }
+        }
+
+        if ([Console]::KeyAvailable) {
+            $key = [Console]::ReadKey($true)
+            $choice = [string]$key.KeyChar
+            Write-Host $choice
+            break
+        }
+        Start-Sleep -Milliseconds 500
+    }
+
+    if ($null -eq $choice) { continue }
 
     switch ($choice) {
         "1" { & "$PSScriptRoot\start_debug_capture.ps1"; Pause }
@@ -37,4 +67,4 @@ do {
         "6" { Write-Host "Goodbye!" -ForegroundColor Cyan; break }
         default { Write-Host "Invalid choice." -ForegroundColor Red; Start-Sleep -Seconds 1 }
     }
-} while ($true)
+} while ($choice -ne "6")

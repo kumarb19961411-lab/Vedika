@@ -18,21 +18,23 @@ Vedika is a modern, frontend-first Android application designed for event planni
 
 ## 📖 Documentation Index
 
+### 🚀 Development & Status
+- [**System Status**](docs/SYSTEM_STATUS.md) — **CURRENT**: Phase 3 Backend/Hardening status.
+- [**V2 Scope**](docs/v2_scope.md) — Roadmap and Phase 1-2 lock status.
+
 ### 🏙 Architecture & Core
-- [**Project Structure**](docs/project_structure.md) — Module map and ownership boundaries.
-- [**Navigation Shell**](docs/vendor_shell_navigation.md) — Bottom nav, routes, and visibility rules.
-- [**V2 Scope**](docs/v2_scope.md) — Current status (Phase 2B Complete) and roadmap.
-- [**Changelog V2**](docs/changelog_v2.md) — History of major V2 milestones.
+- [**Project Structure**](docs/architecture/project_structure.md) — Module map and ownership boundaries.
+- [**Data Continuity**](docs/architecture/mock_data_flow.md) — Mapping registration inputs to the vendor shell.
 
-### 🔐 Authentication & Control
-- [**Auth Workflow**](docs/v2_auth_workflow.md) — Branching logic for Sign In/Up and User/Partner roles.
-- [**Role Behavior Matrix**](docs/role_behavior_matrix.md) — Quick reference for destination logic.
-- [**Data Continuity**](docs/mock_data_flow.md) — Mapping registration inputs to the vendor shell.
+### 🔐 Guides & Workflows
+- [**Navigation Shell**](docs/guides/vendor_shell_navigation.md) — Bottom nav, routes, and visibility rules.
+- [**Auth Workflow**](docs/guides/v2_auth_workflow.md) — Sign In/Up and User/Partner branching.
+- [**Regression Guard**](docs/guides/android_build_regression_guard.md) — **CRITICAL**: Build and safety rules.
+- [**Emulator Checklist**](docs/guides/emulator_test_checklist.md) — QA verification flows.
 
-### 🛡 Stability & QA
-- [**Regression Guard**](docs/android_build_regression_guard.md) — **CRITICAL**: Mandatory build and navigation safety rules.
-- [**Emulator Checklist**](docs/emulator_test_checklist.md) — Manual verification flows for the onboarding path.
-- [**Historical Logs**](docs/archive/) — Archived build issues and phase-specific reports.
+### 🛡 History & Governance
+- [**Changelog V2**](docs/changelog_v2.md) — Major milestones.
+- [**Historical Logs**](docs/archive/) — Archived build fixes and phase snapshots.
 
 ---
 

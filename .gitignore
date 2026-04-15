@@ -28,6 +28,36 @@ local.properties
 
 # Temporary build error logs
 build_err.txt
+# Built outputs
+*.iml
+.gradle
+/local.properties
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# IDE — IntelliJ / Android Studio
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Kotlin build metadata
+.kotlin/
+
+# Gradle build cache output
+**/build/
+
+# Temporary build error logs
+build_err.txt
 
 # Google services (don't commit real keys — commit google-services.json only for dev)
 # google-services.json
@@ -35,3 +65,12 @@ build_err.txt
 # Debug reports and toolkit session state
 /debug_reports/
 /tools/debug/.active_session.json
+
+# Remnant cleanup
+/debug_reports.zip
+/extracted_audit/
+build_log.txt
+*.log
+
+# Component/Resource snapshots
+/resources/*.zip
