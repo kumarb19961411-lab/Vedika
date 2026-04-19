@@ -4,24 +4,29 @@ created: {{date}}
 tags: [feature, "status/in_progress"]
 ---
 # Feature: {{title}}
-**Status**: 🟡 In Progress
-**Created**: {{date}}
+**Status**: 🟡 In Progress / ✅ Integrated / 🔴 Blocked
+**Epoch Started**: {{date}}
 
-## Overview
-Detailed description of the feature, business value, and target user (Vendor vs. Consumer).
+## 1. Feature Specifications & Scope
+Detailed description of the feature requested.
+- **Business Value**: Why are we building this?
+- **Target User**: Vendor vs. Consumer.
+- **Surface Area**: `feature:auth`, `feature:dashboard`, or global UI?
 
-## Implementation Checklist
-- [ ] **Research**: Align with `backend_integration_blueprint`.
-- [ ] **Plan**: Build API interfaces and UI skeleton.
-- [ ] **Code**: ViewModel logic and standard tests.
-- [ ] **Review**: Ensure no overlaps in `role_behavior_matrix`.
+## 2. Implementation Checklist
+- [ ] **Architecture Evaluation**: Align with `backend_integration_blueprint`. Ensure standard ViewModels.
+- [ ] **Data Model Design**: Define expected Firestore models into `backend_sync_contract.md`.
+- [ ] **UI Implementation**: Build stateless Jetpack Compose components.
+- [ ] **Logic Integration**: Wire UI to standard `core:data` repositories.
+- [ ] **Final Review**: Validate cross-module boundaries to ensure no overlaps in `role_behavior_matrix`.
 
-## Design Decisions
-- **Decision 1**: Reason... Keep records of "Why" not just "What".
+## 3. Structural Design Decisions
+- **Decision 1**: Reason... Keep hard records of "Why" not just "What". E.g., Why we chose `StateFlow` over `LiveData` for this.
+- **Decision 2**: Reason...
 
-## Rollout Impact
-Which existing flows will this touch? How are we buffering regressions?
+## 4. Rollout & Blast Radius
+Which existing flows will this modification physically touch? How are we buffering against structural regressions?
 
 ## Notes & Resources
-- [[docs/SYSTEM_STATUS|System Status]]
-- Associated Pull Request: #
+- Canonical reference to Phase Map: [[docs/SYSTEM_STATUS|System Status]]
+- Associated Pull Request: `#PR_Number`

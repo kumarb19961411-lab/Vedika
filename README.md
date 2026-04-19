@@ -20,12 +20,12 @@ Vedika is a modern, frontend-first Android application designed for event planni
 
 ### 🏙 Architecture & Core
 - [**System Status**](docs/SYSTEM_STATUS.md) — CURRENT: Phase 3 Backend Integration.
-- [**Repo Map**](docs/architecture/repo_map.md) — Module map and ownership boundaries.
-- [**Auth Master Workflow**](docs/architecture/auth_master_workflow.md) — Sign In/Up and User/Partner branching.
+- [**Repo Map**](docs/architecture/repo_map.md) — Module map and feature ownership boundaries.
+- [**Auth Master Workflow**](docs/architecture/auth_master_workflow.md) — Sign In/Up and User/Partner deterministic branching.
 - [**Backend Sync Contract**](docs/architecture/backend_sync_contract.md) — Firestore data contracts.
-- [**Session Restoration**](docs/architecture/session_restoration.md) — JWT cache and app launch mechanisms.
+- [**Session Restoration**](docs/architecture/session_restoration.md) — JWT cache and zero-latency app launch mechanisms.
 - [**Backend Blueprint**](docs/architecture/backend_integration_blueprint.md) — Setup details for Phase 3 DB integration.
-- [**Role Behavior Matrix**](docs/architecture/role_behavior_matrix.md) — Quick reference for deterministic routing.
+- [**Role Behavior Matrix**](docs/architecture/role_behavior_matrix.md) — Quick reference for state routing and graph clearance.
 
 ### 🔐 Guides & Workflows
 - [**User Sign Up Guide**](docs/guides/user_signup_implementation_guide.md)
@@ -39,16 +39,16 @@ Vedika is a modern, frontend-first Android application designed for event planni
 ### 🛡 History & Governance
 - [**Regression Guard**](docs/android_build_regression_guard.md) — **CRITICAL**: Build and safety rules.
 - [**Changelog V2**](docs/changelog_v2.md) — Major milestones.
-- [**Historical Logs**](docs/archive/README.md) — Archived build fixes and obsolete files.
+- [**Historical Logs**](docs/archive/README.md) — Archived build fixes and obsolete phase files.
 
 ---
 
 ## 🛠 Documentation Governance
 
-To maintain documentation integrity, please follow these rules:
+To maintain documentation integrity, please follow these strict rules:
 
-1. **Canonical Authorities**: The architecture and guides outlined above must reflect actual source tree behavior.
-2. **Archival Procedure**: Phase-specific documents should be moved to `docs/archive/` once the phase is locked.
+1. **Canonical Authorities**: The architecture and guides outlined above must reflect actual source tree behavior. If the code deviates, update these documents immediately.
+2. **Archival Procedure**: Phase-specific documents should be moved to `docs/archive/` once the phase is permanently locked. No active `README.md` links should ever point inside the archive.
 
 ---
 *Vedika V2 — Crafting Auspicious Occasions.*
