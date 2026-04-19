@@ -19,6 +19,12 @@ interface AuthRepository {
     suspend fun logout()
 }
 
+interface UserRepository {
+    suspend fun getUserProfile(uid: String): Result<AppUser>
+    suspend fun createUserProfile(user: AppUser): Result<Unit>
+    fun getUserProfileStream(uid: String): Flow<AppUser?>
+}
+
 interface VendorRepository {
     suspend fun getVendorProfile(vendorId: String): Result<VendorUser>
     fun getVendorProfileStream(vendorId: String): Flow<VendorUser?>

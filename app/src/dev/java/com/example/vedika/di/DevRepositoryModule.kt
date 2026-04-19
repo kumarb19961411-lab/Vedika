@@ -3,9 +3,11 @@ package com.example.vedika.di
 import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.BookingRepository
 import com.example.vedika.core.data.repository.InventoryRepository
+import com.example.vedika.core.data.repository.UserRepository
 import com.example.vedika.core.data.repository.VendorRepository
 import com.example.vedika.core.data.repository.CalendarRepository
 import com.example.vedika.data.fake.FakeAuthRepository
+import com.example.vedika.data.fake.FakeUserRepository
 import com.example.vedika.data.fake.FakeBookingRepository
 import com.example.vedika.data.fake.FakeInventoryRepository
 import com.example.vedika.data.fake.FakeVendorRepository
@@ -25,6 +27,12 @@ abstract class DevRepositoryModule {
     abstract fun bindAuthRepository(
         fakeAuthRepository: FakeAuthRepository
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(
+        fakeUserRepository: FakeUserRepository
+    ): UserRepository
 
     @Binds
     @Singleton

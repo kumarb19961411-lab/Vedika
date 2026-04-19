@@ -1,5 +1,14 @@
 package com.example.vedika.core.data.model
 
+data class AppUser(
+    val uid: String,
+    val fullName: String,
+    val phoneNumber: String,
+    val createdAt: Long = System.currentTimeMillis(),
+    val userType: String = "USER",
+    val profileImageUrl: String? = null
+)
+
 data class VendorUser(
     val id: String,
     val businessName: String,
