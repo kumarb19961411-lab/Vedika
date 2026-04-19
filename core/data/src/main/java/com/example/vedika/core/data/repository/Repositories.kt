@@ -9,9 +9,11 @@ import com.example.vedika.core.data.model.VendorMockState
 import com.example.vedika.core.data.model.VendorUser
 import kotlinx.coroutines.flow.Flow
 
+import android.app.Activity
+
 interface AuthRepository {
     fun getActiveVendor(): Flow<VendorUser?>
-    suspend fun sendOtp(phoneNumber: String): Result<String>
+    suspend fun sendOtp(phoneNumber: String, activity: Activity): Result<String>
     suspend fun verifyOtp(verificationId: String, otp: String): Result<VendorUser>
     suspend fun loginAsDevBypass(username: String): Result<VendorUser>
     suspend fun logout()

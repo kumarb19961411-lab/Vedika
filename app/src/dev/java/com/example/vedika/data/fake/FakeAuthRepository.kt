@@ -7,13 +7,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
+import android.app.Activity
+
 @Singleton
 class FakeAuthRepository @Inject constructor() : AuthRepository {
     private val currentUser = MutableStateFlow<VendorUser?>(null)
 
     override fun getActiveVendor(): Flow<VendorUser?> = currentUser
 
-    override suspend fun sendOtp(phoneNumber: String): Result<String> {
+    override suspend fun sendOtp(phoneNumber: String, activity: Activity): Result<String> {
         kotlinx.coroutines.delay(1500) // Simulate network delay
         if (phoneNumber.isBlank()) return Result.failure(IllegalArgumentException("Invalid phone"))
         return Result.success("mock-verification-id-12345")

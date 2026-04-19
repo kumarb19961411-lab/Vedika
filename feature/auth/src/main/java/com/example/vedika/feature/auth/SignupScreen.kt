@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
@@ -42,6 +43,8 @@ fun SignupScreen(
     val uiState by viewModel.uiState.collectAsState()
     val isPartnerMode = uiState.accountMode == AccountMode.PARTNER
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
+    val activity = context as? android.app.Activity
 
     // Stable initialization of the AuthFlow state on screen entry
     LaunchedEffect(Unit) {
@@ -263,7 +266,11 @@ fun SignupScreen(
                             Spacer(modifier = Modifier.height(24.dp))
 
                             Button(
-                                onClick = { viewModel.sendOtp(onSuccess = onNavigateToOtp) },
+                                onClick = { 
+                                    activity?.let {
+                                        viewModel.sendOtp(it, onSuccess = onNavigateToOtp) 
+                                    }
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(56.dp),

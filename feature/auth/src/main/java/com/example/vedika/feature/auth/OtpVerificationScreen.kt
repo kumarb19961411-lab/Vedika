@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
@@ -47,6 +48,8 @@ fun OtpVerificationScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
+    val activity = context as? android.app.Activity
 
     Scaffold(
         topBar = {
@@ -174,7 +177,9 @@ fun OtpVerificationScreen(
                     color = if (uiState.isResendEnabled) MaterialTheme.colorScheme.primary else Color.Gray,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 24.dp).clickable(enabled = uiState.isResendEnabled) {
-                        viewModel.resendOtp()
+                        activity?.let {
+                            viewModel.resendOtp(it)
+                        }
                     }
                 )
 

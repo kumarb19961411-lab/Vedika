@@ -10,6 +10,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
+import android.app.Activity
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
 
 class FirebaseAuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
@@ -31,15 +40,50 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun sendOtp(phoneNumber: String): Result<String> {
-        // OTP logic deferred to UI callback binding in Prod auth.
-        // Returning failure here unless PhoneAuthProvider handles it fully.
-        return Result.failure(Exception("Live OTP via Repo suspend is unimplemented. Use PhoneAuthProvider in Activity."))
+
+    override suspend fun sendOtp(phoneNumber: String, activity: Activity): Result<String> = suspendCancellableCoroutine { continuation ->
+        val options = PhoneAuthOptions.newBuilder(auth)
+            .setPhoneNumber(phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(activity)
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    // Auto-retrieval handled by implicit device services if supported. 
+                    // To keep state deterministic, we rely on the OTP input step for now.
+                }
+
+                override fun onVerificationFailed(e: FirebaseException) {
+                    if (continuation.isActive) continuation.resume(Result.failure(e))
+                }
+
+                override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                    if (continuation.isActive) continuation.resume(Result.success(verificationId))
+                }
+            })
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
     override suspend fun verifyOtp(verificationId: String, otp: String): Result<VendorUser> {
-        // Deferred until complete Activity-level PhoneAuthProvider is established.
-        return Result.failure(Exception("Live OTP Verify is unimplemented"))
+        return try {
+            val credential = PhoneAuthProvider.getCredential(verificationId, otp)
+            val authResult = auth.signInWithCredential(credential).await()
+            val user = authResult.user 
+            if (user != null) {
+                // Return placeholder user populated ONLY with uid. Subsequent layers will fetch true profile.
+                Result.success(VendorUser(
+                    id = user.uid,
+                    businessName = "",
+                    ownerName = "",
+                    isVerified = false,
+                    primaryServiceCategory = ""
+                ))
+            } else {
+                Result.failure(Exception("Sign in succeeded but returned null user"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun loginAsDevBypass(username: String): Result<VendorUser> {

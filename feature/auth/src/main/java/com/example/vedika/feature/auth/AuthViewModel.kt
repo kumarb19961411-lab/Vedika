@@ -18,6 +18,14 @@ import javax.inject.Inject
 enum class AccountMode { USER, PARTNER }
 enum class AuthFlow { SIGN_IN, SIGN_UP }
 
+sealed class RoleResolutionState {
+    object Idle : RoleResolutionState()
+    object Loading : RoleResolutionState()
+    object OtpSent : RoleResolutionState()
+    data class Verified(val uid: String) : RoleResolutionState()
+    data class Error(val message: String) : RoleResolutionState()
+}
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
@@ -70,7 +78,7 @@ class AuthViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(error = null)
     }
 
-    fun sendOtp(onSuccess: () -> Unit) {
+    fun sendOtp(activity: android.app.Activity, onSuccess: () -> Unit) {
         val state = _uiState.value
         // For Partner Sign-Up, the owner name must be provided before sending OTP
         if (state.authFlow == AuthFlow.SIGN_UP && state.accountMode == AccountMode.PARTNER
@@ -83,20 +91,28 @@ class AuthViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            val result = authRepository.sendOtp(_uiState.value.phoneNumber)
+            _uiState.value = _uiState.value.copy(
+                isLoading = true, 
+                error = null,
+                roleResolutionState = RoleResolutionState.Loading
+            )
+            val result = authRepository.sendOtp(_uiState.value.phoneNumber, activity)
             logDebug("Sending OTP to ${_uiState.value.phoneNumber}...")
             _uiState.value = _uiState.value.copy(isLoading = false)
             result.onSuccess { verificationId ->
                 _uiState.value = _uiState.value.copy(
                     verificationId = verificationId,
                     isResendEnabled = false,
-                    countdown = 30
+                    countdown = 30,
+                    roleResolutionState = RoleResolutionState.OtpSent
                 )
                 startCountdown()
                 onSuccess()
             }.onFailure { ex ->
-                _uiState.value = _uiState.value.copy(error = ex.message)
+                _uiState.value = _uiState.value.copy(
+                    error = ex.message,
+                    roleResolutionState = RoleResolutionState.Error(ex.message ?: "Failed to send OTP")
+                )
             }
         }
     }
@@ -111,9 +127,9 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun resendOtp() {
+    fun resendOtp(activity: android.app.Activity) {
         if (!_uiState.value.isResendEnabled) return
-        sendOtp { /* No-op success callback for resend */ }
+        sendOtp(activity) { /* No-op success callback for resend */ }
     }
 
     fun verifyOtp(onSuccess: () -> Unit) {
@@ -123,13 +139,23 @@ class AuthViewModel @Inject constructor(
         }
         val verificationId = _uiState.value.verificationId ?: "mock-session"
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = _uiState.value.copy(
+                isLoading = true, 
+                error = null,
+                roleResolutionState = RoleResolutionState.Loading
+            )
             val result = authRepository.verifyOtp(verificationId, _uiState.value.otp)
             _uiState.value = _uiState.value.copy(isLoading = false)
-            result.onSuccess {
+            result.onSuccess { user ->
+                _uiState.value = _uiState.value.copy(
+                    roleResolutionState = RoleResolutionState.Verified(user.id)
+                )
                 onSuccess()
             }.onFailure { ex ->
-                _uiState.value = _uiState.value.copy(error = ex.message ?: "Invalid OTP")
+                _uiState.value = _uiState.value.copy(
+                    error = ex.message ?: "Invalid OTP",
+                    roleResolutionState = RoleResolutionState.Error(ex.message ?: "Invalid OTP")
+                )
             }
         }
     }
@@ -283,6 +309,7 @@ data class AuthUiState(
     val countdown: Int = 0,
     val selectedCategory: String? = null,
     val ownerName: String = "",
+    val roleResolutionState: RoleResolutionState = RoleResolutionState.Idle,
     
     // Venue Registration Form State
     val venueName: String = "",
