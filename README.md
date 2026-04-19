@@ -18,24 +18,28 @@ Vedika is a modern, frontend-first Android application designed for event planni
 
 ## 📖 Documentation Index
 
-### 🚀 Development & Status
-- [**Project Hub**](docs/00_Home/Project_Hub.md) — Master Obsidian entry point.
-- [**Current Status**](docs/00_Home/Current_Status.md) — **CURRENT**: Phase 3 Backend/Hardening status.
-- [**Scope By Phase**](docs/01_Product/Scope_By_Phase.md) — Roadmap and Phase 1-3 definitions.
-
 ### 🏙 Architecture & Core
-- [**Repo Map**](docs/02_Architecture/Repo_Map.md) — Module map and ownership boundaries.
-- [**Vendor Profile Contract**](docs/04_Data_Contracts/Vendor_Profile_Contract.md) — Mapping registration inputs to the vendor shell.
+- [**System Status**](docs/SYSTEM_STATUS.md) — CURRENT: Phase 3 Backend Integration.
+- [**Repo Map**](docs/architecture/repo_map.md) — Module map and ownership boundaries.
+- [**Auth Master Workflow**](docs/architecture/auth_master_workflow.md) — Sign In/Up and User/Partner branching.
+- [**Backend Sync Contract**](docs/architecture/backend_sync_contract.md) — Firestore data contracts.
+- [**Session Restoration**](docs/architecture/session_restoration.md) — JWT cache and app launch mechanisms.
+- [**Backend Blueprint**](docs/architecture/backend_integration_blueprint.md) — Setup details for Phase 3 DB integration.
+- [**Role Behavior Matrix**](docs/architecture/role_behavior_matrix.md) — Quick reference for deterministic routing.
 
 ### 🔐 Guides & Workflows
-- [**Navigation Map**](docs/02_Architecture/Navigation_Map.md) — Bottom nav, routes, and visibility rules.
-- [**Auth Master Workflow**](docs/03_Workflows/Auth_Master_Workflow.md) — Sign In/Up and User/Partner branching.
-- [**Regression Guard**](docs/guides/android_build_regression_guard.md) — **CRITICAL**: Build and safety rules.
-- [**Emulator Checklist**](docs/guides/emulator_test_checklist.md) — QA verification flows.
+- [**User Sign Up Guide**](docs/guides/user_signup_implementation_guide.md)
+- [**User Sign In Guide**](docs/guides/user_signin_implementation_guide.md)
+- [**Vendor Sign In Guide**](docs/guides/vendor_signin_implementation_guide.md)
+- [**Session Restoration Guide**](docs/guides/session_restoration_guide.md)
+- [**User Onboarding Guide**](docs/guides/user_onboarding_guide.md)
+- [**Vendor Onboarding Guide**](docs/guides/vendor_onboarding_guide.md)
+- [**Role Resolution Guide**](docs/guides/role_resolution_guide.md)
 
 ### 🛡 History & Governance
+- [**Regression Guard**](docs/android_build_regression_guard.md) — **CRITICAL**: Build and safety rules.
 - [**Changelog V2**](docs/changelog_v2.md) — Major milestones.
-- [**Historical Logs**](docs/archive/) — Archived build fixes and phase snapshots.
+- [**Historical Logs**](docs/archive/README.md) — Archived build fixes and obsolete files.
 
 ---
 
@@ -43,13 +47,8 @@ Vedika is a modern, frontend-first Android application designed for event planni
 
 To maintain documentation integrity, please follow these rules:
 
-1. **Canonical Authorities**: The following files in the Obsidian vault are primary sources of truth:
-    - `docs/guides/android_build_regression_guard.md` (Build & Dependencies)
-    - `docs/02_Architecture/Navigation_Map.md` (Routes & Shell UI)
-    - `docs/03_Workflows/Auth_Master_Workflow.md` (Auth logic)
-    - `docs/04_Data_Contracts/Vendor_Profile_Contract.md` (Data mapping)
+1. **Canonical Authorities**: The architecture and guides outlined above must reflect actual source tree behavior.
 2. **Archival Procedure**: Phase-specific documents should be moved to `docs/archive/` once the phase is locked.
-3. **Historical Logs**: Do not delete `androidstudiochanges.md` or `BUILD_WARNING_RESOLUTION.md`.
 
 ---
 *Vedika V2 — Crafting Auspicious Occasions.*

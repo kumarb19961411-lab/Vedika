@@ -1,21 +1,34 @@
+---
+title: "Bug: {{title}}"
+created: {{date}}
+tags: [bug, "status/investigating"]
+severity: High
+---
 # Bug: {{title}}
 **Stability Impact**: 🔴 High
 **Status**: 🔎 Investigating
 
 ## Description
-What is the bug? What is the observed behavior?
+What is the bug? What is the observed behavior compared to the expected behavior?
 
 ## Reproduction Steps
-1. Open app...
-2. Click...
+1. Navigate to...
+2. Perform action...
 3. Result: ...
+4. Expected: ...
 
-## Root Cause
-Analysis of why this happened.
+## Environment Details
+- **Build**: devDebug / stagingDebug / release
+- **Device**: Emulator or specific physical device
+- **Backend Status**: Reaching Firebase or Emulator?
 
-## Proposed Fix
-- Link to [[docs/guides/regression_guard|Regression Guard]] for build rules.
+## Root Cause Analysis
+Explain the exact layer (View, ViewModel, Domain, Data) where the bug originates.
+
+## Proposed Code Fix
+- Which files will be touched?
+- Link to [[docs/android_build_regression_guard|Regression Guard]] for build rules.
 
 ## Verification
-- [ ] Manual test
-- [ ] Added regression test
+- [ ] Manual regression block tested
+- [ ] CI execution clean
