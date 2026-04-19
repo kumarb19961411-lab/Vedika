@@ -18,28 +18,30 @@ Vedika is a modern, frontend-first Android application designed for event planni
 
 ## 📖 Documentation Index
 
-### 🏙 Architecture & Core
+### 🏙 Canonical Current Architecture
 - [**System Status**](docs/SYSTEM_STATUS.md) — CURRENT: Phase 3 Backend Integration.
 - [**Repo Map**](docs/architecture/repo_map.md) — Module map and feature ownership boundaries.
 - [**Auth Master Workflow**](docs/architecture/auth_master_workflow.md) — Sign In/Up and User/Partner deterministic branching.
-- [**Backend Sync Contract**](docs/architecture/backend_sync_contract.md) — Firestore data contracts.
-- [**Session Restoration**](docs/architecture/session_restoration.md) — JWT cache and zero-latency app launch mechanisms.
-- [**Backend Blueprint**](docs/architecture/backend_integration_blueprint.md) — Setup details for Phase 3 DB integration.
 - [**Role Behavior Matrix**](docs/architecture/role_behavior_matrix.md) — Quick reference for state routing and graph clearance.
+- [**Backend Sync Contract**](docs/architecture/backend_sync_contract.md) — Firestore data contracts.
+- [**Backend Blueprint**](docs/architecture/backend_integration_blueprint.md) — Setup details for Phase 3 DB integration.
+- [**Session Restoration**](docs/architecture/session_restoration.md) — JWT cache and zero-latency app launch mechanisms.
 
-### 🔐 Guides & Workflows
-- [**User Sign Up Guide**](docs/guides/user_signup_implementation_guide.md)
+### 🔐 Operational Guides & Workflows
 - [**User Sign In Guide**](docs/guides/user_signin_implementation_guide.md)
+- [**User Sign Up Guide**](docs/guides/user_signup_implementation_guide.md)
 - [**Vendor Sign In Guide**](docs/guides/vendor_signin_implementation_guide.md)
 - [**Session Restoration Guide**](docs/guides/session_restoration_guide.md)
 - [**User Onboarding Guide**](docs/guides/user_onboarding_guide.md)
 - [**Vendor Onboarding Guide**](docs/guides/vendor_onboarding_guide.md)
 - [**Role Resolution Guide**](docs/guides/role_resolution_guide.md)
+- [**Debug Capture Workflow**](docs/guides/debug_capture_workflow.md)
+- [**Emulator Test Checklist**](docs/guides/emulator_test_checklist.md)
 
-### 🛡 History & Governance
+### 🛡 Historical/Archive Docs
+- [**Archive Index**](docs/archive/README.md) — Archived build fixes and obsolete phase files.
 - [**Regression Guard**](docs/android_build_regression_guard.md) — **CRITICAL**: Build and safety rules.
 - [**Changelog V2**](docs/changelog_v2.md) — Major milestones.
-- [**Historical Logs**](docs/archive/README.md) — Archived build fixes and obsolete phase files.
 
 ---
 
