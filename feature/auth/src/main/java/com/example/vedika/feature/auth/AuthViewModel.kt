@@ -22,7 +22,7 @@ sealed class RoleResolutionState {
     object Idle : RoleResolutionState()
     object Loading : RoleResolutionState()
     object OtpSent : RoleResolutionState()
-    data class Verified(val uid: String) : RoleResolutionState()
+    data class Verified(val uid: String, val profileExists: Boolean = false) : RoleResolutionState()
     data class Error(val message: String) : RoleResolutionState()
 }
 
@@ -145,14 +145,38 @@ class AuthViewModel @Inject constructor(
                 roleResolutionState = RoleResolutionState.Loading
             )
             val result = authRepository.verifyOtp(verificationId, _uiState.value.otp)
-            _uiState.value = _uiState.value.copy(isLoading = false)
             result.onSuccess { user ->
-                _uiState.value = _uiState.value.copy(
-                    roleResolutionState = RoleResolutionState.Verified(user.id)
-                )
-                onSuccess()
+                if (_uiState.value.accountMode == AccountMode.PARTNER) {
+                    val profileResult = vendorRepository.getVendorProfile(user.id)
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                    profileResult.onSuccess {
+                        _uiState.value = _uiState.value.copy(
+                            roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                        )
+                        onSuccess()
+                    }.onFailure { ex ->
+                        if (ex.message == "VENDOR_NOT_FOUND") {
+                            _uiState.value = _uiState.value.copy(
+                                roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
+                            )
+                            onSuccess()
+                        } else {
+                            _uiState.value = _uiState.value.copy(
+                                error = "Failed to load profile. Please try again.",
+                                roleResolutionState = RoleResolutionState.Error("Failed to load profile.")
+                            )
+                        }
+                    }
+                } else {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                    _uiState.value = _uiState.value.copy(
+                        roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
+                    )
+                    onSuccess()
+                }
             }.onFailure { ex ->
                 _uiState.value = _uiState.value.copy(
+                    isLoading = false,
                     error = ex.message ?: "Invalid OTP",
                     roleResolutionState = RoleResolutionState.Error(ex.message ?: "Invalid OTP")
                 )
@@ -164,11 +188,40 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             val result = authRepository.loginAsDevBypass("dev")
-            _uiState.value = _uiState.value.copy(isLoading = false)
-            result.onSuccess {
-                onSuccess()
+            result.onSuccess { user ->
+                if (_uiState.value.accountMode == AccountMode.PARTNER) {
+                    val profileResult = vendorRepository.getVendorProfile(user.id)
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                    profileResult.onSuccess {
+                        _uiState.value = _uiState.value.copy(
+                            roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                        )
+                        onSuccess()
+                    }.onFailure { ex ->
+                        if (ex.message == "VENDOR_NOT_FOUND") {
+                            _uiState.value = _uiState.value.copy(
+                                roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
+                            )
+                            onSuccess()
+                        } else {
+                            _uiState.value = _uiState.value.copy(
+                                error = "Failed to load profile. Please try again.",
+                                roleResolutionState = RoleResolutionState.Error("Failed to load profile.")
+                            )
+                        }
+                    }
+                } else {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
+                    _uiState.value = _uiState.value.copy(
+                        roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
+                    )
+                    onSuccess()
+                }
             }.onFailure { ex ->
-                _uiState.value = _uiState.value.copy(error = ex.message)
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = ex.message
+                )
             }
         }
     }

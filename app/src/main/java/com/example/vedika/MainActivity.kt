@@ -177,17 +177,18 @@ fun VedikaAppShell() {
                     OtpVerificationScreen(
                         viewModel = authViewModel,
                         onVerificationSuccess = {
+                            val verifiedState = currentAuthState.roleResolutionState as? RoleResolutionState.Verified
+                            val profileExists = verifiedState?.profileExists ?: false
                             val route = when {
                                 currentAuthState.accountMode == AccountMode.USER -> {
                                     VedikaDestination.Dashboard.route
                                 }
-                                currentAuthState.accountMode == AccountMode.PARTNER && 
-                                        currentAuthState.authFlow == AuthFlow.SIGN_IN -> {
-                                    VedikaDestination.Dashboard.route
-                                }
-                                currentAuthState.accountMode == AccountMode.PARTNER && 
-                                        currentAuthState.authFlow == AuthFlow.SIGN_UP -> {
-                                    VedikaDestination.CategorySelection.route
+                                currentAuthState.accountMode == AccountMode.PARTNER -> {
+                                    if (profileExists) {
+                                        VedikaDestination.Dashboard.route
+                                    } else {
+                                        VedikaDestination.CategorySelection.route
+                                    }
                                 }
                                 else -> VedikaDestination.Dashboard.route
                             }
