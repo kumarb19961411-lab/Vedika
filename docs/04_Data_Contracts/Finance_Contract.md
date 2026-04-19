@@ -1,0 +1,10 @@
+---
+title: Finance Contract
+type: contract
+status: active
+owner: Finance Ledger Engineer
+phase: all
+last_updated: 2026-04-15
+tags: [data, finance]
+---
+# Finance Contract

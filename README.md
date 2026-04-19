@@ -19,16 +19,17 @@ Vedika is a modern, frontend-first Android application designed for event planni
 ## 📖 Documentation Index
 
 ### 🚀 Development & Status
-- [**System Status**](docs/SYSTEM_STATUS.md) — **CURRENT**: Phase 3 Backend/Hardening status.
-- [**V2 Scope**](docs/v2_scope.md) — Roadmap and Phase 1-2 lock status.
+- [**Project Hub**](docs/00_Home/Project_Hub.md) — Master Obsidian entry point.
+- [**Current Status**](docs/00_Home/Current_Status.md) — **CURRENT**: Phase 3 Backend/Hardening status.
+- [**Scope By Phase**](docs/01_Product/Scope_By_Phase.md) — Roadmap and Phase 1-3 definitions.
 
 ### 🏙 Architecture & Core
-- [**Project Structure**](docs/architecture/project_structure.md) — Module map and ownership boundaries.
-- [**Data Continuity**](docs/architecture/mock_data_flow.md) — Mapping registration inputs to the vendor shell.
+- [**Repo Map**](docs/02_Architecture/Repo_Map.md) — Module map and ownership boundaries.
+- [**Vendor Profile Contract**](docs/04_Data_Contracts/Vendor_Profile_Contract.md) — Mapping registration inputs to the vendor shell.
 
 ### 🔐 Guides & Workflows
-- [**Navigation Shell**](docs/guides/vendor_shell_navigation.md) — Bottom nav, routes, and visibility rules.
-- [**Auth Workflow**](docs/guides/v2_auth_workflow.md) — Sign In/Up and User/Partner branching.
+- [**Navigation Map**](docs/02_Architecture/Navigation_Map.md) — Bottom nav, routes, and visibility rules.
+- [**Auth Master Workflow**](docs/03_Workflows/Auth_Master_Workflow.md) — Sign In/Up and User/Partner branching.
 - [**Regression Guard**](docs/guides/android_build_regression_guard.md) — **CRITICAL**: Build and safety rules.
 - [**Emulator Checklist**](docs/guides/emulator_test_checklist.md) — QA verification flows.
 
@@ -42,13 +43,13 @@ Vedika is a modern, frontend-first Android application designed for event planni
 
 To maintain documentation integrity, please follow these rules:
 
-1. **Canonical Authorities**: The following files are the primary sources of truth and MUST be updated if their corresponding logic changes:
-    - `docs/android_build_regression_guard.md` (Build & Dependencies)
-    - `docs/vendor_shell_navigation.md` (Routes & Shell UI)
-    - `docs/v2_auth_workflow.md` (Auth logic)
-    - `docs/mock_data_flow.md` (Data mapping)
-2. **Archival Procedure**: Phase-specific "Maps" or "Acceptance" documents (e.g., `v2_phase1_acceptance.md`) should be moved to `docs/archive/` once the phase is locked.
-3. **Historical Logs**: Do not delete `androidstudiochanges.md` or `BUILD_WARNING_RESOLUTION.md`. These provide the "Why" behind hardcoded build rules.
+1. **Canonical Authorities**: The following files in the Obsidian vault are primary sources of truth:
+    - `docs/guides/android_build_regression_guard.md` (Build & Dependencies)
+    - `docs/02_Architecture/Navigation_Map.md` (Routes & Shell UI)
+    - `docs/03_Workflows/Auth_Master_Workflow.md` (Auth logic)
+    - `docs/04_Data_Contracts/Vendor_Profile_Contract.md` (Data mapping)
+2. **Archival Procedure**: Phase-specific documents should be moved to `docs/archive/` once the phase is locked.
+3. **Historical Logs**: Do not delete `androidstudiochanges.md` or `BUILD_WARNING_RESOLUTION.md`.
 
 ---
 *Vedika V2 — Crafting Auspicious Occasions.*
