@@ -177,21 +177,21 @@ fun VedikaAppShell() {
                     OtpVerificationScreen(
                         viewModel = authViewModel,
                         onVerificationSuccess = {
-                            val verifiedState = currentAuthState.roleResolutionState as? RoleResolutionState.Verified
-                            val profileExists = verifiedState?.profileExists ?: false
-                            val route = when {
-                                currentAuthState.accountMode == AccountMode.USER -> {
-                                    VedikaDestination.Dashboard.route
-                                }
-                                currentAuthState.accountMode == AccountMode.PARTNER -> {
-                                    if (profileExists) {
-                                        VedikaDestination.Dashboard.route
-                                    } else {
-                                        VedikaDestination.CategorySelection.route
+                                val verifiedState = currentAuthState.roleResolutionState as? RoleResolutionState.Verified
+                                val profileExists = verifiedState?.profileExists ?: false
+                                val route = when {
+                                    currentAuthState.accountMode == AccountMode.USER -> {
+                                        VedikaDestination.DecoratorsGallery.route
                                     }
+                                    currentAuthState.accountMode == AccountMode.PARTNER -> {
+                                        if (profileExists) {
+                                            VedikaDestination.Dashboard.route
+                                        } else {
+                                            VedikaDestination.CategorySelection.route
+                                        }
+                                    }
+                                    else -> VedikaDestination.DecoratorsGallery.route
                                 }
-                                else -> VedikaDestination.Dashboard.route
-                            }
                             navController.navigate(route) {
                                 popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
                             }
