@@ -1,56 +1,46 @@
-# Vedika V2 — Premium Android Onboarding & Vendor Shell
-
-Vedika is a modern, frontend-first Android application designed for event planning (Venues, Catering, Decoration). Version 2 (V2) delivers a high-fidelity, role-aware onboarding experience and a premium Vendor Management Shell.
-
-## 🚀 Quick Start
-
-### Build Requirements
-- **Android Studio**: Ladybug or later.
-- **JDK**: Java 17 (Pinned and documented in `Regression Guard`).
-- **Gradle**: 8.7.2.
-
-### Running the App
-1. Open the project in Android Studio.
-2. Select the `devDebug` or `stagingDebug` build variant.
-3. **Dev Bypass**: Use the "Dev Bypass" button on the Login screen or enter OTP `1234` in OTP Verification to skip real SMS verification.
-
+---
+title: Vedika Repository Index
+type: readme
+status: active
+owner: Core Development Team
+phase: Phase 3
+last_updated: 2026-04-20
 ---
 
-## 📖 Documentation Index
+# Vedika Project Docs & Index
 
-### 🏙 Canonical Current Architecture
-- [**System Status**](docs/SYSTEM_STATUS.md) — CURRENT: Phase 3 Backend Integration.
-- [**Repo Map**](docs/architecture/repo_map.md) — Module map and feature ownership boundaries.
-- [**Auth Master Workflow**](docs/architecture/auth_master_workflow.md) — Sign In/Up and User/Partner deterministic branching.
-- [**Role Behavior Matrix**](docs/architecture/role_behavior_matrix.md) — Quick reference for state routing and graph clearance.
-- [**Backend Sync Contract**](docs/architecture/backend_sync_contract.md) — Firestore data contracts.
-- [**Backend Blueprint**](docs/architecture/backend_integration_blueprint.md) — Setup details for Phase 3 DB integration.
-- [**Session Restoration**](docs/architecture/session_restoration.md) — JWT cache and zero-latency app launch mechanisms.
+## Source of truth
+The README functions as the primary project navigation index, maintaining direct links to the structured Obsidian knowledge base.
 
-### 🔐 Operational Guides & Workflows
-- [**User Sign In Guide**](docs/guides/user_signin_implementation_guide.md)
-- [**User Sign Up Guide**](docs/guides/user_signup_implementation_guide.md)
-- [**Vendor Sign In Guide**](docs/guides/vendor_signin_implementation_guide.md)
-- [**Session Restoration Guide**](docs/guides/session_restoration_guide.md)
-- [**User Onboarding Guide**](docs/guides/user_onboarding_guide.md)
-- [**Vendor Onboarding Guide**](docs/guides/vendor_onboarding_guide.md)
-- [**Role Resolution Guide**](docs/guides/role_resolution_guide.md)
-- [**Debug Capture Workflow**](docs/guides/debug_capture_workflow.md)
-- [**Emulator Test Checklist**](docs/guides/emulator_test_checklist.md)
+## Core Documentation Sections
 
-### 🛡 Historical/Archive Docs
-- [**Archive Index**](docs/archive/README.md) — Archived build fixes and obsolete phase files.
-- [**Regression Guard**](docs/android_build_regression_guard.md) — **CRITICAL**: Build and safety rules.
-- [**Changelog V2**](docs/changelog_v2.md) — Major milestones.
+### 1. Canonical Current Architecture
+These files define the fundamental structure and behaviors of the system in Phase 3.
+- [System Status Tracking](docs/SYSTEM_STATUS.md)
+- [Repository Map & Boundaries](docs/architecture/repo_map.md)
+- [Auth Master Workflow](docs/architecture/auth_master_workflow.md)
+- [Role Behavior Matrix](docs/architecture/role_behavior_matrix.md)
+- [Backend Integration Blueprint](docs/architecture/backend_integration_blueprint.md)
+- [Session Restoration Architecture](docs/architecture/session_restoration.md)
 
----
+### 2. Operational Implementation Guides
+These guides provide exact step-by-step instructions for implementing features securely and correctly according to design constraints.
+- [Vendor Signin Implementation Guide](docs/guides/vendor_signin_implementation_guide.md)
+- [User Signup Implementation Guide](docs/guides/user_signup_implementation_guide.md)
+- [User Signin Implementation Guide](docs/guides/user_signin_implementation_guide.md)
+- [Session Restoration Implementation Guide](docs/guides/session_restoration_guide.md)
 
-## 🛠 Documentation Governance
+### 3. Execution Templates
+These templates ensure consistent logging and structuring of development tasks and anomaly resolutions.
+- [Bug Analysis Template](docs/templates/Bug_Analysis_Template.md)
+- [Daily Log Template](docs/templates/Daily_Log_Template.md)
+- [Feature Log Template](docs/templates/Feature_Log_Template.md)
 
-To maintain documentation integrity, please follow these strict rules:
+### 4. Historical Elements (Archived)
+Legacy Phase 1 and Phase 2 items that are preserved for context but no longer represent valid architectural decisions.
+- [Archive Index](docs/archive/README.md)
 
-1. **Canonical Authorities**: The architecture and guides outlined above must reflect actual source tree behavior. If the code deviates, update these documents immediately.
-2. **Archival Procedure**: Phase-specific documents should be moved to `docs/archive/` once the phase is permanently locked. No active `README.md` links should ever point inside the archive.
-
----
-*Vedika V2 — Crafting Auspicious Occasions.*
+## Future work
+- Continuous maintenance of index links ensuring structural alignment with Phase 3/4 iterations.
+- Add links to deep module documentation as specific subsystems mature and stabilize.
+- Incorporate automated generated API docs linked directly from CI/CD pipeline structures.

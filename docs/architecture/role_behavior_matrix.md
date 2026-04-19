@@ -11,40 +11,36 @@ tags: [architecture, routing, core, roles]
 # Role Behavior & Routing Matrix
 
 ## Source of truth
-This document provides a quick reference for deterministic routing logic based on the user's role and intent. It defines how navigation branchings occur.
+This matrix operates as the central execution reference for modeling correct navigation transitions driven dynamically by the specific authenticated user role and explicit interaction intent. It guarantees determinism resolving Jetpack Compose navigation branches effectively and safely.
 
 ## Current implementation
 
-### 🧭 The Routing Matrix
+### 🧭 The Execution Routing Framework
 
-| Account Mode | Auth Flow | Scenario Check | Destination | Backstack Behavior |
+| Active Client Account Mode | Intentional Auth Flow | Operational Scenario Result | Navigational Destination Resolution | Active Backstack Constraints |
 | :--- | :--- | :--- | :--- | :--- |
-| **USER** | **SIGN_UP** | Brand new account | **User Setup Node** | Clears OTP screen |
-| **USER** | **SIGN_IN** | Existing `users/{uid}` | **Dashboard (Consumer)** | `popUpTo(0)` |
-| **PARTNER** | **SIGN_UP** | Brand new account | **Vendor Registration Form** | Clears OTP screen, routes to specific categories |
-| **PARTNER** | **SIGN_IN** | Existing `vendors/{uid}` & `onboardingComplete=true` | **Dashboard (Partner Home)** | `popUpTo(0)` |
-| **SESSION_RESTORE** | N/A | `Splash` detects valid JWT | **Appropriate Dashboard based on cached role** | Closes Splash directly, skips Auth |
+| **USER_TIER** | **SIGN_UP_REQUEST** | System validates a genuinely nonexistent account request | **Immediate User Context Node** | System purges OTP sequence nodes entirely |
+| **USER_TIER** | **SIGN_IN_REQUEST** | Validation captures existing explicit `users/{uid}` layer | **Consumer Dashboard Shell** | Executes complete global `popUpTo(0)` |
+| **PARTNER_TIER** | **SIGN_UP_REQUEST** | Operation confirms an unfamiliar root identity parameter | **Dynamic Vendor Registry Hub** | Terminates base OTP trace, targets category spec bounds |
+| **PARTNER_TIER** | **SIGN_IN_REQUEST** | Discovery locates exact `vendors/{uid}` & `onboarding=true` params | **Vendor Control Dashboard** | Executes complete global `popUpTo(0)` |
+| **SESSION_RESTORE** | N/A (Bypassed) | Initial Boot `Splash` detects perfectly sound JWT states | **Dependent Dashboard (Mapped via Enum)** | Force-skips UI introduction entirely |
 
-### 🔑 State Definitions
+### 🔑 Critical State Definitions
 
-- **AccountMode**:
-    - `USER`: Browsing for services. Initial setup is minimal (name only).
-    - `PARTNER`: Offering services. Requires verified identities, address mapping, and storefront bootstrap.
-- **AuthFlow**:
-    - `SIGN_IN`: Login branch. Triggers a database hit immediately after OTP. See [[user_signin_implementation_guide]] and [[vendor_signin_implementation_guide]].
-    - `SIGN_UP`: Signup branch. Defers database hit until profile form is completed.
+- **Core Application Account Modes**:
+    - `USER`: Identities utilizing tools and browsing vendor services. Initial application setup thresholds remain minimal intentionally (Name captures only).
+    - `PARTNER`: Vendor accounts extending primary services to system layers. Mandates heavily verified profile schemas, robust address tracking layers, and exhaustive primary storefront definitions before unlocking access.
+- **Transitional Authentication Flows**:
+    - `SIGN_IN_INTENT`: Direct login sequences. By definition, heavily prioritizes triggering exhaustive network database validation pings directly following OTP conclusion.
+    - `SIGN_UP_INTENT`: Constructive branch mechanics. Deliberately delays aggressive remote validation sequences pushing instead into localized setup pipelines until complete schemas are constructed representing new entities.
 
-### 🛡️ Navigation Architecture Rules
+### 🛡️ Rigid Navigational Architecture Governance
 
-1. **Strict Backstack Clearance**: Successful registration or login MUST clear the `auth_graph` completely via `popUpTo(0)`. Partners must never be able to press "Back" from their Dashboard and end up in the OTP entry screen.
-2. **Category Selection Branching (Partner Sign Up)**:
-    - User selects "Venues" ➔ Sub-routes to `registration/venue`
-    - User selects "Decorators" ➔ Sub-routes to `registration/decorator`
-    - "Others" ➔ Routed to generic intake (Future Phase 4).
-3. **Change Number Navigation**: Clicking "Change Number" on the OTP screen pops the current context and returns the user to the starting Sign In or Sign Up screen based on their original intent.
-
-*Implementation Note: All core routing logic is strictly housed in `feature:auth:AuthViewModel.handleOtpSuccess`.*
+1. **Backstack Total Annihilation Policy**: An explicitly finalized vendor registration structure, or simply a correct authorization match MUST purge and clear off the totality of the `auth_graph` through immediate global navigation commands. Vendor partners must never retain the physical back-button ability to reverse out of secured control screens directly into loose OTP form contexts.
+2. **Category Branch Escalation (Partner Origin Forms)**:
+    - User asserts category "Venues" intent ➔ Local graph dynamically swaps into intensive `registration/venue_module` layers.
+    - User asserts category "Decorators" intent ➔ Application sub-routes accurately to tailored `registration/decorator_module` paths.
+3. **Change Operational Context Escaping**: Selecting any "Change Origin Context" interaction within deep OTP frames forces an explicit back-stack termination, yielding immediately to previously instantiated logical start zones (either primary Registration or Login anchors).
 
 ## Future work
-- Add generic intake sub-routes for "Others" category.
-- Refine navigation for users holding dual roles.
+- Integrate advanced intake form components effectively spanning comprehensive generic intake systems mapped dynamically using configurable UI primitives (e.g. backend-driven UI schema intakes for loosely defined roles).
