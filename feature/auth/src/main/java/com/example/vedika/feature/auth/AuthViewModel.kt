@@ -3,12 +3,16 @@ package com.example.vedika.feature.auth
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vedika.core.data.model.AccountMode
+import com.example.vedika.core.data.model.AuthFlow
+import com.example.vedika.core.data.model.RoleResolutionState
 import com.example.vedika.core.data.model.AppUser
 import com.example.vedika.core.data.model.VendorMockState
 import com.example.vedika.core.data.model.VendorType
 import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.UserRepository
 import com.example.vedika.core.data.repository.VendorRepository
+import com.example.vedika.core.data.session.SessionStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,23 +21,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class AccountMode { USER, PARTNER }
-enum class AuthFlow { SIGN_IN, SIGN_UP }
-
-sealed class RoleResolutionState {
-    object Idle : RoleResolutionState()
-    object Loading : RoleResolutionState()
-    object OtpSent : RoleResolutionState()
-    data class Verified(val uid: String, val profileExists: Boolean = false) : RoleResolutionState()
-    object AccountNotFound : RoleResolutionState()
-    data class Error(val message: String) : RoleResolutionState()
-}
-
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val vendorRepository: VendorRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val sessionStorage: SessionStorage
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -154,12 +147,14 @@ class AuthViewModel @Inject constructor(
                     val profileResult = vendorRepository.getVendorProfile(user.id)
                     _uiState.value = _uiState.value.copy(isLoading = false)
                     profileResult.onSuccess {
+                        sessionStorage.saveAccountMode(_uiState.value.accountMode)
                         _uiState.value = _uiState.value.copy(
                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
                         )
                         onSuccess()
                     }.onFailure { ex ->
                         if (ex.message == "VENDOR_NOT_FOUND") {
+                            sessionStorage.saveAccountMode(_uiState.value.accountMode)
                             _uiState.value = _uiState.value.copy(
                                 roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
                             )
@@ -174,6 +169,7 @@ class AuthViewModel @Inject constructor(
                 } else {
                     val profileResult = userRepository.getUserProfile(user.id)
                     profileResult.onSuccess {
+                        sessionStorage.saveAccountMode(_uiState.value.accountMode)
                         _uiState.update { it.copy(
                             isLoading = false,
                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
@@ -197,6 +193,7 @@ class AuthViewModel @Inject constructor(
                                     val createResult = userRepository.createUserProfile(newUser)
                                     _uiState.update { it.copy(isLoading = false) }
                                     createResult.onSuccess {
+                                        sessionStorage.saveAccountMode(_uiState.value.accountMode)
                                         _uiState.update { it.copy(
                                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
                                         ) }
@@ -237,12 +234,14 @@ class AuthViewModel @Inject constructor(
                     val profileResult = vendorRepository.getVendorProfile(user.id)
                     _uiState.value = _uiState.value.copy(isLoading = false)
                     profileResult.onSuccess {
+                        sessionStorage.saveAccountMode(_uiState.value.accountMode)
                         _uiState.value = _uiState.value.copy(
                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
                         )
                         onSuccess()
                     }.onFailure { ex ->
                         if (ex.message == "VENDOR_NOT_FOUND") {
+                            sessionStorage.saveAccountMode(_uiState.value.accountMode)
                             _uiState.value = _uiState.value.copy(
                                 roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
                             )
@@ -257,6 +256,7 @@ class AuthViewModel @Inject constructor(
                 } else {
                     val profileResult = userRepository.getUserProfile(user.id)
                     profileResult.onSuccess {
+                        sessionStorage.saveAccountMode(_uiState.value.accountMode)
                         _uiState.update { it.copy(
                             isLoading = false,
                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
@@ -280,6 +280,7 @@ class AuthViewModel @Inject constructor(
                                     val createResult = userRepository.createUserProfile(newUser)
                                     _uiState.update { it.copy(isLoading = false) }
                                     createResult.onSuccess {
+                                        sessionStorage.saveAccountMode(_uiState.value.accountMode)
                                         _uiState.update { it.copy(
                                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
                                         ) }

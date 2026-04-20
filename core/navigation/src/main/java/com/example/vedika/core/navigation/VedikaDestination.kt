@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class VedikaDestination(val route: String) {
+    object Splash     : VedikaDestination("splash")
     object Dashboard  : VedikaDestination("dashboard")
     object Calendar   : VedikaDestination("calendar")
     object Inventory  : VedikaDestination("inventory")

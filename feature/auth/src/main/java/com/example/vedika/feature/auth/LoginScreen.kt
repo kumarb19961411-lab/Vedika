@@ -32,6 +32,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vedika.feature.auth.BuildConfig
+import com.example.vedika.core.data.model.AccountMode
+import com.example.vedika.core.data.model.AuthFlow
 import coil.compose.AsyncImage
 
 @Composable

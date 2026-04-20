@@ -31,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vedika.core.data.model.AccountMode
+import com.example.vedika.core.data.model.AuthFlow
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 

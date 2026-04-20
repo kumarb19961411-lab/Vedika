@@ -30,8 +30,12 @@ import com.example.vedika.feature.auth.DecoratorRegistrationScreen
 import com.example.vedika.feature.auth.PartnerSetupScreen
 import com.example.vedika.feature.auth.ProfileScreen
 import com.example.vedika.feature.auth.AuthViewModel
-import com.example.vedika.feature.auth.AuthFlow
-import com.example.vedika.feature.auth.AccountMode
+import com.example.vedika.feature.auth.SplashViewModel
+import com.example.vedika.feature.auth.SplashScreen
+import com.example.vedika.feature.auth.StartupState
+import com.example.vedika.core.data.model.AuthFlow
+import com.example.vedika.core.data.model.AccountMode
+import com.example.vedika.core.data.model.RoleResolutionState
 import com.example.vedika.feature.calendar.CalendarScreen
 import com.example.vedika.feature.dashboard.DashboardScreen
 import com.example.vedika.feature.dashboard.NewBookingScreen
@@ -110,7 +114,7 @@ fun VedikaAppShell() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = VedikaDestination.AuthGraph.route,
+            startDestination = VedikaDestination.Splash.route,
             modifier = Modifier.padding(innerPadding),
             enterTransition = {
                 slideIntoContainer(
@@ -137,6 +141,44 @@ fun VedikaAppShell() {
                 )
             }
         ) {
+            composable(VedikaDestination.Splash.route) {
+                val viewModel: SplashViewModel = hiltViewModel()
+                val state by viewModel.startupState.collectAsState()
+
+                SplashScreen(
+                    state = state,
+                    onRetry = { viewModel.resolveUserSession() },
+                    onGoToLogin = {
+                        navController.navigate(VedikaDestination.AuthGraph.route) {
+                            popUpTo(VedikaDestination.Splash.route) { inclusive = true }
+                        }
+                    }
+                )
+
+                LaunchedEffect(state) {
+                    when (state) {
+                        is StartupState.Unauthenticated -> {
+                            navController.navigate(VedikaDestination.AuthGraph.route) {
+                                popUpTo(VedikaDestination.Splash.route) { inclusive = true }
+                            }
+                        }
+                        is StartupState.Authenticated -> {
+                            val destRoute = when {
+                                state.mode == AccountMode.PARTNER -> {
+                                    if (state.profileExists) VedikaDestination.Dashboard.route 
+                                    else VedikaDestination.CategorySelection.route
+                                }
+                                else -> VedikaDestination.DecoratorsGallery.route
+                            }
+                            navController.navigate(destRoute) {
+                                popUpTo(VedikaDestination.Splash.route) { inclusive = true }
+                            }
+                        }
+                        else -> {}
+                    }
+                }
+            }
+
             navigation(
                 startDestination = VedikaDestination.Login.route,
                 route = VedikaDestination.AuthGraph.route

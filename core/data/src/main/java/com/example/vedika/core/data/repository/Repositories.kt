@@ -17,6 +17,10 @@ interface AuthRepository {
     suspend fun verifyOtp(verificationId: String, otp: String): Result<VendorUser>
     suspend fun loginAsDevBypass(username: String): Result<VendorUser>
     suspend fun logout()
+    /**
+     * Returns the current authenticated user's ID, if any.
+     */
+    fun getCurrentUserId(): String?
 }
 
 interface UserRepository {

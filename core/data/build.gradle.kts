@@ -27,6 +27,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.androidx.security.crypto)
     
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
