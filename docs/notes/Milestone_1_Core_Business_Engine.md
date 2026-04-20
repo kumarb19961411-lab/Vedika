@@ -13,7 +13,7 @@ tags: [milestone, status, hub-leaf, business-engine]
 ## 🧗 Roadmap & Sprints
 This milestone is decomposed into two high-intensity sprints:
 
-- **[[Sprint_1A_Plan|Sprint 1A: Booking & Query Hardening]]**
+- **[x] [[Sprint_1A_Plan|Sprint 1A: Booking & Calendar Integrity]]** (VERIFIED)
     - Focus: Canonical registration path completion + vendor-scoped query logic.
 - **[[Sprint_1B_Plan|Sprint 1B: Validation & Analytics]]**
     - Focus: Slot conflict validation + real-time dashboard metrics (booking-derived).

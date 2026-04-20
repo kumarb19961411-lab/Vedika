@@ -4,7 +4,7 @@ tags: [project, roadmap, status]
 
 # 📈 Project Status: Vedika
 
-## Current Sprint: Phase 3.8B - Core Business Engine Hardening
+## Current Sprint: Phase 3.8C - Sprint 1B Preparation (Inventory & Block-Out)
 
 ### ✅ Completed Milestones
 - **Firebase Initialization**: Anchored `vedika-e44be`.
@@ -15,7 +15,8 @@ tags: [project, roadmap, status]
     - Standardized conflict error codes established.
 
 ### 🏗 In Progress
-- **Phase 3.8: Obsidian Brain Completion**: Turning docs into a connected knowledge graph.
+- [x] **Phase 3.8B: Obsidian Brain Hardening**: Documents now strictly connected via MOCs and hub notes.
+- [/] **Phase 3.8C: Sprint 1B Preparation**: Designing block-out management and inventory schema.
 
 ### 📅 Upcoming
 - **Sprint 1B: Inventory & Block-Out Logic**: Core manual block logic and item catalog persistence.
