@@ -12,7 +12,7 @@ The definitive source of truth for Vedika's "Namaste" entry flow and session lif
 - **[[role_resolution_guide|🎭 Role Resolution Guide]]**: Validating user types against Firestore claims.
 
 ## 🎨 UI Implementation
-- **[[auth_screens_fidelity_guard|🛡️ Auth Screen Fidelity]]**: Design standards for login and signup screens.
+- **Auth Screen Fidelity**: Design standards for login and signup screens.
 - **[[user_signup_implementation_guide|📝 User Signup Guide]]**: Implementation details for the B2C flow.
 - **[[vendor_signin_implementation_guide|🏢 Vendor Sign-in Guide]]**: Implementation details for the B2B flow.
 

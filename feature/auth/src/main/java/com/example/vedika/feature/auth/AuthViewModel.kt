@@ -66,7 +66,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun updateOtp(otp: String) {
-        if (otp.length <= 4) {
+        if (otp.length <= 6) {
             _uiState.value = _uiState.value.copy(otp = otp, error = null)
         }
     }
@@ -130,8 +130,8 @@ class AuthViewModel @Inject constructor(
     }
 
     fun verifyOtp(onSuccess: () -> Unit) {
-        if (_uiState.value.otp.length < 4) {
-            _uiState.value = _uiState.value.copy(error = "Enter 4-digit OTP")
+        if (_uiState.value.otp.length < 6) {
+            _uiState.value = _uiState.value.copy(error = "Enter 6-digit OTP")
             return
         }
         val verificationId = _uiState.value.verificationId ?: "mock-session"

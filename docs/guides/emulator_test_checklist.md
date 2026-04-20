@@ -6,7 +6,7 @@ Use this checklist to verify the stability of the Vedika V2 Golden Path on a fre
 
 ### 1. The Partner Onboarding Journey
 - [ ] **Signup**: Enter a NEW phone number and unique **Full Name**.
-- [ ] **OTP**: Verify using `1234` (Dev Mode).
+- [ ] **OTP**: Verify using `123456` (Dev Mode).
 - [ ] **Category**: Select "Venues" card.
 - [ ] **Registration**: Enter unique "Venue Name" and location.
 - [ ] **Completion**: Click "Complete Registration".

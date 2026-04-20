@@ -21,7 +21,7 @@ This guide covers the deep implementation details for the Vendor Sign In compone
 
 ### 2. ViewModel & Emulation Interception
 - `AuthViewModel` captures incoming state parameters establishing standard internal `AuthUiState.Loading` emissions immediately locking out standard user interaction arrays via overlay mechanisms.
-- Rather than strictly bounding towards production Firebase SMS invocations currently, it leverages controlled bypassing functions. Providing numeric inputs strictly matching `"1234"` executes highly predictable state intercepts forcefully triggering simulated OTP resolution protocols instantly verifying intent natively ensuring unblocked QA automations.
+- Rather than strictly bounding towards production Firebase SMS invocations currently, it leverages controlled bypassing functions. Providing numeric inputs strictly matching `"123456"` executes highly predictable state intercepts forcefully triggering simulated OTP resolution protocols instantly verifying intent natively ensuring unblocked QA automations.
 
 ### 3. Verification & Routing Resolution
 - Successful simulated resolution internally shifts operational contexts explicitly executing cross-module function queries directly targeting underlying active implementations of `VendorRepository.verifyVendorExists()`.

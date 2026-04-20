@@ -31,7 +31,7 @@ class AuthFidelityTest {
             composeTestRule.onAllNodes(androidx.compose.ui.test.hasText("Verification")).fetchSemanticsNodes().isNotEmpty()
         }
         
-        // 4. Enter Good OTP (1234) for NEW partner
+        // 4. Enter Good OTP (123456) for NEW partner
         // Note: In a real test we'd use tags for the OTP fields, but since we used BasicTextField with custom UI, 
         // we'll rely on the Verify button click for now as evidence of interactivity.
         composeTestRule.onNodeWithText("Verify & Proceed").performClick()

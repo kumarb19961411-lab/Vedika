@@ -134,10 +134,11 @@ fun OtpVerificationScreen(
                         androidx.compose.foundation.text.BasicTextField(
                             value = uiState.otp,
                             onValueChange = { newOtp ->
-                                if (newOtp.length <= 4) {
-                                    viewModel.updateOtp(newOtp)
-                                    // Auto-submit on 4th digit entry
-                                    if (newOtp.length == 4) {
+                                val filteredOtp = newOtp.filter { it.isDigit() }
+                                if (filteredOtp.length <= 6) {
+                                    viewModel.updateOtp(filteredOtp)
+                                    // Auto-submit on 6th digit entry
+                                    if (filteredOtp.length == 6) {
                                         viewModel.verifyOtp { onVerificationSuccess() }
                                     }
                                 }
@@ -149,14 +150,14 @@ fun OtpVerificationScreen(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    repeat(4) { index ->
+                                    repeat(6) { index ->
                                         val char = uiState.otp.getOrNull(index)?.toString() ?: ""
                                         val isFocused = uiState.otp.length == index
                                         Surface(
                                             modifier = Modifier.size(64.dp, 80.dp),
                                             shape = RoundedCornerShape(16.dp),
                                             color = if (char.isNotEmpty()) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else Color.White.copy(alpha = 0.5f),
-                                            border = if (isFocused) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.2f))
+                                            border = if (isFocused) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
                                         ) {
                                             Box(contentAlignment = Alignment.Center) {
                                                 Text(
@@ -210,7 +211,7 @@ fun OtpVerificationScreen(
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
-                    enabled = !uiState.isLoading && uiState.otp.length == 4
+                    enabled = !uiState.isLoading && uiState.otp.length == 6
                 ) {
                     if (uiState.isLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
