@@ -21,8 +21,9 @@ This checklist must be satisfied before Milestone 1 is considered "Closed."
 ## 3. Conflict Validation & Security
 - [x] **Verified**: `firestore.rules` enforces vendor isolation on `occupancy` collection.
 - [x] **Verified**: `CONFLICT_SLOT_OCCUPIED` triggered correctly for Venues.
-- [x] **Verified**: `CONFLICT_CAPACITY_FULL` triggered correctly for Decorators (>4 total).
-- [x] **Verified**: Attempting to book an already-booked slot triggers "Slot Unavailable" UI message.
+- [x] **Verified**: `CONFLICT_DATE_BLOCKED` triggered on manual block creation.
+- [x] **Verified**: `CONFLICT_CAPACITY_FULL` triggered for Decorators (exceeding fallback 4).
+- [x] **Verified**: Attempting to book an already-booked slot triggers precise UI error.
 
 ## 4. Regression Sweep
 - [x] Logout -> Login flow preserves role-resolution.

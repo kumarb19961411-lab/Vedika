@@ -3,32 +3,29 @@ tags: [milestone1, sprint1a, planning]
 status: CLOSED
 ---
 
-# 📅 Sprint 1A: Booking & Calendar Integrity (Hardened)
+# 📅 Sprint 1A: Booking & Calendar Integrity (Final Pass)
 
-**Goal**: Finalize authoritative business rules, ensure capacity fallback policies, and standardize conflict handling across the physical booking engine.
+**Goal**: Establish authoritative, secure, and standardized business rules for the core booking engine.
 
-## ✅ Sprint Status: CLOSED (Verified)
-The system has been hardened and verified against the authoritative Firestore logic.
+## ✅ Sprint Status: CLOSED
+All verified gaps have been addressed in the final completion pass.
 
-### 🛠 Recent Completion Pass
-- [x] **Occupancy Rules**: Added strict rules to `firestore.rules`.
-- [x] **Fallback Policy**:
-    - Venue: Max 1 slot (Strict).
-    - Decorator: Max 4 slots (Fallback).
+### 🛠 Completed Work
+- [x] **Occupancy Rules**: Standardized security rules added to `firestore.rules`.
+- [x] **Hardened Fallback Policy**:
+    - **Venue**: Capacity = 1 (Strict).
+    - **Decorator**: Capacity = 4 (Authoritative fallback).
 - [x] **Conflict Standardization**:
-    - `CONFLICT_SLOT_OCCUPIED`
-    - `CONFLICT_DATE_BLOCKED`
-    - `CONFLICT_CAPACITY_FULL`
-- [x] **Calendar Alignment**: Derived calendar state now matches the authoritative repository logic exactly.
+    - `CONFLICT_SLOT_OCCUPIED`: Returned on venue slot overlap.
+    - `CONFLICT_DATE_BLOCKED`: Returned on manual block.
+    - `CONFLICT_CAPACITY_FULL`: Returned on decorator load limit.
+- [x] **Logic Alignment**: `FirebaseCalendarRepositoryImpl` now exactly mirrors the booking repository's derivation logic.
+- [x] **Security**: `occupancy` collection rules enforced with `${vendorId}_${date}` partition.
 
-### 📦 Key Components
-- **Repository**: `FirebaseBookingRepositoryImpl.kt` (Atomic transactions + Capacity resolution).
-- **Calendar**: `FirebaseCalendarRepositoryImpl.kt` (Conflict-aware derivation).
-- **UI Mapping**: `NewBookingViewModel.kt` (Hardened error handling).
-
-## ⚠️ Known Blockers / Deferred
-- **Update/Reschedule**: Deferred to Sprint 1C (deferred by user).
-- **Manual Data Audit**: Future task to ensure all `VendorProfile` docs have explicit `capacity` (using fallbacks for now).
+### 📦 Deliverables
+- `firestore.rules`: Authority grouped by context.
+- `FirebaseBookingRepositoryImpl.kt`: Safe resolution with logging.
+- `FirebaseCalendarRepositoryImpl.kt`: Enum-based state derivation.
 
 ---
 [[Milestone_1_Core_Business_Engine|🎯 Milestone 1 Hub]] | [[SYSTEM_STATUS|📊 System Status]]

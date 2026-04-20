@@ -69,8 +69,12 @@ class FirebaseCalendarRepositoryImpl @Inject constructor(
             val capacityRaw = vendor.capacity
             val capacity = when {
                 capacityRaw is Int -> capacityRaw
+                capacityRaw is Long -> capacityRaw.toInt()
                 capacityRaw is String -> capacityRaw.toIntOrNull() ?: (if (vendorType == VendorType.VENUE) 1 else 4)
-                else -> if (vendorType == VendorType.VENUE) 1 else 4
+                else -> {
+                    android.util.Log.w("FirebaseCalendarRepo", "Audit: Missing capacity for ${vendorId}. Falling back: Venue=1, Decorator=4.")
+                    if (vendorType == VendorType.VENUE) 1 else 4
+                }
             }
             
             // Populate range

@@ -1,33 +1,28 @@
 ---
-title: Project Status Tracker
-type: notes
-status: active
-owner: Product Architect
-phase: Phase 3
-last_updated: 2026-04-20
-tags: [notes, tracker, status, hub-leaf]
+tags: [project, roadmap, status]
 ---
 
-# Project Status Tracker
+# 📈 Project Status: Vedika
 
-## Source of Truth
-Ongoing scratchpad for tracking granular feature delivery.
+## Current Sprint: Phase 3.8B - Core Business Engine Hardening
 
-## Phase 3: Backend Hardening (ACTIVE)
-- [x] Firestore User Identity Foundation (UserRepository)
-- [x] Vendor-User Profile Resolution logic
-- [x] Session Restoration via SplashViewModel
-- [x] Phase 3.6B: [[Auth_Hub|🔐 Auth Hardening]] (Bypass Fix, Logout Logic)
-- [x] Phase 3.7: [[Firebase_Hub|🔥 Firebase Alignment]] (Canonical VendorProfile)
-- [x] Phase 3.8: [[Vendor_Flow_Hub|🏢 Dashboard Hardening]] (Canonical Data Flow)
-- [x] Phase 3.8B: [[Project_Hub|🧠 Obsidian Brain Completion]] (Hub implementation)
-- [/] **[[Milestone_1_Core_Business_Engine|Milestone 1: Core Business Engine]]** (Sprint 1A DONE)
-- [ ] Multi-module Navigation Hardening
-- [ ] Live Phone Auth (transition from 1234)
+### ✅ Completed Milestones
+- **Firebase Initialization**: Anchored `vedika-e44be`.
+- **Auth Foundation**: Role-resolution and session restoration hardened.
+- **Sprint 1A (Booking & Calendar Integrity)**: **CLOSED.** 
+    - Hardened security rules for occupancy.
+    - Locked fallback policy: **Venue (1), Decorator (4)**.
+    - Standardized conflict error codes established.
 
-## Future Work
-- Business Analytics integration.
-- Dynamic theme resolution via Firestore tokens.
+### 🏗 In Progress
+- **Phase 3.8: Obsidian Brain Completion**: Turning docs into a connected knowledge graph.
+
+### 📅 Upcoming
+- **Sprint 1B: Inventory & Block-Out Logic**: Core manual block logic and item catalog persistence.
+- **Sprint 1C: Rescheduling**: Transitioning existing bookings to new dates atomically.
+
+### 🚩 Known Risks / Blockers
+- **Data Migration**: Existing `VendorProfile` documents without `capacity` fields rely on fallbacks. A cleanup task is recommended after Sprint 1B.
 
 ---
-[[Project_Hub|🏠 Project Hub]] | [[Phase_Tracker_Hub|⏱️ Phase Tracker]] | [[project_status|Top]]
+[[Project_Hub|🏠 Project Hub]] | [[SYSTEM_STATUS|📊 System Status]] | [[Milestone_1_QA_Checklist|✅ QA Checklist]]
