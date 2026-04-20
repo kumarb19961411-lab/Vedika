@@ -9,9 +9,14 @@ tags: [project, roadmap, status]
 ### ✅ Completed Milestones
 - **Firebase Initialization**: Anchored `vedika-e44be`.
 - **Auth Foundation**: Role-resolution and session restoration hardened.
-- **Milestone 1: Core Business Engine** - 100% (CLOSED)
-- **Sprint 1A: Booking Hardening** - 100% (CLOSED)
-- **Sprint 1B: Metrics & Inventory** - 100% (CLOSED)
+- ### 🏁 Milestone 1: Core Business Engine [COMPLETED]
+- **Date**: 2026-04-20
+- **Audit Pass**: Build stabilization, interface parity, and documentation hardening completed.
+- **Key Outcome**: One vendor can run core booking/inventory operations.
+
+### 🧩 Sprint 1B: Inventory & Logistics [CLOSED]
+- **Focus**: Revenue tracking, multi-slot availability, and dashboard polish.
+- **Result**: PASS with environmental build constraints documented.
 
 ### 🏗 In Progress
 - [ ] **Milestone 2 Scoping**: Defining rescheduling and exception handled workflows.

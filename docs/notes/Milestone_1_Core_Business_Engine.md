@@ -20,7 +20,10 @@ This milestone is decomposed into two high-intensity sprints:
 **Final Audit Verified**: Yes
 
 ## ✅ Definition of Done
-- All vendor dashboard metrics are derived from live `/bookings` collection state.
+- [x] Dashboard metrics derive from live Firestore `/bookings`.
+- [x] Revenue calculation logic moved to Domain level.
+- [x] Repository contracts standardized and Fakes synced.
+- [x] Build environment stabilized via JDK pinning.
 - Booking creation implements server-side-ready validation (slot/date conflict check).
 - Vendor registration flow captures and persists canonical profile fields.
 - **[[Milestone_1_QA_Checklist|QA Checklist]]** is 100% green on emulator and real device.

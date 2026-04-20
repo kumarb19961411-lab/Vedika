@@ -25,8 +25,9 @@ The platform has achieved its first major milestone: **Core Business Engine**.
 
 ### 📅 Sprint Tracker
 - [x] **Sprint 1A (Booking & Conflict Hardening)**: [CLOSED] ✅
-- [x] **Sprint 1B (Inventory & Metrics)**: [CLOSED] ✅
-- [x] **Milestone 1 Final Audit**: [COMPLETED] ✅
+- [x] **Repo Health**: Build stabilized (JDK pinned to JBR, stale caches cleared).
+- [x] **Wiki Integrity**: Links validated, build log established.
+- [x] **Dev Experience**: Fake repository parity rules enforced.
 - [ ] **Sprint 1C: Rescheduling & Exception Handling** (PLANNED)
 
 ### 📌 Critical Anchors
@@ -35,3 +36,7 @@ The platform has achieved its first major milestone: **Core Business Engine**.
 
 ---
 [[Project_Hub|🏠 Project Hub]] | [[Milestone_1_Core_Business_Engine|🎯 Milestone 1]] | [[project_status|📈 Project History]]
+- [[android_build_regression_guard|🛡️ Build Regression Guard]]
+- [[backend_integration_blueprint|🧱 Backend Blueprint]]
+- [[repo_map|🗺️ Module Topology]]
+- [[App_Shell_Architecture|🏗️ App Shell]]
