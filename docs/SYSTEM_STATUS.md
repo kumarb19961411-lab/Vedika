@@ -34,4 +34,4 @@ The platform has achieved its first major milestone: **Core Business Engine**.
 - **Owner**: `kumarb19961411-lab`
 
 ---
-[[Project_Hub|🏠 Project Hub]] | [[Milestone_1_Hub|🎯 Milestone 1]] | [[project_status|📈 Project History]]
+[[Project_Hub|🏠 Project Hub]] | [[Milestone_1_Core_Business_Engine|🎯 Milestone 1]] | [[project_status|📈 Project History]]
