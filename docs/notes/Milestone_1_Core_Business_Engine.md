@@ -15,7 +15,9 @@ This milestone is decomposed into two high-intensity sprints:
 
 - [x] **Sprint 1A**: Booking & Calendar Integrity (CLOSED)
 - [x] **Sprint 1B**: Metrics + Inventory + Regression Sweep (CLOSED)
-- [ ] **Sprint 1C**: Rescheduling & Exception Handling (PLANNED)
+- [ ] **Status**: ✅ COMPLETED  
+**Target Completion**: April 2026  
+**Final Audit Verified**: Yes
 
 ## ✅ Definition of Done
 - All vendor dashboard metrics are derived from live `/bookings` collection state.

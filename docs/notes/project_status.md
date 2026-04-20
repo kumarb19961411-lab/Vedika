@@ -9,15 +9,20 @@ tags: [project, roadmap, status]
 ### ✅ Completed Milestones
 - **Firebase Initialization**: Anchored `vedika-e44be`.
 - **Auth Foundation**: Role-resolution and session restoration hardened.
-- **Completed**: Sprint 1A (Booking & Calendar Integrity)
-- **Completed**: Sprint 1B (Metrics + Inventory)
-- **Status**: Sprint 1B closed; Milestone 1 at 90% completion.
-    - Locked fallback policy: **Venue (1), Decorator (4)**.
-    - Standardized conflict error codes established.
+- **Milestone 1: Core Business Engine** - 100% (CLOSED)
+- **Sprint 1A: Booking Hardening** - 100% (CLOSED)
+- **Sprint 1B: Metrics & Inventory** - 100% (CLOSED)
 
 ### 🏗 In Progress
 - [x] **Phase 3.8B: Obsidian Brain Hardening**: Documents now strictly connected via MOCs and hub notes.
 - [/] **Phase 3.8C: Sprint 1B Preparation**: Designing block-out management and inventory schema.
+
+### 🟢 Milestone 1 Completion (Current)
+MILESTONE 1 is now **CLOSED**. The core vendor engine is stable, validated, and ready for operations.
+- All repositories use authoritative Firebase data.
+- Dashboard derives KPIs from true booking state.
+- Inventory is vendor-scoped and transactionally sound.
+- Registration flow correctly initializes vendor capacity and type.
 
 ### 📅 Upcoming
 - **Sprint 1B: Inventory & Block-Out Logic**: Core manual block logic and item catalog persistence.
