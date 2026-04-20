@@ -9,7 +9,7 @@ tags: [project, roadmap, status]
 ### ✅ Completed Milestones
 - **Firebase Initialization**: Anchored `vedika-e44be`.
 - **Firebase Dev Hardening**: App Check Debug Provider & Emulator flows formalized.
-- **Auth Foundation**: Role-resolution and session restoration hardened.
+- **Auth Foundation**: Role-resolution hardened; **6-digit OTP standardized**.
 - ### 🏁 Milestone 1: Core Business Engine [COMPLETED]
 - **Date**: 2026-04-20
 - **Audit Pass**: Build stabilization, interface parity, and documentation hardening completed.

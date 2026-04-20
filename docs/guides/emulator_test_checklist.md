@@ -35,10 +35,9 @@ Use this checklist to verify the stability of the Vedika V2 Golden Path on a fre
 - [ ] Click "Edit Profile" (Verify micro-interaction/Snackbar).
 - [ ] Verify profile stats (Reviews, Verification) display correctly.
 
-## 🛡️ Build Stability Check
-- [ ] Run `./gradlew clean :app:assembleDebug`.
-- [ ] Verify no "Unresolved Reference" errors in features using `AuthViewModel`.
-- [ ] Verify images load correctly (requires internet for Unsplash mocks).
+### 4. Connectivity & Hardening
+- [ ] **App Check Token**: Verify Logcat prints `AppCheckDebugProvider` and token is registered in Console.
+- [ ] **Firebase Sync**: Change a value in Firestore (e.g. Venue Name) and verify it reflects in-app on Profile.
 
 ---
-*Last Updated: 2026-04-14 (Post Phase 2B).*
+*Last Updated: 2026-04-21 (Post Phase 3 Hardening).*

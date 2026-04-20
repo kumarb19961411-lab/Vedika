@@ -14,7 +14,10 @@ This guide provides the canonical steps to configure and verify Firebase service
 
 ## 🚀 1. Local Emulator Suite (devDebug)
 
-The `devDebug` variant is pre-configured to route all Auth and Firestore traffic to `10.0.2.2` (the Android Studio host loopback).
+The `devDebug` variant is pre-configured to route Auth and Firestore traffic to `10.0.2.2` (host loopback). 
+
+> [!NOTE]
+> For **Physical Devices**, you must ensure `USE_FIREBASE_EMULATOR` is `false` in your build config or use the `stagingDebug` variant to connect to live services.
 
 ### Prerequisites
 - Install the [Firebase CLI](https://firebase.google.com/docs/cli).
@@ -33,17 +36,34 @@ The `devDebug` variant is pre-configured to route all Auth and Firestore traffic
 We use the **Firebase App Check Debug Provider** to allow the emulator to interact with live Firebase services (if needed) and to simulate a hardened production environment.
 
 ### Registering your Debug Token
-1. Launch the app in the emulator.
-2. Open **Logcat** and filter by `DebugAppCheckProvider`.
+1. Launch the app on your **emulator** or **physical device**.
+2. Open **Logcat** and filter by `AppCheckDebugProvider`.
 3. Locate the message: `Enter this debug secret into the allow list in the Firebase Console: <TOKEN>`.
-4. Navigate to **Firebase Console > Security > App Check > Apps**.
+4. Navigate to **Firebase Console > App Check > Apps**.
 5. Select **Vedika (com.example.vedika)** > **Manage debug tokens**.
 6. Add the token from Step 3.
 
-> [!WARNING]
-> Never commit a debug token to the repository. The `DebugAppCheckProvider` should only exist in `debug` source sets or behind `BuildConfig.DEBUG` flags.
+> [!TIP]
+> Registration is persistent for that specific device. If you clear app data or reinstall, you may need to re-register a new token.
 
-## 📱 3. Staging & Live Testing
+## 📱 3. Physical Device Hardware Setup
+
+To test on physical hardware, Firebase requires your machine's SHA fingerprints to be registered.
+
+### Generating Fingeprints
+Run the following in the project root:
+```powershell
+./gradlew signingReport
+```
+
+### Registration Steps
+1. Copy the `SHA-1` and `SHA-256` keys from the terminal output.
+2. Go to **Firebase Console > Project Settings > Your Apps**.
+3. Select the Android App and click **Add Fingerprint**.
+4. Paste the keys and save.
+5. **Download the updated `google-services.json`** and replace the existing one in `Vedika/app/`.
+
+## 🧪 4. Staging & Live Testing
 
 For variants pointing to live Firebase (`stagingDebug`, `prodRelease`), use **Fictional Phone Numbers** to avoid SMS costs and rate limits.
 
@@ -57,7 +77,7 @@ For variants pointing to live Firebase (`stagingDebug`, `prodRelease`), use **Fi
 > [!IMPORTANT]
 > These numbers must be manually added to the **Firebase Console > Authentication > Settings > Phone numbers for testing**.
 
-## 📦 4. Package & Configuration Integrity
+## 📦 5. Package & Configuration Integrity
 
 ### `google-services.json` Suffix Policy
 You may notice `com.example.vedika.dev` and `com.example.vedika.staging` entries in `google-services.json`. 

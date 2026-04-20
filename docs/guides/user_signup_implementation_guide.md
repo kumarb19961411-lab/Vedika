@@ -20,7 +20,7 @@ This document provides specific operational implementation breakdowns actively g
 - Trigger operations shift responsibilities explicitly toward standard `AuthViewModel.signUpUser()` integrations properly mutating component constraints immediately into protected `AuthUiState.Loading` variants securing screen focus thoroughly.
 
 ### 2. Bypass Mock Handshake Validation
-- Execution explicitly attempts SMS transmission logic natively defaulting toward internal structural validations specifically querying against standard `1234` logic triggers explicitly deployed ensuring extremely fast unblocked local interface manipulation test environments specifically optimized targeting automated CI actions safely. 
+- Execution explicitly attempts SMS transmission logic natively defaulting toward internal structural validations specifically querying against standard `123456` logic triggers explicitly deployed ensuring extremely fast unblocked local interface manipulation test environments specifically optimized targeting automated CI actions safely. 
 - Accurate verifications internally construct structural `users/{uid}` DTO nodes resolving specifically to base user roles without extended verification checks applied against standard Vendor targets explicitly safely.
 
 ### 3. Final User Graph Orchestration
