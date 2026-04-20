@@ -18,14 +18,23 @@ class MainApplication : Application() {
         Firebase.initialize(this)
 
         // Opt-in Emulator Routing for non-production variants.
-        if (BuildConfig.USE_FIREBASE_EMULATOR) {
+        // Initialize App Check with Debug Provider for all debug builds.
+        // This allows physical devices to verify via debug tokens in the Firebase Console.
+        if (BuildConfig.DEBUG) {
             try {
-                // Initialize App Check with Debug Provider for development/emulator use.
-                // Rule: This must happen before other Firebase service calls.
                 Firebase.appCheck.installAppCheckProviderFactory(
                     DebugAppCheckProviderFactory.getInstance()
                 )
+            } catch (e: Exception) {
+                // Already initialized or provider already installed
+            }
+        }
 
+        // Opt-in Emulator Routing only if explicitly requested.
+        // Note: For physical devices, ensuring you use the staging/prod flavor (or skipping this) 
+        // prevents connection errors to 10.0.2.2.
+        if (BuildConfig.USE_FIREBASE_EMULATOR) {
+            try {
                 Firebase.auth.useEmulator("10.0.2.2", 9099)
                 Firebase.firestore.useEmulator("10.0.2.2", 8080)
             } catch (e: Exception) {
