@@ -60,40 +60,48 @@ class DashboardViewModel @Inject constructor(
 
     private fun loadDashboard() {
         viewModelScope.launch {
-            logDebug("Loading Dashboard...")
-            // First, try to get the mock vendor state for continuity
-            vendorRepository.getMockVendor().collect { mockState ->
-                if (mockState != null) {
-                    logDebug("Resolved role from MockState: ${mockState.vendorType} (Business: ${mockState.businessName})")
+            logDebug("Resolving User ID...")
+            val uid = authRepository.getCurrentUserId()
+            if (uid == null) {
+                logDebug("No active UID found. Dashboard loading failed.")
+                _uiState.value = _uiState.value.copy(isLoading = false)
+                return@launch
+            }
+
+            logDebug("Subscribing to Vendor Profile: $uid")
+            vendorRepository.getVendorProfileStream(uid).collect { profile ->
+                if (profile != null) {
+                    logDebug("Canonical Profile Loaded: ${profile.businessName} (${profile.vendorType})")
                     _uiState.value = _uiState.value.copy(
-                        businessName = mockState.businessName,
-                        venueName = mockState.venueName,
-                        location = mockState.location,
-                        capacity = mockState.capacity,
-                        pricing = mockState.pricing,
-                        yearsExperience = mockState.yearsExperience,
-                        packageTiers = mockState.packageTiers,
-                        area = mockState.area ?: if (mockState.vendorType == VendorType.VENUE) "15,000 Sq Ft" else null,
-                        venueType = mockState.venueType ?: if (mockState.vendorType == VendorType.VENUE) "Indoor/Outdoor" else null,
-                        rating = mockState.rating ?: if (mockState.vendorType == VendorType.VENUE) "4.8 (212)" else "4.9 (86)",
-                        leadsCount = mockState.leadsCount ?: if (mockState.vendorType == VendorType.VENUE) "12 New" else "8 New",
-                        analyticsSummary = mockState.analyticsSummary,
-                        amenities = mockState.amenities,
-                        coverImage = mockState.coverImage,
-                        vendorType = mockState.vendorType,
-                        vendorName = mockState.ownerName,
+                        businessName = profile.businessName,
+                        vendorName = profile.ownerName,
+                        location = profile.location,
+                        pricing = profile.pricing,
+                        capacity = profile.capacity,
+                        amenities = profile.amenities,
+                        coverImage = profile.coverImage ?: "",
+                        vendorType = profile.vendorType,
+                        yearsExperience = profile.yearsExperience,
+                        packageTiers = profile.packageTiers,
+                        rating = profile.rating,
+                        leadsCount = profile.leadsCount,
+                        area = profile.area,
+                        venueType = profile.venueType,
                         isLoading = false
                     )
-                    // Fetch bookings for this mock vendor (using a mock ID or owner name)
-                    loadBookings("mock-vendor-id")
+                    
+                    // Fetch real bookings for this vendor
+                    loadBookings(profile.id)
                 } else {
-                    // Fallback to active vendor from auth
+                    logDebug("No Vendor Profile document found for UID: $uid. Attempting fallback to Auth identity.")
+                    // This scenario should primarily happen for brand new users before profile persistence completes
                     authRepository.getActiveVendor().collect { vendor ->
                         if (vendor != null) {
                             _uiState.value = _uiState.value.copy(
                                 businessName = vendor.businessName,
                                 vendorName = vendor.ownerName,
-                                vendorType = if (vendor.primaryServiceCategory.contains("Venue", ignoreCase = true)) VendorType.VENUE else VendorType.DECORATOR
+                                vendorType = if (vendor.primaryServiceCategory.contains("Venue", ignoreCase = true)) VendorType.VENUE else VendorType.DECORATOR,
+                                isLoading = false
                             )
                             loadBookings(vendor.id)
                         } else {
@@ -106,10 +114,14 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun loadBookings(vendorId: String) {
-        logDebug("Fetching bookings for Vendor: $vendorId")
+        if (vendorId.isBlank() || vendorId == "mock-vendor-id") {
+            logDebug("Invalid Vendor ID for bookings. Skipping fetch.")
+            return
+        }
+        
+        logDebug("Fetching real-time bookings for Vendor: $vendorId")
         viewModelScope.launch {
             bookingRepository.getBookingsForVendor(vendorId).collect { bookings ->
-                logDebug("Retrieved ${bookings.size} bookings from repository.")
                 _uiState.value = _uiState.value.copy(
                     upcomingBookings = bookings
                         .filter { it.status != BookingStatus.CANCELLED && it.eventDate > System.currentTimeMillis() }

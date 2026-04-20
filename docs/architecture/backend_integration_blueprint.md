@@ -41,5 +41,11 @@ The Vedika client architecture rigidly leverages a "local-first UI, remote-secon
     3.  `VendorRepository.saveVendorProfile()` persists the document to the `/vendors/{uid}` collection.
 - **Consistency**: Replaces all legacy `VendorMockState` and transitional naming conventions with production-ready, type-safe structures.
 
+### 5. Hardened Dashboard & Profile Data Flow
+- **Observation Strategy**: `DashboardViewModel` and `ProfileViewModel` strictly lifecycle-observe the canonical `VendorProfile` stream via `vendorRepository.getVendorProfileStream(uid)`.
+- **Identity Resolution**: Real-time resolution of the authenticated UID ensures that data is statically bound to the active session.
+- **Graceful Fallbacks**: UI components (Venue/Decorator screens) implement standard fallback patterns ("—", "New", "Partner") for optional profile fields, ensuring stability even if the Firestore document is partially populated.
+- **Bookings Integration**: The `vendorId` from the canonical profile is used as the key for all relevant collection queries (e.g., `/bookings`), removing all legacy mock-id assumptions.
+
 ## Future work
 - Comprehensive custom domain logic Cloud Functions deployment replacing client-hosted verification checks.

@@ -10,3 +10,9 @@ After a new Vendor verifies their OTP, they must complete their profile before a
 
 ## Navigation Exit
 Once `onboardingComplete` sets to true, the observer triggers navigation to `VendorShell`.
+
+## Post-Onboarding Consumption
+After onboarding, all vendor screens (Dashboard, Profile, Settings) strictly consume the canonical Firestore document via `vendorRepository.getVendorProfileStream(uid)`.
+- **Dashboard**: Streams business metadata and stats.
+- **Profile**: Displays the "Partner Command" view with full persistence.
+- **Graceful Defaults**: Screens implement standard fallbacks (e.g., "—") for any non-mandatory profile fields to ensure UI stability.

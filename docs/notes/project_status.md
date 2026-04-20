@@ -19,6 +19,7 @@ Ongoing scratchpad for tracking granular feature delivery.
 - [x] Session Restoration via SplashViewModel
 - [x] Auth/Startup Consistency Cleanup (Standardized Dev Bypass & Logout)
 - [x] Phase 3.7: Vendor Registration Contract Cleanup (Canonical VendorProfile)
+- [x] Phase 3.8: Vendor Dashboard & Profile Hardening (Canonical Data Flow)
 - [ ] Multi-module Navigation Hardening
 - [ ] Live Phone Auth (transition from 1234)
 

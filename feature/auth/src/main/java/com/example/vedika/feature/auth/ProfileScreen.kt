@@ -43,7 +43,7 @@ fun ProfileScreen(
         return
     }
 
-    val vendor = state.mockVendor
+    val vendor = state.vendorProfile
     val primaryColor = MaterialTheme.colorScheme.primary
     val secondaryColor = MaterialTheme.colorScheme.secondary
     val surfaceColor = MaterialTheme.colorScheme.background

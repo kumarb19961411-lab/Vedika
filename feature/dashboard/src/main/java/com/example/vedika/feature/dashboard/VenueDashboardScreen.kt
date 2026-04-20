@@ -143,11 +143,11 @@ fun VenueDashboardScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        StatItem(label = "Capacity", value = if (!state.capacity.isNullOrBlank()) state.capacity!! else "1200 Guests", color = primaryColor)
+                        StatItem(label = "Capacity", value = state.capacity ?: "—", color = primaryColor)
                         VerticalDivider(modifier = Modifier.height(32.dp).width(1.dp), color = Color.LightGray.copy(alpha = 0.5f))
-                        StatItem(label = "Area", value = if (!state.area.isNullOrBlank()) state.area!! else "15,000 Sq Ft", color = primaryColor)
+                        StatItem(label = "Area", value = state.area ?: "—", color = primaryColor)
                         VerticalDivider(modifier = Modifier.height(32.dp).width(1.dp), color = Color.LightGray.copy(alpha = 0.5f))
-                        StatItem(label = "Type", value = if (!state.venueType.isNullOrBlank()) state.venueType!! else "Indoor/Outdoor", color = primaryColor)
+                        StatItem(label = "Type", value = state.venueType ?: "—", color = primaryColor)
                     }
                 }
 

@@ -129,11 +129,11 @@ fun DecoratorDashboardScreen(
                         horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        DecoratorStat(label = "Designs", value = "128", color = primaryColor)
+                        DecoratorStat(label = "Packages", value = state.packageTiers.size.toString().padStart(2, '0'), color = primaryColor)
                         VerticalDivider(modifier = Modifier.height(32.dp).width(1.dp), color = Color.LightGray.copy(alpha = 0.5f))
-                        DecoratorStat(label = "Ongoing", value = "05", color = primaryColor)
+                        DecoratorStat(label = "Bookings", value = (state.pendingCount + state.confirmedCount).toString().padStart(2, '0'), color = primaryColor)
                         VerticalDivider(modifier = Modifier.height(32.dp).width(1.dp), color = Color.LightGray.copy(alpha = 0.5f))
-                        DecoratorStat(label = "Rating", value = state.rating ?: "4.9 ★", color = primaryColor)
+                        DecoratorStat(label = "Rating", value = state.rating ?: "New", color = primaryColor)
                     }
                 }
 
