@@ -18,6 +18,8 @@ import javax.inject.Inject
 enum class AccountMode { USER, PARTNER }
 enum class AuthFlow { SIGN_IN, SIGN_UP }
 
+import com.example.vedika.core.data.model.AppUser
+
 sealed class RoleResolutionState {
     object Idle : RoleResolutionState()
     object Loading : RoleResolutionState()
@@ -26,10 +28,13 @@ sealed class RoleResolutionState {
     data class Error(val message: String) : RoleResolutionState()
 }
 
+import com.example.vedika.core.data.repository.UserRepository
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val vendorRepository: VendorRepository
+    private val vendorRepository: VendorRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -168,11 +173,42 @@ class AuthViewModel @Inject constructor(
                         }
                     }
                 } else {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
-                    _uiState.value = _uiState.value.copy(
-                        roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
-                    )
-                    onSuccess()
+                    val profileResult = userRepository.getUserProfile(user.id)
+                    profileResult.onSuccess {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                        )
+                        onSuccess()
+                    }.onFailure { ex ->
+                        if (ex.message == "USER_NOT_FOUND") {
+                            val newUser = AppUser(
+                                uid = user.id,
+                                fullName = _uiState.value.ownerName.takeIf { it.isNotBlank() } ?: "User",
+                                phoneNumber = _uiState.value.phoneNumber
+                            )
+                            val createResult = userRepository.createUserProfile(newUser)
+                            
+                            _uiState.value = _uiState.value.copy(isLoading = false)
+                            createResult.onSuccess {
+                                _uiState.value = _uiState.value.copy(
+                                    roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                                )
+                                onSuccess()
+                            }.onFailure { createEx ->
+                                _uiState.value = _uiState.value.copy(
+                                    error = "Failed to create profile: ${createEx.message}",
+                                    roleResolutionState = RoleResolutionState.Error("Failed to create profile.")
+                                )
+                            }
+                        } else {
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                error = "Failed to load user profile. Please try again.",
+                                roleResolutionState = RoleResolutionState.Error("Failed to load user profile.")
+                            )
+                        }
+                    }
                 }
             }.onFailure { ex ->
                 _uiState.value = _uiState.value.copy(
@@ -211,11 +247,42 @@ class AuthViewModel @Inject constructor(
                         }
                     }
                 } else {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
-                    _uiState.value = _uiState.value.copy(
-                        roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
-                    )
-                    onSuccess()
+                    val profileResult = userRepository.getUserProfile(user.id)
+                    profileResult.onSuccess {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                        )
+                        onSuccess()
+                    }.onFailure { ex ->
+                        if (ex.message == "USER_NOT_FOUND") {
+                            val newUser = AppUser(
+                                uid = user.id,
+                                fullName = _uiState.value.ownerName.takeIf { it.isNotBlank() } ?: "User",
+                                phoneNumber = _uiState.value.phoneNumber.takeIf { it.isNotBlank() } ?: "0000000000"
+                            )
+                            val createResult = userRepository.createUserProfile(newUser)
+                            
+                            _uiState.value = _uiState.value.copy(isLoading = false)
+                            createResult.onSuccess {
+                                _uiState.value = _uiState.value.copy(
+                                    roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                                )
+                                onSuccess()
+                            }.onFailure { createEx ->
+                                _uiState.value = _uiState.value.copy(
+                                    error = "Failed to create profile: ${createEx.message}",
+                                    roleResolutionState = RoleResolutionState.Error("Failed to create profile.")
+                                )
+                            }
+                        } else {
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                error = "Failed to load user profile. Please try again.",
+                                roleResolutionState = RoleResolutionState.Error("Failed to load user profile.")
+                            )
+                        }
+                    }
                 }
             }.onFailure { ex ->
                 _uiState.value = _uiState.value.copy(
