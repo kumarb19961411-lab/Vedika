@@ -3,9 +3,11 @@ package com.example.vedika.feature.auth
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vedika.core.data.model.AppUser
 import com.example.vedika.core.data.model.VendorMockState
 import com.example.vedika.core.data.model.VendorType
 import com.example.vedika.core.data.repository.AuthRepository
+import com.example.vedika.core.data.repository.UserRepository
 import com.example.vedika.core.data.repository.VendorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,17 +20,14 @@ import javax.inject.Inject
 enum class AccountMode { USER, PARTNER }
 enum class AuthFlow { SIGN_IN, SIGN_UP }
 
-import com.example.vedika.core.data.model.AppUser
-
 sealed class RoleResolutionState {
     object Idle : RoleResolutionState()
     object Loading : RoleResolutionState()
     object OtpSent : RoleResolutionState()
     data class Verified(val uid: String, val profileExists: Boolean = false) : RoleResolutionState()
+    object AccountNotFound : RoleResolutionState()
     data class Error(val message: String) : RoleResolutionState()
 }
-
-import com.example.vedika.core.data.repository.UserRepository
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -175,38 +174,47 @@ class AuthViewModel @Inject constructor(
                 } else {
                     val profileResult = userRepository.getUserProfile(user.id)
                     profileResult.onSuccess {
-                        _uiState.value = _uiState.value.copy(
+                        _uiState.update { it.copy(
                             isLoading = false,
                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
-                        )
+                        ) }
                         onSuccess()
                     }.onFailure { ex ->
                         if (ex.message == "USER_NOT_FOUND") {
-                            val newUser = AppUser(
-                                uid = user.id,
-                                fullName = _uiState.value.ownerName.takeIf { it.isNotBlank() } ?: "User",
-                                phoneNumber = _uiState.value.phoneNumber
-                            )
-                            val createResult = userRepository.createUserProfile(newUser)
-                            
-                            _uiState.value = _uiState.value.copy(isLoading = false)
-                            createResult.onSuccess {
-                                _uiState.value = _uiState.value.copy(
-                                    roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                            if (_uiState.value.authFlow == AuthFlow.SIGN_IN) {
+                                _uiState.update { it.copy(
+                                    isLoading = false,
+                                    error = "No user profile found. Please register first.",
+                                    roleResolutionState = RoleResolutionState.AccountNotFound
+                                ) }
+                            } else {
+                                val newUser = AppUser(
+                                    uid = user.id,
+                                    fullName = _uiState.value.ownerName.takeIf { it.isNotBlank() } ?: "User",
+                                    phoneNumber = _uiState.value.phoneNumber
                                 )
-                                onSuccess()
-                            }.onFailure { createEx ->
-                                _uiState.value = _uiState.value.copy(
-                                    error = "Failed to create profile: ${createEx.message}",
-                                    roleResolutionState = RoleResolutionState.Error("Failed to create profile.")
-                                )
+                                viewModelScope.launch {
+                                    val createResult = userRepository.createUserProfile(newUser)
+                                    _uiState.update { it.copy(isLoading = false) }
+                                    createResult.onSuccess {
+                                        _uiState.update { it.copy(
+                                            roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                                        ) }
+                                        onSuccess()
+                                    }.onFailure { createEx ->
+                                        _uiState.update { it.copy(
+                                            error = "Failed to create profile: ${createEx.message}",
+                                            roleResolutionState = RoleResolutionState.Error("Failed to create profile.")
+                                        ) }
+                                    }
+                                }
                             }
                         } else {
-                            _uiState.value = _uiState.value.copy(
+                            _uiState.update { it.copy(
                                 isLoading = false,
                                 error = "Failed to load user profile. Please try again.",
                                 roleResolutionState = RoleResolutionState.Error("Failed to load user profile.")
-                            )
+                            ) }
                         }
                     }
                 }
@@ -249,38 +257,47 @@ class AuthViewModel @Inject constructor(
                 } else {
                     val profileResult = userRepository.getUserProfile(user.id)
                     profileResult.onSuccess {
-                        _uiState.value = _uiState.value.copy(
+                        _uiState.update { it.copy(
                             isLoading = false,
                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
-                        )
+                        ) }
                         onSuccess()
                     }.onFailure { ex ->
                         if (ex.message == "USER_NOT_FOUND") {
-                            val newUser = AppUser(
-                                uid = user.id,
-                                fullName = _uiState.value.ownerName.takeIf { it.isNotBlank() } ?: "User",
-                                phoneNumber = _uiState.value.phoneNumber.takeIf { it.isNotBlank() } ?: "0000000000"
-                            )
-                            val createResult = userRepository.createUserProfile(newUser)
-                            
-                            _uiState.value = _uiState.value.copy(isLoading = false)
-                            createResult.onSuccess {
-                                _uiState.value = _uiState.value.copy(
-                                    roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                            if (_uiState.value.authFlow == AuthFlow.SIGN_IN) {
+                                _uiState.update { it.copy(
+                                    isLoading = false,
+                                    error = "No user profile found. Please register first.",
+                                    roleResolutionState = RoleResolutionState.AccountNotFound
+                                ) }
+                            } else {
+                                val newUser = AppUser(
+                                    uid = user.id,
+                                    fullName = _uiState.value.ownerName.takeIf { it.isNotBlank() } ?: "User",
+                                    phoneNumber = _uiState.value.phoneNumber.takeIf { it.isNotBlank() } ?: "0000000000"
                                 )
-                                onSuccess()
-                            }.onFailure { createEx ->
-                                _uiState.value = _uiState.value.copy(
-                                    error = "Failed to create profile: ${createEx.message}",
-                                    roleResolutionState = RoleResolutionState.Error("Failed to create profile.")
-                                )
+                                viewModelScope.launch {
+                                    val createResult = userRepository.createUserProfile(newUser)
+                                    _uiState.update { it.copy(isLoading = false) }
+                                    createResult.onSuccess {
+                                        _uiState.update { it.copy(
+                                            roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
+                                        ) }
+                                        onSuccess()
+                                    }.onFailure { createEx ->
+                                        _uiState.update { it.copy(
+                                            error = "Failed to create profile: ${createEx.message}",
+                                            roleResolutionState = RoleResolutionState.Error("Failed to create profile.")
+                                        ) }
+                                    }
+                                }
                             }
                         } else {
-                            _uiState.value = _uiState.value.copy(
+                            _uiState.update { it.copy(
                                 isLoading = false,
                                 error = "Failed to load user profile. Please try again.",
                                 roleResolutionState = RoleResolutionState.Error("Failed to load user profile.")
-                            )
+                            ) }
                         }
                     }
                 }
