@@ -163,9 +163,10 @@ fun VedikaAppShell() {
                             }
                         }
                         is StartupState.Authenticated -> {
+                            val authenticatedState = state as StartupState.Authenticated
                             val destRoute = when {
-                                state.mode == AccountMode.PARTNER -> {
-                                    if (state.profileExists) VedikaDestination.Dashboard.route 
+                                authenticatedState.mode == AccountMode.PARTNER -> {
+                                    if (authenticatedState.profileExists) VedikaDestination.Dashboard.route
                                     else VedikaDestination.CategorySelection.route
                                 }
                                 else -> VedikaDestination.DecoratorsGallery.route

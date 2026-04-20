@@ -12,6 +12,7 @@ import javax.inject.Singleton
 import com.example.vedika.core.data.model.SlotType
 import com.example.vedika.core.data.model.VendorType
 import com.example.vedika.core.data.repository.VendorRepository
+import com.example.vedika.core.data.repository.AuthRepository
 import kotlinx.coroutines.flow.firstOrNull
 import java.time.Instant
 import java.time.LocalDate
@@ -19,6 +20,7 @@ import java.time.ZoneId
 
 @Singleton
 class FakeBookingRepository @Inject constructor(
+    private val authRepository: AuthRepository,
     private val vendorRepository: VendorRepository
 ) : BookingRepository {
     private val bookings = MockDataStore.bookings
@@ -38,7 +40,8 @@ class FakeBookingRepository @Inject constructor(
 
         val conflict = checkConflict(booking.vendorId, booking.eventDate, booking.slotType).getOrNull() ?: false
         if (conflict) {
-            val vendor = vendorRepository.getMockVendor().firstOrNull()
+            val uid = authRepository.getCurrentUserId() ?: "mock_vendor"
+            val vendor = vendorRepository.getVendorProfileStream(uid).firstOrNull()
             val error = if (vendor?.vendorType == VendorType.VENUE) "SLOT_OCCUPIED" else "CAPACITY_FULL"
             return Result.failure(Exception("$error: Conflict detected with existing booking."))
         }
@@ -61,7 +64,8 @@ class FakeBookingRepository @Inject constructor(
     }
 
     override suspend fun checkConflict(vendorId: String, date: Long, slotType: SlotType): Result<Boolean> {
-        val vendor = vendorRepository.getMockVendor().firstOrNull() 
+        val uid = authRepository.getCurrentUserId() ?: "mock_vendor"
+        val vendor = vendorRepository.getVendorProfileStream(uid).firstOrNull()
             ?: return Result.failure(Exception("Vendor not found"))
         
         val targetDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDate()

@@ -3,6 +3,7 @@ package com.example.vedika.feature.gallery
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vedika.core.data.model.VendorType
+import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.VendorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +28,7 @@ data class GalleryAlbum(
 
 @HiltViewModel
 class GalleryViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val vendorRepository: VendorRepository
 ) : ViewModel() {
 
@@ -39,9 +41,10 @@ class GalleryViewModel @Inject constructor(
 
     private fun loadGallery() {
         viewModelScope.launch {
-            vendorRepository.getMockVendor().collect { mockState ->
-                if (mockState != null) {
-                    val defaultAlbums = if (mockState.vendorType == VendorType.VENUE) {
+            val uid = authRepository.getCurrentUserId() ?: return@launch
+            vendorRepository.getVendorProfileStream(uid).collect { profile ->
+                if (profile != null) {
+                    val defaultAlbums = if (profile.vendorType == VendorType.VENUE) {
                         listOf(
                             GalleryAlbum("1", "Main Hall", "Home", listOf("https://images.unsplash.com/photo-1519167758481-83f550bb49b3")),
                             GalleryAlbum("2", "Lawn & Garden", "Spa", listOf("https://images.unsplash.com/photo-1469334031218-e382a71b716b")),
@@ -56,8 +59,8 @@ class GalleryViewModel @Inject constructor(
                     }
 
                     _uiState.value = GalleryUiState(
-                        vendorType = mockState.vendorType,
-                        galleryImages = mockState.galleryImages,
+                        vendorType = profile.vendorType,
+                        galleryImages = profile.galleryImages,
                         albums = defaultAlbums,
                         isLoading = false
                     )

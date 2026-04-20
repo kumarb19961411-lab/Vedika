@@ -133,7 +133,7 @@ fun InventoryHubScreen(
             } else if (state.items.isEmpty()) {
                 Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.Inventory2, contentDescription = null, size = 48.dp, tint = Color.LightGray)
+                        Icon(Icons.Default.Inventory2, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color.LightGray)
                         Text("No inventory items found", style = MaterialTheme.typography.bodyLarge, color = Color.Gray)
                     }
                 }

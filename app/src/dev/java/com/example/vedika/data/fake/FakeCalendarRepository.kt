@@ -1,6 +1,7 @@
 package com.example.vedika.data.fake
 
 import com.example.vedika.core.data.model.*
+import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.BookingRepository
 import com.example.vedika.core.data.repository.CalendarRepository
 import com.example.vedika.core.data.repository.VendorRepository
@@ -18,6 +19,7 @@ import javax.inject.Singleton
 
 @Singleton
 class FakeCalendarRepository @Inject constructor(
+    private val authRepository: AuthRepository,
     private val vendorRepository: VendorRepository,
     private val bookingRepository: BookingRepository
 ) : CalendarRepository {
@@ -26,12 +28,13 @@ class FakeCalendarRepository @Inject constructor(
     private val bookingsFlow = MockDataStore.bookings
 
     override fun getCalendarState(vendorId: String, month: Int, year: Int): Flow<Map<LocalDate, CalendarDayState>> {
+        val uid = authRepository.getCurrentUserId() ?: "mock_vendor"
         return combine(
-            vendorRepository.getMockVendor(),
+            vendorRepository.getVendorProfileStream(uid),
             manualBlocks,
             bookingRepository.getBookingsForVendor(vendorId)
-        ) { mockVendor, blocks, bookings ->
-            val vendorType = mockVendor?.vendorType ?: VendorType.VENUE
+        ) { profile, blocks, bookings ->
+            val vendorType = profile?.vendorType ?: VendorType.VENUE
             generateReactiveState(vendorId, vendorType, month, year, blocks, bookings)
         }
     }

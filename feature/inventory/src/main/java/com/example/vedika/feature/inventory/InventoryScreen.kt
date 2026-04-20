@@ -99,7 +99,7 @@ fun InventoryScreen(
                             InventoryItemCard(
                                 item = item,
                                 onToggleAvailability = {
-                                    viewModel.toggleAvailability(item.id, item.isAvailable)
+                                    viewModel.toggleAvailability(item)
                                 }
                             )
                         }

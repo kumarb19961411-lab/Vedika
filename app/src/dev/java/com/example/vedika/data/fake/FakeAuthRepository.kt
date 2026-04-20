@@ -52,4 +52,6 @@ class FakeAuthRepository @Inject constructor() : AuthRepository {
     override suspend fun logout() {
         currentUser.value = null
     }
+
+    override fun getCurrentUserId(): String? = currentUser.value?.id
 }
