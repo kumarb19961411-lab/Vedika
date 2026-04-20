@@ -227,7 +227,11 @@ class AuthViewModel @Inject constructor(
     
     fun loginAsDevBypass(onSuccess: () -> Unit) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = _uiState.value.copy(
+                isLoading = true, 
+                error = null,
+                roleResolutionState = RoleResolutionState.Loading
+            )
             val result = authRepository.loginAsDevBypass("dev")
             result.onSuccess { user ->
                 if (_uiState.value.accountMode == AccountMode.PARTNER) {

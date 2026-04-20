@@ -10,19 +10,33 @@ tags: [guide, auth, session, restoration]
 
 # Session Restoration Implementation Guide
 
-## Source of truth
-Defines the hyper-specific codebase implementation resolving user sessions transparently without forcing subsequent recursive explicit OTP operations. Derives from the canonical [[session_restoration]] layout explicit requirements precisely safely correctly.
+## Overview
+This guide describes how to maintain and verify the session restoration flow in the Vedika Android app.
 
-## Current implementation
+## Components
 
-### Secure Application Preference Mapping
-Explicit operational caching parameters deploy inherently across initial primary boot sequences securely instantiating isolated specific Android system level `EncryptedSharedPreferences` utilizing rigorous KeyGen definitions effectively securing explicit token identifiers systematically totally preventing external exposure risk. 
-- Component Action: Primary logic saves newly authenticated explicit JWT schemas inherently following exact structural payload validations originating consistently from explicit standard Firebase operations precisely accurately flawlessly.
+### 1. `EncryptedSessionStorage`
+- **Location**: `:core:data`
+- **Role**: Stores the `AccountMode` enum securely using Android Keystore.
+- **Key Method**: `saveAccountMode(AccountMode)`, `getAccountMode()`, `clearSession()`.
 
-### Interceptor Navigational Routing
-- Root application invocation layers inherently execute primary `MainActivity`. This explicitly creates specialized non-navigational nodes correctly initializing fundamental explicit `SplashViewModel` bounds transparently independently securely seamlessly.
-- Primary initialization processes natively read explicit validated caches dynamically interpreting internal lifecycle variants cleanly automatically effectively seamlessly correctly safely thoroughly deeply. 
-- Fully validated JWT strings firmly authorize targeted navigational graphs deliberately resolving implicit roles mapped consistently (resolving effectively immediately explicitly strictly bound explicitly toward either distinct Consumer variants securely mapping to explicit Dashboard models accurately or complex Partner hub structures flawlessly deeply distinctly strictly safely precisely). 
+### 2. `SplashViewModel`
+- **Location**: `:feature:auth`
+- **Role**: State-driven startup resolver.
+- **Logic**:
+  1. Check `FirebaseAuth.currentUser`.
+  2. If present, read `AccountMode` from `SessionStorage`.
+  3. Fetch corresponding profile via `VendorRepository` or `UserRepository`.
+  4. Emit `StartupState` (Authenticated, Unauthenticated, or Offline).
 
-## Future work
-- Build extensive background periodic heartbeat token renewal processes safely operating comprehensively seamlessly completely seamlessly perfectly natively effectively independently resolutely consistently securely accurately robustly tightly natively transparently automatically effectively perfectly implicitly completely deeply.
+### 3. `MainActivity`
+- **Role**: Top-level router.
+- **Logic**: Observes `SplashViewModel.startupState` and navigates to `Dashboard`, `Gallery`, or `AuthGraph` accordingly.
+
+## Verification Steps
+1. **Cold Launch**: Close app, open it. Verify it lands on the last active screen (Dashboard or Gallery) without the Login screen flickering.
+2. **Logout Verification**: Logout, close app, open it. Verify it lands on the Login screen (due to `clearSession()`).
+3. **Offline Handling**: Disable internet, open app. Verify it shows the Offline/Retry screen. Do not auto-logout.
+
+## Troubleshooting
+- If the app consistently lands on Login even when logged in, verify that `AccountMode` is being saved correctly during the `verifyOtp` or `loginAsDevBypass` flow in `AuthViewModel`.

@@ -10,30 +10,46 @@ tags: [architecture, auth, workflow, security]
 
 # Canonical Auth Master Workflow
 
-## Source of truth
-This document acts as the absolute architectural source of truth defining deterministic app routing, data integration boundaries, and critical state transitions for all User and Vendor authentication flows across the Vedika platform. All internal logic built within the `:feature:auth` module, and any module interacting with it, must strictly abide by these documented patterns to prevent fragmented backstack routing and session capability leaks.
+## Source of Truth
+This document is the absolute architectural source of truth for auth routing. All internal logic in `:feature:auth` must follow these patterns.
 
-## Current implementation
+## Current Implementation
 
 ### 1. Vendor Flow (Partner Side)
-Vendor accounts operate under a strict, multi-step profile construction layer. Partner accounts must achieve full profile completion before crossing the application boundary into terminal dashboard states.
-- **Sign Up Mechanics:** Vendor intent initiates by supplying a valid phone number. The gateway fires a Firebase SMS OTP mechanism. Upon matching verification, the system securely caches the immediate `uid` locally and routes the navigation graph explicitly to the specialized Onboarding Flow (Vendor Profile Bootstrap) based on their targeted category (Venue, Decorator, etc). Only upon validated form submission does a true Document representation get instantiated into `vendors/{uid}`. Finally, `popUpTo(0)` clears the graph and exposes the Dashboard.
-- **Sign In Mechanics:** Existing vendor enters their phone number and verifies via OTP. The core `AuthViewModel` seamlessly executes an asynchronous query against the master `vendors/{uid}` target. It asserts the presence of the document and an explicit `onboardingComplete=true` flag. If authenticated successfully through these bounds, `popUpTo(0)` routes directly to the operational Partner Dashboard. If the document states incomplete, logic forces the vendor back into their specific setup sequence intercept point.
+- **Sign Up**: Phone + OTP. If success, route to Category Selection (Onboarding). Save `AccountMode.PARTNER` hint.
+- **Sign In**: Phone + OTP. Fetch `vendors/{uid}`.
+  - If exists: Route to Dashboard.
+  - If missing: Route to Category Selection.
+  - Save `AccountMode.PARTNER` hint.
 
 ### 2. User Flow (Consumer Side)
-User (Consumer) entry flows fundamentally prioritize absolute operational velocity and low-friction engagement over profound profile depth. 
-- **Sign Up Mechanics:** Given a new consumer phone number targeting signup, OTP verification instantly reroutes to a frictionless User Setup node (requesting merely standard display name elements). Submitting the payload creates the barebones `users/{uid}` index, and routes immediately to the broader application layout via `popUpTo(0)`.
-- **Sign In Mechanics:** User submits previously saved phone number; OTP verification success executes an immediate backend query to validate `users/{uid}` existence. Affirmative validation routes immediately to the primary Dashboard.
+- **Sign Up**: Phone + OTP. Create barebones `users/{uid}`. Save `AccountMode.USER` hint. Route to Decorators Gallery.
+- **Sign In**: Phone + OTP. Fetch `users/{uid}`.
+  - If exists: Route to Decorators Gallery.
+  - If missing: Explicit failure (Account Not Found).
+  - Save `AccountMode.USER` hint.
 
-### 3. Session Restoration & Interception Handshake
-Session restoration optimizes return velocity to a near-zero latency constraint.
-- **Cold App Launch:** Boot sequence utilizes `SplashViewModel` instantly intercepting primary navigation mapping to parse local `EncryptedSharedPreferences` for unexpired JWT structures representing a valid, live session token. 
-- **Validation Hit:** Provided the token evaluates successfully and is firmly bound to a resolvable `cachedRole`, standard application splashing is completely bypassed. Backend observation streams lock onto target indices immediately, and app routes cleanly to specific UX variants without drawing any un-authenticated fragment layouts.
-- **Validation Miss:** Token decay, structural corruption, or null representations safely obliterate existing validation blocks and instantly yield to initial global Login gating screens.
+### 3. Session Restoration & Startup Resolution
+Session restoration resolves returning users via `SplashViewModel` on cold launch.
+- **Cold App Launch**: Starts at `SplashScreen` -> `resolveUserSession()`.
+- **Identity Source**: `FirebaseAuth.currentUser`.
+- **Role Hint**: `SessionStorage` (EncryptedSharedPreferences) stores `AccountMode`.
+- **Resolution Path**:
+  - If authenticated: Profile fetch from Firestore (`users` or `vendors` depending on hint).
+  - If profile exists: Route terminal (`Dashboard` / `Gallery`).
+  - If profile missing: Route to registration.
+  - If unauthenticated: Route to `AuthGraph`.
 
-### 4. Database Role Constraints
-- Application roles (Partner vs User) operate conceptually as physical planes governed firmly beneath structural `firestore.rules` rule-bindings. For instance, any internal UI layer operating with `AccountMode == PARTNER` will face severe access denied execution errors if it attempts unauthorized mutations targeting a foreign `users/{uid}` sub-tree.
+### 4. Logout Consistency
+Logout must clear both remote and local sessions.
+1. `firebaseAuth.signOut()`
+2. `sessionStorage.clearSession()` (Removes `AccountMode` hint)
+3. Navigate to Login using `popUpTo(0)`.
 
-## Future work
-- Introduce structured multi-factor authentication scaling endpoints specifically targeting high-volume financial Vendor instances.
-- Architect dynamic, scope-toggling primitives allowing seamless session conversion for identities performing dual operations as both standard system consumers and structural partners without enduring explicit terminal log-outs.
+### 5. Dev Bypass
+The developer bypass flow replicates the Sign In flow exactly, including profile resolution and session hint storage. It is ONLY available in `DEBUG` builds.
+
+## Database Role Constraints
+- Roles are enforced via `firestore.rules`.
+- `PARTNER` mode sessions cannot access `users/{uid}` data.
+- `USER` mode sessions cannot access `vendors/{uid}` data.

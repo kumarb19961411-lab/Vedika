@@ -188,14 +188,17 @@ fun VedikaAppShell() {
                         navController.getBackStackEntry(VedikaDestination.AuthGraph.route)
                     }
                     val authViewModel: AuthViewModel = hiltViewModel(parentEntry)
+                    val currentAuthState by authViewModel.uiState.collectAsState()
                     LoginScreen(
                         viewModel = authViewModel,
                         onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
                         onNavigateToSignUp = { navController.navigate(VedikaDestination.SignUp.route) },
                         onDevBypassSuccess = {
-                            navController.navigate(VedikaDestination.Dashboard.route) {
-                                popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
-                            }
+                            navigateToResolution(
+                                navController = navController,
+                                accountMode = currentAuthState.accountMode,
+                                resolutionState = currentAuthState.roleResolutionState
+                            )
                         }
                     )
                 }
@@ -219,24 +222,11 @@ fun VedikaAppShell() {
                     OtpVerificationScreen(
                         viewModel = authViewModel,
                         onVerificationSuccess = {
-                                val verifiedState = currentAuthState.roleResolutionState as? RoleResolutionState.Verified
-                                val profileExists = verifiedState?.profileExists ?: false
-                                val route = when {
-                                    currentAuthState.accountMode == AccountMode.USER -> {
-                                        VedikaDestination.DecoratorsGallery.route
-                                    }
-                                    currentAuthState.accountMode == AccountMode.PARTNER -> {
-                                        if (profileExists) {
-                                            VedikaDestination.Dashboard.route
-                                        } else {
-                                            VedikaDestination.CategorySelection.route
-                                        }
-                                    }
-                                    else -> VedikaDestination.DecoratorsGallery.route
-                                }
-                            navController.navigate(route) {
-                                popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
-                            }
+                            navigateToResolution(
+                                navController = navController,
+                                accountMode = currentAuthState.accountMode,
+                                resolutionState = currentAuthState.roleResolutionState
+                            )
                         },
                         onNavigateBack = { navController.popBackStack() }
                     )
@@ -357,5 +347,33 @@ fun VedikaAppShell() {
                 )
             }
         }
+    }
+}
+
+/**
+ * Shared routing logic for both real OTP verification and developer bypass flows.
+ * Ensures that both flows resolve profile status before landing on terminal screens.
+ */
+private fun navigateToResolution(
+    navController: androidx.navigation.NavController,
+    accountMode: AccountMode,
+    resolutionState: RoleResolutionState
+) {
+    if (resolutionState !is RoleResolutionState.Verified) return
+
+    val profileExists = resolutionState.profileExists
+    val destination = when {
+        accountMode == AccountMode.USER -> {
+            VedikaDestination.DecoratorsGallery.route
+        }
+        accountMode == AccountMode.PARTNER -> {
+            if (profileExists) VedikaDestination.Dashboard.route
+            else VedikaDestination.CategorySelection.route
+        }
+        else -> VedikaDestination.DecoratorsGallery.route
+    }
+
+    navController.navigate(destination) {
+        popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
     }
 }

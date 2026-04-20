@@ -10,25 +10,27 @@ tags: [status, phase3, overview]
 
 # Vedika System Status
 
-## Source of truth
-This document provides a high-level, execution-grade overview of the Vedika architecture implementation status. It is the single source of truth for tracking what is built, what is mocked, and what remains to be integrated for our Phase 3 Backend Hardening.
+## Source of Truth
+This document provides a high-level overview of the Vedika architecture implementation status.
 
-## Current implementation
+## Current Implementation
 
-Vedika is currently deeply entrenched in Phase 3: Backend Integration & Hardening. The overarching UI shell across the Vendor Onboarding screens, User & Partner Dashboards, and Auth flows have been structurally scaffolded and audited for Compose layout performance. However, a significant portion of production API syncing remains incomplete. The current immediate focus is to harden the data contracts in the `core:data` repositories before migrating the application to communicate directly with live, external endpoints.
+### Phase 3: Backend Integration & Hardening (Active)
+The application has transitioned from mock-driven flows to a state-driven, Firebase-backed architecture.
 
 ### Fully Implemented and Verified
-- **V2 Jetpack Compose App Shell**: The application utilizes a visually stable, fully responsive and modularized architecture separated broadly into `:app`, `:feature:auth`, `:feature:dashboard`, and canonical UI components in `:core:ui`. The dependencies are fully backed by Hilt.
-- **Obsidian Vault Framework**: Canonical documentation hierarchy correctly reflects repository boundaries in a deeply linkable vault structure.
-- **Auth Graph Routing**: Comprehensive navigation handling, using nested graphs (`auth_graph`) with determinism implemented in `AuthViewModel`, which effectively limits access and controls backstack behaviors.
+- **Auth Foundation**: Firebase Phone Auth integration (with dev bypass toggle).
+- **Profile Resolution**: Identity (Firebase Auth) is decoupled from Profile (Firestore). Resolution occurs via `AuthViewModel` during login.
+- **Session Restoration**: `SplashViewModel` intercepts startup, resolving sessions via `FirebaseAuth` and `EncryptedSessionStorage` hints.
+- **V2 App Shell**: Modularized Jetpack Compose architecture with Hilt DI.
+- **Unified Navigation**: Centralized routing in `MainActivity` observing `StartupState` and `RoleResolutionState`.
 
 ### Partially Implemented / Scaffolding
-- **Vendor Registration Flow (UI)**: Built to visually support complex workflows for diverse vendor types (Venues, Decorators, etc.). It currently writes data models into mock memory structures (`MockRepository`) rather than actively transmitting to Cloud Firestore nodes.
-- **OTP Verification Flow**: UI components are established, fully matching design fidelity. However, to maintain velocity, it is actively bypassing standard Firebase SMS authentication logic via hardcoded `1234` defaults local to the test build.
+- **Vendor Registration**: Detailed form UI exists for Venues and Decorators. Profile creation is integrated with Firestore, but full business dashboards are under refinement.
+- **User Identity**: Barebones `users/{uid}` profiles are supported during Sign Up.
 
-## Future work & Next Actions
+## Future Work & Next Actions
 
-1. **Firebase Authentication Target Replacement**: Transition the `AuthViewModel` logic to correctly link against live `PhoneAuthProvider` mechanisms, retiring the `1234` bypass safely for production variants.
-2. **Form Data Submission via Contracts**: Translate the established UI models from the onboarding (Venue features, Decorator attributes) down into remote DTOs mapped explicitly to expectations documented in `backend_sync_contract.md`. These will be targeted at `vendors/{uid}`.
-3. **Robust Session Restoration**: Finalize the `SplashViewModel` interception mechanisms logic. Encrypted JWT tokens must reliably intercept typical splash transitions to immediately invoke dashboard structures without presenting intermediate un-authenticated fragments.
-4. **Role Determinism Execution**: Realize the `role_behavior_matrix.md` bounds inside active backend listeners.
+1.  **Dashboard Hardening**: Transition Vendor and User dashboards from mock data to live Firestore streams.
+2.  **State Synchronization**: Ensure real-time updates for booking states and inventory availability.
+3.  **Advanced Restoration**: Implement proactive session validation for edge cases (e.g., token revocation).

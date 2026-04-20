@@ -10,13 +10,17 @@ tags: [notes, tracker, status]
 
 # Project Status Tracker
 
-## Source of truth
-Ongoing scratchpad for tracking granular feature delivery. This is a working note compared to the canonical [[SYSTEM_STATUS]].
+## Source of Truth
+Ongoing scratchpad for tracking granular feature delivery.
 
-## Current implementation
-- Phase 3 is active.
-- Vault restructuring completed.
+## Phase 3: Backend Hardening (ACTIVE)
+- [x] Firestore User Identity Foundation (UserRepository)
+- [x] Vendor-User Profile Resolution logic
+- [x] Session Restoration via SplashViewModel
+- [x] Auth/Startup Consistency Cleanup (Standardized Dev Bypass & Logout)
+- [ ] Multi-module Navigation Hardening
+- [ ] Live Phone Auth (transition from 1234)
 
-## Future work
-- Address `MockRepository` removal.
-- Integrate real `PhoneAuthProvider`.
+## Future Work
+- Business Analytics integration.
+- Dynamic theme resolution via Firestore tokens.
