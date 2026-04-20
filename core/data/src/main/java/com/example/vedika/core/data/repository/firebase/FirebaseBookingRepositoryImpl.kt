@@ -21,6 +21,12 @@ class FirebaseBookingRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : BookingRepository {
 
+    companion object {
+        private const val DEFAULT_CAPACITY_VENUE = 1
+        private const val DEFAULT_CAPACITY_DECORATOR = 4
+        private const val TAG = "FirebaseBookingRepo"
+    }
+
     override fun getBookingsForVendor(vendorId: String): Flow<List<Booking>> = callbackFlow {
         val subscription = firestore.collection(FirestorePaths.COL_BOOKINGS)
             .whereEqualTo(FirestoreFields.VENDOR_ID, vendorId)
@@ -63,15 +69,29 @@ class FirebaseBookingRepositoryImpl @Inject constructor(
 
                 // 1. Check for manual blocks
                 if (transaction.get(blockRef).exists()) {
-                    throw Exception("DATE_BLOCKED: This date has been manually blocked by the vendor.")
+                    throw Exception("CONFLICT_DATE_BLOCKED")
                 }
 
                 // 2. Fetch Vendor Profile for type and capacity
                 val vendorDoc = transaction.get(vendorRef)
-                if (!vendorDoc.exists()) throw Exception("VENDOR_NOT_FOUND")
+                if (!vendorDoc.exists()) throw Exception("ERROR_VENDOR_NOT_FOUND")
                 
-                val vendorType = VendorType.valueOf(vendorDoc.getString("vendorType") ?: "VENUE")
-                val capacity = vendorDoc.getString("capacity")?.toIntOrNull() ?: 4
+                val vendorTypeStr = vendorDoc.getString("vendorType") ?: vendorDoc.getString("primaryServiceCategory") ?: "VENUE"
+                val vendorType = try {
+                    VendorType.valueOf(vendorTypeStr.uppercase())
+                } catch (e: Exception) {
+                    VendorType.VENUE
+                }
+
+                val capacityRaw = vendorDoc.get("capacity")
+                val capacity = when {
+                    capacityRaw is Long -> capacityRaw.toInt()
+                    capacityRaw is String -> capacityRaw.toIntOrNull() ?: (if (vendorType == VendorType.VENUE) DEFAULT_CAPACITY_VENUE else DEFAULT_CAPACITY_DECORATOR)
+                    else -> {
+                        android.util.Log.w(TAG, "Missing or invalid capacity for vendor ${booking.vendorId}. Using fallback.")
+                        if (vendorType == VendorType.VENUE) DEFAULT_CAPACITY_VENUE else DEFAULT_CAPACITY_DECORATOR
+                    }
+                }
 
                 // 3. Check current occupancy
                 val occupancyDoc = transaction.get(occupancyRef)
@@ -85,21 +105,22 @@ class FirebaseBookingRepositoryImpl @Inject constructor(
                         SlotType.MORNING -> currentSlots.contains(SlotType.FULL_DAY.name) || currentSlots.contains(SlotType.MORNING.name)
                         SlotType.EVENING -> currentSlots.contains(SlotType.FULL_DAY.name) || currentSlots.contains(SlotType.EVENING.name)
                     }
-                    if (overlap) throw Exception("SLOT_OCCUPIED: The requested slot overlaps with an existing booking.")
+                    if (overlap) throw Exception("CONFLICT_SLOT_OCCUPIED")
                 } else {
                     if (currentJobCount >= capacity) {
-                        throw Exception("CAPACITY_FULL: Maximum concurrent jobs reached for this date.")
+                        throw Exception("CONFLICT_CAPACITY_FULL")
                     }
                 }
 
                 // 5. Commit Writes
-                val bookingData = mapOf(
+                val bookingData = mutableMapOf(
                     FirestoreFields.VENDOR_ID to booking.vendorId,
                     "customerName" to booking.customerName,
                     FirestoreFields.DATE to booking.eventDate,
                     "totalAmount" to booking.totalAmount,
                     FirestoreFields.STATUS to booking.status.name,
                     FirestoreFields.SLOT_TYPE to booking.slotType.name,
+                    "vendorType" to vendorType.name,
                     FirestoreFields.CREATED_AT to com.google.firebase.Timestamp.now()
                 )
                 
@@ -160,27 +181,46 @@ class FirebaseBookingRepositoryImpl @Inject constructor(
 
     override suspend fun checkConflict(vendorId: String, date: Long, slotType: SlotType): Result<Boolean> {
         return try {
-            val occupancyDoc = firestore.collection(FirestorePaths.COL_OCCUPANCY)
-                .document("${vendorId}_${date}")
-                .get()
-                .await()
-            
-            if (!occupancyDoc.exists()) return Result.success(false)
+            // Hardened approach: Fetch occupancy AND vendor capacity/type for authoritative check
+            val vendorRef = firestore.collection(FirestorePaths.COL_VENDORS).document(vendorId)
+            val occupancyRef = firestore.collection(FirestorePaths.COL_OCCUPANCY).document("${vendorId}_${date}")
+            val blockRef = firestore.collection(FirestorePaths.COL_BLOCKED_DATES).document("${vendorId}_${date}")
 
-            // Consult block status too for a complete advisory
-            val blockDoc = firestore.collection(FirestorePaths.COL_BLOCKED_DATES)
-                .document("${vendorId}_${date}")
-                .get()
-                .await()
-            
+            val vendorDoc = vendorRef.get().await()
+            if (!vendorDoc.exists()) return Result.failure(Exception("ERROR_VENDOR_NOT_FOUND"))
+
+            val blockDoc = blockRef.get().await()
             if (blockDoc.exists()) return Result.success(true)
 
+            val occupancyDoc = occupancyRef.get().await()
+            if (!occupancyDoc.exists()) return Result.success(false)
+
+            // Dynamic logic alignment
+            val vendorTypeStr = vendorDoc.getString("vendorType") ?: vendorDoc.getString("primaryServiceCategory") ?: "VENUE"
+            val vendorType = try {
+                VendorType.valueOf(vendorTypeStr.uppercase())
+            } catch (e: Exception) {
+                VendorType.VENUE
+            }
+
+            val capacityRaw = vendorDoc.get("capacity")
+            val capacity = when {
+                capacityRaw is Long -> capacityRaw.toInt()
+                capacityRaw is String -> capacityRaw.toIntOrNull() ?: (if (vendorType == VendorType.VENUE) DEFAULT_CAPACITY_VENUE else DEFAULT_CAPACITY_DECORATOR)
+                else -> if (vendorType == VendorType.VENUE) DEFAULT_CAPACITY_VENUE else DEFAULT_CAPACITY_DECORATOR
+            }
+
             val currentSlots = (occupancyDoc.get(FirestoreFields.SLOTS_OCCUPIED) as? List<*>)?.map { it.toString() } ?: emptyList()
-            
-            val hasConflict = when (slotType) {
-                SlotType.FULL_DAY -> currentSlots.isNotEmpty()
-                SlotType.MORNING -> currentSlots.contains(SlotType.FULL_DAY.name) || currentSlots.contains(SlotType.MORNING.name)
-                SlotType.EVENING -> currentSlots.contains(SlotType.FULL_DAY.name) || currentSlots.contains(SlotType.EVENING.name)
+            val currentJobCount = occupancyDoc.getLong(FirestoreFields.JOB_COUNT) ?: 0L
+
+            val hasConflict = if (vendorType == VendorType.VENUE) {
+                when (slotType) {
+                    SlotType.FULL_DAY -> currentSlots.isNotEmpty()
+                    SlotType.MORNING -> currentSlots.contains(SlotType.FULL_DAY.name) || currentSlots.contains(SlotType.MORNING.name)
+                    SlotType.EVENING -> currentSlots.contains(SlotType.FULL_DAY.name) || currentSlots.contains(SlotType.EVENING.name)
+                }
+            } else {
+                currentJobCount >= capacity
             }
             Result.success(hasConflict)
         } catch (e: Exception) {

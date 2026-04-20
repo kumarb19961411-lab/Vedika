@@ -150,9 +150,10 @@ class NewBookingViewModel @Inject constructor(
                 }
                 .onFailure { e ->
                     val userMessage = when {
-                        e.message?.contains("SLOT_OCCUPIED") == true -> "This slot overlaps with an existing booking."
-                        e.message?.contains("DATE_BLOCKED") == true -> "This date has been manually blocked and is unavailable."
-                        e.message?.contains("CAPACITY_FULL") == true -> "Full booking capacity reached for this date."
+                        e.message?.contains("CONFLICT_SLOT_OCCUPIED") == true -> "This slot overlaps with an existing booking."
+                        e.message?.contains("CONFLICT_DATE_BLOCKED") == true -> "This date has been manually blocked and is unavailable."
+                        e.message?.contains("CONFLICT_CAPACITY_FULL") == true -> "Booking capacity reached for this date."
+                        e.message?.contains("ERROR_VENDOR_NOT_FOUND") == true -> "Vendor profile not found. Please re-login."
                         else -> e.message ?: "Failed to create booking. Please try again."
                     }
                     _formState.value = _formState.value.copy(

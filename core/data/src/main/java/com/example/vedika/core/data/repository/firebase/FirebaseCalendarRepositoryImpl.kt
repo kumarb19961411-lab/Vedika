@@ -64,8 +64,19 @@ class FirebaseCalendarRepositoryImpl @Inject constructor(
         return combine(bookingsFlow, blockedFlow, flow { emit(vendorRepository.getVendorProfile(vendorId).getOrNull()) }) { bookings, blocks, vendor ->
             val calendarMap = mutableMapOf<LocalDate, CalendarDayState>()
             
-            val vendorType = if (vendor?.primaryServiceCategory?.contains("Venue", ignoreCase = true) == true)
-                VendorType.VENUE else VendorType.DECORATOR
+            val vendorTypeStr = vendor?.vendorType ?: vendor?.primaryServiceCategory ?: "VENUE"
+            val vendorType = try {
+                VendorType.valueOf(vendorTypeStr.uppercase())
+            } catch (e: Exception) {
+                if (vendorTypeStr.contains("Venue", ignoreCase = true)) VendorType.VENUE else VendorType.DECORATOR
+            }
+
+            val capacityRaw = vendor?.capacity
+            val capacity = when {
+                capacityRaw is Int -> capacityRaw
+                capacityRaw is String -> capacityRaw.toIntOrNull() ?: (if (vendorType == VendorType.VENUE) 1 else 4)
+                else -> if (vendorType == VendorType.VENUE) 1 else 4
+            }
             
             // Populate range
             var current = startOfMonth
@@ -74,7 +85,7 @@ class FirebaseCalendarRepositoryImpl @Inject constructor(
                 val dayBookings = bookings.filter { it.eventDate == dateMillis }
                 val dayBlocks = blocks.filter { it.date == dateMillis }
                 
-                calendarMap[current] = deriveDayState(current, vendorType, dayBookings, dayBlocks)
+                calendarMap[current] = deriveDayState(current, vendorType, capacity, dayBookings, dayBlocks)
                 current = current.plusDays(1)
             }
             calendarMap
@@ -84,6 +95,7 @@ class FirebaseCalendarRepositoryImpl @Inject constructor(
     private fun deriveDayState(
         date: LocalDate,
         vendorType: VendorType,
+        capacity: Int,
         bookings: List<Booking>,
         blocks: List<BlockedDate>
     ): CalendarDayState {
@@ -106,7 +118,7 @@ class FirebaseCalendarRepositoryImpl @Inject constructor(
             vendorType == VendorType.DECORATOR -> {
                 val totalBusy = bookings.filter { it.status != BookingStatus.CANCELLED }.size
                 when {
-                    totalBusy >= 4 -> DayAvailabilityStatus.BOOKED
+                    totalBusy >= capacity -> DayAvailabilityStatus.BOOKED
                     totalBusy > 0 -> DayAvailabilityStatus.LIMITED
                     else -> DayAvailabilityStatus.AVAILABLE
                 }
