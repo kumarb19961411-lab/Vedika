@@ -5,7 +5,7 @@ status: active
 owner: Product Architect
 phase: Phase 3
 last_updated: 2026-04-20
-tags: [notes, tracker, status]
+tags: [notes, tracker, status, hub-leaf]
 ---
 
 # Project Status Tracker
@@ -17,12 +17,16 @@ Ongoing scratchpad for tracking granular feature delivery.
 - [x] Firestore User Identity Foundation (UserRepository)
 - [x] Vendor-User Profile Resolution logic
 - [x] Session Restoration via SplashViewModel
-- [x] Auth/Startup Consistency Cleanup (Standardized Dev Bypass & Logout)
-- [x] Phase 3.7: Vendor Registration Contract Cleanup (Canonical VendorProfile)
-- [x] Phase 3.8: Vendor Dashboard & Profile Hardening (Canonical Data Flow)
+- [x] Phase 3.6B: [[Auth_Hub|🔐 Auth Hardening]] (Bypass Fix, Logout Logic)
+- [x] Phase 3.7: [[Firebase_Hub|🔥 Firebase Alignment]] (Canonical VendorProfile)
+- [x] Phase 3.8: [[Vendor_Flow_Hub|🏢 Dashboard Hardening]] (Canonical Data Flow)
+- [/] Phase 3.8B: [[Project_Hub|🧠 Obsidian Brain Completion]] (Hub implementation)
 - [ ] Multi-module Navigation Hardening
 - [ ] Live Phone Auth (transition from 1234)
 
 ## Future Work
 - Business Analytics integration.
 - Dynamic theme resolution via Firestore tokens.
+
+---
+[[Project_Hub|🏠 Project Hub]] | [[Phase_Tracker_Hub|⏱️ Phase Tracker]] | [[project_status|Top]]

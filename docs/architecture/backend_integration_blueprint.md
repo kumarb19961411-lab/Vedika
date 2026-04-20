@@ -5,7 +5,7 @@ status: active
 owner: Firebase Backend & Data Model Engineer
 phase: Phase 3
 last_updated: 2026-04-20
-tags: [architecture, backend, firebase, integration]
+tags: [architecture, backend, firebase, integration, hub-leaf]
 ---
 
 # Backend Integration Blueprint
@@ -49,3 +49,6 @@ The Vedika client architecture rigidly leverages a "local-first UI, remote-secon
 
 ## Future work
 - Comprehensive custom domain logic Cloud Functions deployment replacing client-hosted verification checks.
+
+---
+[[Project_Hub|🏠 Project Hub]] | [[Architecture_Hub|🏗️ Architecture Hub]] | [[Firebase_Hub|🔥 Firebase Hub]] | [[backend_integration_blueprint|Top]]

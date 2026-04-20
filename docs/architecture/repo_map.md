@@ -5,7 +5,7 @@ status: active
 owner: Product Architect
 phase: Phase 3
 last_updated: 2026-04-20
-tags: [architecture, repo-map, modules, structure]
+tags: [architecture, repo-map, modules, structure, hub-leaf]
 ---
 
 # Repository Map & Topology
@@ -38,3 +38,6 @@ The Vedika project enforces a strict, compilation-enforced multi-module structur
 ## Future work
 - Introduce stricter separation inside `core:data`, subdividing it logically by feature entity (e.g., `:core:data:bookings`, `:core:data:catalogs`).
 - Aggressively extract redundant Jetpack Navigation boilerplate into a dedicated `:core:navigation` module to simplify `:app` level implementations mapping.
+
+---
+[[Project_Hub|🏠 Project Hub]] | [[Architecture_Hub|🏗️ Architecture Hub]] | [[repo_map|Top]]

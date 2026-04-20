@@ -16,3 +16,6 @@ After onboarding, all vendor screens (Dashboard, Profile, Settings) strictly con
 - **Dashboard**: Streams business metadata and stats.
 - **Profile**: Displays the "Partner Command" view with full persistence.
 - **Graceful Defaults**: Screens implement standard fallbacks (e.g., "—") for any non-mandatory profile fields to ensure UI stability.
+
+---
+[[Project_Hub|🏠 Project Hub]] | [[Vendor_Flow_Hub|🏢 Vendor Flow Hub]] | [[vendor_onboarding_guide|Top]]

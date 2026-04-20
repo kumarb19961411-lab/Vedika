@@ -5,7 +5,7 @@ status: active
 owner: Product Architect
 phase: Phase 3
 last_updated: 2026-04-20
-tags: [architecture, routing, core, roles]
+tags: [architecture, routing, core, roles, hub-leaf]
 ---
 
 # Role Behavior & Routing Matrix
@@ -44,3 +44,6 @@ This matrix operates as the central execution reference for modeling correct nav
 
 ## Future work
 - Integrate advanced intake form components effectively spanning comprehensive generic intake systems mapped dynamically using configurable UI primitives (e.g. backend-driven UI schema intakes for loosely defined roles).
+
+---
+[[Project_Hub|🏠 Project Hub]] | [[Architecture_Hub|🏗️ Architecture Hub]] | [[Auth_Hub|🔐 Auth Hub]] | [[role_behavior_matrix|Top]]

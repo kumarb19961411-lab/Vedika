@@ -5,7 +5,7 @@ status: active
 owner: Security Access Guard
 phase: Phase 3
 last_updated: 2026-04-20
-tags: [architecture, auth, workflow, security]
+tags: [architecture, auth, workflow, security, hub-leaf]
 ---
 
 # Canonical Auth Master Workflow
@@ -30,7 +30,7 @@ This document is the absolute architectural source of truth for auth routing. Al
   - Save `AccountMode.USER` hint.
 
 ### 3. Session Restoration & Startup Resolution
-Session restoration resolves returning users via `SplashViewModel` on cold launch.
+Session restoration resolves returning users via `SplashViewModel` on cold launch. Detailed in [[session_restoration]].
 - **Cold App Launch**: Starts at `SplashScreen` -> `resolveUserSession()`.
 - **Identity Source**: `FirebaseAuth.currentUser`.
 - **Role Hint**: `SessionStorage` (EncryptedSharedPreferences) stores `AccountMode`.
@@ -53,3 +53,6 @@ The developer bypass flow replicates the Sign In flow exactly, including profile
 - Roles are enforced via `firestore.rules`.
 - `PARTNER` mode sessions cannot access `users/{uid}` data.
 - `USER` mode sessions cannot access `vendors/{uid}` data.
+
+---
+[[Project_Hub|🏠 Project Hub]] | [[Auth_Hub|🔐 Auth Hub]] | [[auth_master_workflow|Top]]

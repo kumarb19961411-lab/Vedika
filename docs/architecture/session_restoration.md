@@ -5,7 +5,7 @@ status: active
 owner: Security Access Guard
 phase: Phase 3
 last_updated: 2026-04-20
-tags: [architecture, auth, session, security]
+tags: [architecture, auth, session, security, hub-leaf]
 ---
 
 # Session Restoration Strategy
@@ -42,3 +42,6 @@ On logout, the following must occur atomically:
 
 ## Future Work
 - Add proactive session validation alerts if the underlying Firebase token becomes unrecoverable.
+
+---
+[[Project_Hub|🏠 Project Hub]] | [[Auth_Hub|🔐 Auth Hub]] | [[session_restoration|Top]]

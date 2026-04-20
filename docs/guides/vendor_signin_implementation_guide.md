@@ -33,3 +33,6 @@ This guide covers the deep implementation details for the Vendor Sign In compone
 
 ## Future work
 - Aggressively harden network disruption handling explicitly during core `verifyVendorExists()` operations yielding explicit user-facing Snackbar elements handling standard exceptions cleanly.
+
+---
+[[Project_Hub|🏠 Project Hub]] | [[Vendor_Flow_Hub|🏢 Vendor Flow Hub]] | [[vendor_signin_implementation_guide|Top]]

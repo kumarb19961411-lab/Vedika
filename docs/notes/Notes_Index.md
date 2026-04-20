@@ -5,7 +5,7 @@ status: active
 owner: All
 phase: Phase 3
 last_updated: 2026-04-20
-tags: [notes, index]
+tags: [notes, index, hub-leaf]
 ---
 
 # Notes Index
@@ -24,3 +24,6 @@ The `docs/notes/` directory is the scratchpad and dynamic repository for in-prog
 
 ## Future work
 - Periodically groom these notes into formal documentation.
+
+---
+[[Project_Hub|🏠 Project Hub]] | [[Phase_Tracker_Hub|⏱️ Phase Tracker]] | [[Notes_Index|Top]]
