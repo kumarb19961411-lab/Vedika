@@ -16,7 +16,9 @@ The technical overview of Vedika's cloud infrastructure and backend logic.
 - **[[backend_integration_blueprint|🧱 Backend Integration Blueprint]]**: Mapping models to collections.
 - **[[backend_sync_contract|🔄 Backend Sync Contract]]**: Conflict resolution and offline persistence.
 
-## 🛡️ Security & Rules
+## 🛡️ Security & App Check
+- **App Check Status**: ✅ **Hardened (Debug Provider)**
+- **[[firebase_dev_setup|🛠️ Firebase Dev Setup]]**: Instructions for emulator and debug tokens.
 - **[[security_access_guard|🛡️ Security Access Guard]]**: Implementation of granular Firestore rules.
 
 ## 🔨 Service Management

@@ -29,7 +29,14 @@ The Vedika client architecture rigidly leverages a "local-first UI, remote-secon
 
 #### Isolated Emulation Test Suite
 - Explicit compilation target profiles (specifically configured via module standard variant variables internally matching `devDebug`) bind local data intercept streams resolving specifically to the dedicated workstation `localhost` runtime Firebase Emulation configurations.
-- All internal network references point resolutely toward configured local node loopback parameters via standard Android `10.0.2.2` hosts, completely quarantining automated GitHub Actions CI/CD functional testing actions from accidentally mutating live production index collections.
+- **App Check Hardening**: Non-production variants utilize the `DebugAppCheckProviderFactory`. This ensures that even in local-loopback scenarios, the app simulates the full security handshake required by Firestore.
+- **OTP Dev Bypass**: In emulator modes, the `PhoneAuthProvider` is bypassed via a local mock to ensure immediate OTP verification without SMS latency.
+- All internal network references point resolutely toward configured local node loopback parameters via standard Android `10.0.2.2` hosts.
+
+#### Staging & Release Attestation
+- **Staging/Release Goal**: Transition from Debug Provider to **Firebase Play Integrity** and **DeviceCheck**.
+- **Requirement**: Apps must be signed and distributed via Play Store (Internal Testing) to facilitate real-world device attestation.
+- **Documentation**: See [[firebase_dev_setup|🛠️ Firebase Dev Setup]] for fictional number configuration.
 
 ### 2. Comprehensive Synchronization Architectures
 - Exclusively formulated client layer write operations execute unconditionally across specifically designated `Dispatchers.IO` isolated Coroutine scopes using opportunistic patterns. Consequently, UI component states inherently modify optimistic caching registries without explicitly awaiting network round-trips ensuring highly snappy UI operations followed implicitly by explicit Firebase `document.set()` asynchronous tracking tasks.

@@ -25,9 +25,9 @@ The platform has achieved its first major milestone: **Core Business Engine**.
 
 ### 📅 Sprint Tracker
 - [x] **Sprint 1A (Booking & Conflict Hardening)**: [CLOSED] ✅
-- [x] **Repo Health**: Build stabilized (JDK pinned to JBR, stale caches cleared).
-- [x] **Wiki Integrity**: Links validated, build log established.
-- [x] **Dev Experience**: Fake repository parity rules enforced.
+- [x] **Repo Health**: Build stabilized; **Firebase Dev Hardened** (App Check Debug active).
+- [x] **Wiki Integrity**: Connectivity & Auth flows documented (OTP Bypass clear).
+- [x] **Dev Experience**: App Check Debug Provider enabled for emulator.
 - [ ] **Sprint 1C: Rescheduling & Exception Handling** (PLANNED)
 
 ### 📌 Critical Anchors
