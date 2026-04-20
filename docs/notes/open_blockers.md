@@ -4,7 +4,7 @@ type: notes
 status: active
 owner: All
 phase: Phase 3
-last_updated: 2026-04-20
+last_updated: 2026-04-21
 tags: [notes, blockers]
 ---
 
@@ -14,8 +14,8 @@ tags: [notes, blockers]
 Working pad to list items blocking merge or testing.
 
 ## Current implementation
-
-- Data contracts need validation against Firebase constraints.
+- **Environment**: `JdkImageInput` / `jlink` serialization error in Gradle (Environmental constraint, not code).
 
 ## Future work
 - Configure test suite to validate `firestore.rules`.
+- Perform data migration for legacy `VendorProfile` capacity fields.

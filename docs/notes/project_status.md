@@ -4,7 +4,7 @@ tags: [project, roadmap, status]
 
 # 📈 Project Status: Vedika
 
-## Current Sprint: Phase 3.8C - Sprint 1B Preparation (Inventory & Block-Out)
+## Current Sprint: Milestone 2 Planning & Initialization
 
 ### ✅ Completed Milestones
 - **Firebase Initialization**: Anchored `vedika-e44be`.
@@ -14,8 +14,7 @@ tags: [project, roadmap, status]
 - **Sprint 1B: Metrics & Inventory** - 100% (CLOSED)
 
 ### 🏗 In Progress
-- [x] **Phase 3.8B: Obsidian Brain Hardening**: Documents now strictly connected via MOCs and hub notes.
-- [x] **Phase 3.8C: Sprint 1B Completion**: Dashboard metrics and inventory hub verified.
+- [ ] **Milestone 2 Scoping**: Defining rescheduling and exception handled workflows.
 
 ### 🟢 Milestone 1 Completion (Current)
 MILESTONE 1 is now **CLOSED**. The core vendor engine is stable, validated, and ready for operations.
@@ -25,8 +24,8 @@ MILESTONE 1 is now **CLOSED**. The core vendor engine is stable, validated, and 
 - Registration flow correctly initializes vendor capacity and type.
 
 ### 📅 Upcoming
-- **Sprint 1B: Inventory & Block-Out Logic**: Core manual block logic and item catalog persistence.
 - **Sprint 1C: Rescheduling**: Transitioning existing bookings to new dates atomically.
+- **Exception Handling**: Formalizing cancellation and dispute resolution workflows.
 
 ### 🚩 Known Risks / Blockers
 - **Data Migration**: Existing `VendorProfile` documents without `capacity` fields rely on fallbacks. A cleanup task is recommended after Sprint 1B.
