@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vedika.core.data.model.InventoryItem
 import com.example.vedika.core.data.model.VendorType
+import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.InventoryRepository
 import com.example.vedika.core.data.repository.VendorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ data class InventoryUiState(
 
 @HiltViewModel
 class InventoryViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val inventoryRepository: InventoryRepository,
     private val vendorRepository: VendorRepository
 ) : ViewModel() {
@@ -33,13 +35,17 @@ class InventoryViewModel @Inject constructor(
 
     private fun loadInventory() {
         viewModelScope.launch {
-            val vendorId = vendorRepository.getCurrentVendorId() ?: return@launch
+            val vendorId = authRepository.getCurrentUserId()
+            if (vendorId == null) {
+                _uiState.update { it.copy(isLoading = false, error = "User not authenticated") }
+                return@launch
+            }
             
-            // First get the vendor type for UI styling
-            vendorRepository.getVendorProfile(vendorId).collect { result ->
-                result.onSuccess { profile ->
-                    _uiState.update { it.copy(vendorType = profile.vendorType) }
-                }
+            // First get the vendor type for UI styling (using the Result-based non-stream for initial state)
+            vendorRepository.getVendorProfile(vendorId).onSuccess { profile ->
+                _uiState.update { it.copy(vendorType = profile.vendorType) }
+            }.onFailure { e ->
+                _uiState.update { it.copy(error = "Profile load failed: ${e.message}") }
             }
 
             // Then stream inventory
@@ -54,7 +60,7 @@ class InventoryViewModel @Inject constructor(
 
     fun addInventoryItem(name: String, description: String, price: Double) {
         viewModelScope.launch {
-            val vendorId = vendorRepository.getCurrentVendorId() ?: return@launch
+            val vendorId = authRepository.getCurrentUserId() ?: return@launch
             val newItem = InventoryItem(
                 id = "", // Firestore will generate
                 vendorId = vendorId,

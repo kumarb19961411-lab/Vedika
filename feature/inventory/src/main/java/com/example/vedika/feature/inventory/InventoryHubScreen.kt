@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.scale
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.vedika.core.design.components.VedikaTabTopAppBar
 import com.example.vedika.core.design.theme.NotoSerif
@@ -31,6 +33,7 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun InventoryHubScreen(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: InventoryViewModel = hiltViewModel()
@@ -46,7 +49,14 @@ import kotlinx.coroutines.delay
 
     Scaffold(
         topBar = {
-            VedikaTabTopAppBar(title = "Inventory Hub")
+            com.example.vedika.core.design.components.VedikaTopAppBar(
+                title = "Inventory Hub",
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = surfaceColor

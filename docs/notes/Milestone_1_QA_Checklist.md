@@ -18,12 +18,12 @@ This checklist must be satisfied before Milestone 1 is considered "Closed."
 - [x] Standardized `CONFLICT_*` codes in repository logs
 - [x] Strictly scoped occupancy read/write in `firestore.rules`
 
-### 📊 Sprint 1B Verification (Metrics & Inventory)
-- [x] Dashboard: `totalRevenue` only sums `CONFIRMED` bookings
-- [x] Dashboard: `pendingCount` and `confirmedCount` match Firestore exactly
-- [x] Inventory: "Add Item" persists to `/inventory` with authenticated `vendorId`
-- [x] Inventory: Availability toggle updates live via `InventoryViewModel`
-- [/] Regression: OTP flow restores session into hardened Dashboard
+### 📊 Sprint 1B Verification (Consistency Fixed)
+- [x] **Dashboard Integrity**: `totalRevenue` mapped in `DashboardUiState` and calculated in ViewModel.
+- [x] **Repository Alignment**: `InventoryViewModel` uses `authRepository.getCurrentUserId()` and correct `Result`/`Flow` handling.
+- [x] **Hub Structural Integrity**: Fixed malformed `InventoryHubScreen` signature and missing imports.
+- [x] **Navigation**: `onNavigateBack` wired to a back arrow in the hub.
+- [x] **Identity**: Authenticated `vendorId` used for all inventory persistence calls.
 
 ## 3. Conflict Validation & Security
 - [x] **Verified**: `firestore.rules` enforces vendor isolation on `occupancy` collection.

@@ -38,6 +38,7 @@ data class DashboardUiState(
     val confirmedCount: Int = 0,
     val totalBookings: Int = 0,
     val cancelledCount: Int = 0,
+    val totalRevenue: Double = 0.0,
     val isLoading: Boolean = true
 )
 

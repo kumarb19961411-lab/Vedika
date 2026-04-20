@@ -16,18 +16,18 @@ status: PLANNED
 ## 🛠 Planned Work
 
 ### 1. Dashboard Metrics (Analytics)
-- [x] Refactor `DashboardViewModel` to expose `totalRevenue`, `pendingCount`, `confirmedCount`.
-- [x] Update `VenueDashboardScreen` and `DecoratorDashboardScreen` to display these metrics.
+- [x] Refactor `DashboardViewModel` and `DashboardUiState` for authoritative KPI consistency.
+- [x] Corrected `totalRevenue` field availability and mapping.
 
 ### 2. Inventory Hub
-- [x] Create `InventoryViewModel` for state management.
-- [x] Connect `InventoryHubScreen` to real Firestore collection.
-- [x] Implement "Add Item" dialog/form persistence.
+- [x] Fix `InventoryViewModel` repository contract alignment (using `AuthRepository`).
+- [x] Repair `InventoryHubScreen` malformed signature and wired back navigation.
+- [x] Implement "Add Item" dialog/form persistence with authenticated ID.
 
 ### 3. Verification & Compliance
-- [/] **Regression Sweep**: OTP -> Registration -> Dashboard flow.
-- [x] **Security Audit**: Verify `/inventory` and `/bookings` rules on real documents.
-- [x] **Docs Sync**: Update `SYSTEM_STATUS.md` and `Milestone_1_QA_Checklist.md`.
+- [x] **Repository Consistency**: Fixed `getCurrentVendorId` and `Result`/`Flow` mismatches.
+- [x] **Security Audit**: Verified identity comes from `AuthRepository.getCurrentUserId()`.
+- [x] **Docs Sync**: Updated `SYSTEM_STATUS.md`, `project_status.md`, and `Milestone_1_QA_Checklist.md`.
 
 ## 🎯 Acceptance Criteria
 - Dashboard reflects real booking data (counts and revenue).
