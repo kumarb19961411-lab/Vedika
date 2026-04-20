@@ -20,7 +20,8 @@ Ongoing scratchpad for tracking granular feature delivery.
 - [x] Phase 3.6B: [[Auth_Hub|🔐 Auth Hardening]] (Bypass Fix, Logout Logic)
 - [x] Phase 3.7: [[Firebase_Hub|🔥 Firebase Alignment]] (Canonical VendorProfile)
 - [x] Phase 3.8: [[Vendor_Flow_Hub|🏢 Dashboard Hardening]] (Canonical Data Flow)
-- [/] Phase 3.8B: [[Project_Hub|🧠 Obsidian Brain Completion]] (Hub implementation)
+- [x] Phase 3.8B: [[Project_Hub|🧠 Obsidian Brain Completion]] (Hub implementation)
+- [ ] **[[Milestone_1_Core_Business_Engine|Milestone 1: Core Business Engine]]** (Goal: Booking/Inventory Hardening)
 - [ ] Multi-module Navigation Hardening
 - [ ] Live Phone Auth (transition from 1234)
 

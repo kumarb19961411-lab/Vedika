@@ -33,6 +33,10 @@ The application has transitioned from mock-driven flows to a state-driven, Fireb
 
 ## Future Work & Next Actions
 
+### 🎯 Current Milestone: [[Milestone_1_Core_Business_Engine|Milestone 1 - Core Business Engine]]
+- **Goal**: Hardening the booking and inventory core for vendor operations.
+- **Priority**: High (Stabilizing revenue-generating flows).
+
 1.  **State Synchronization**: Ensure real-time updates for booking states and inventory availability.
 2.  **Advanced Restoration**: Implement proactive session validation for edge cases (e.g., token revocation).
 

@@ -13,6 +13,8 @@ tags: [architecture, backend, firebase, integration, hub-leaf]
 ## Source of truth
 The Vedika client architecture rigidly leverages a "local-first UI, remote-second data state" operational philosophy. This execution blueprint strictly maps out precisely how the established UI Jetpack Compose presentation layer structurally and methodically hooks into the external backend orchestration infrastructure, notably focusing primarily on Firebase pipelines and local emulator bindings.
 
+- **Canonical Infrastructure Reference**: [[Firebase_Hub#🏗️ Project Infrastructure|Firebase Project Metadata]] (`vedika-e44be`)
+
 ## Current implementation
 
 ### 1. Hardened Core Services Instantiation

@@ -10,6 +10,10 @@ This hub monitors the iterative evolution of Vedika, from Phase 1 to the current
 - **[[project_status|📋 Granular Project Status]]**: Detailed task-by-task tracker.
 - **[[SYSTEM_STATUS|🚀 High-Level System Status]]**: Feature completion dashboard.
 
+## 🏗️ Execution Milestones
+- **[[Milestone_1_Core_Business_Engine|🎯 Milestone 1: Core Business Engine]]** (Active)
+    - [[Sprint_1A_Plan|🏃 Sprint 1A]] | [[Sprint_1B_Plan|🏃 Sprint 1B]] | [[Milestone_1_QA_Checklist|✅ QA Checklist]]
+
 ## 📜 Development History
 - **[[changelog_v2|📝 Changelog V2]]**: Historical record of architectural shifts and fixes.
 - **[[v2_phase2_acceptance|✅ Phase 2 Acceptance Report]]**: Quality verification for the base UI.
