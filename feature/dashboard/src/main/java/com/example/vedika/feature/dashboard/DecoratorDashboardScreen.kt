@@ -139,7 +139,7 @@ fun DecoratorDashboardScreen(
 
                 // Main Content
                 Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                    SocialReachSection(state, primaryColor, secondaryColor)
+                    BusinessInsightsSection(state, primaryColor)
 
                     Spacer(modifier = Modifier.height(32.dp))
 
@@ -210,7 +210,7 @@ private fun DecoratorStat(label: String, value: String, color: Color) {
 }
 
 @Composable
-private fun SocialReachSection(state: DashboardUiState, primary: Color, secondary: Color) {
+private fun BusinessInsightsSection(state: DashboardUiState, primaryColor: Color) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
         shape = RoundedCornerShape(20.dp),
@@ -218,13 +218,13 @@ private fun SocialReachSection(state: DashboardUiState, primary: Color, secondar
         border = BorderStroke(1.dp, Color.Black.copy(alpha = 0.05f))
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Text("Design Reach", style = MaterialTheme.typography.titleLarge, fontFamily = NotoSerif)
+            Text("Business Insights", style = MaterialTheme.typography.titleLarge, fontFamily = NotoSerif)
             Spacer(modifier = Modifier.height(20.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                SocialItem(icon = Icons.Default.Groups, label = "Followers", value = "2,482", color = primary)
-                SocialItem(icon = Icons.Default.Favorite, label = "Engagement", value = "15%", color = Color(0xFFBA1A1A))
-                SocialItem(icon = Icons.Default.Visibility, label = "Impressions", value = "12k+", color = secondary)
+                InsightItem(icon = Icons.Default.Payments, label = "Revenue", value = "₹${state.totalRevenue.toInt()}", color = primaryColor)
+                InsightItem(icon = Icons.Default.EventAvailable, label = "Volume", value = state.totalBookings.toString(), color = primaryColor)
+                InsightItem(icon = Icons.Default.Cancel, label = "Cancelled", value = state.cancelledCount.toString(), color = Color.Gray)
             }
             
             Spacer(modifier = Modifier.height(24.dp))
@@ -232,10 +232,10 @@ private fun SocialReachSection(state: DashboardUiState, primary: Color, secondar
             Spacer(modifier = Modifier.height(16.dp))
             
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Insights, contentDescription = null, tint = primary, modifier = Modifier.size(20.dp))
+                Icon(Icons.Default.Insights, contentDescription = null, tint = primaryColor, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    "Your designs were saved 84 times this week.",
+                    "You have ${state.pendingCount} pending requests to review.",
                     style = MaterialTheme.typography.bodyMedium,
                     fontStyle = FontStyle.Italic,
                     color = Color.DarkGray
@@ -246,11 +246,12 @@ private fun SocialReachSection(state: DashboardUiState, primary: Color, secondar
 }
 
 @Composable
-private fun SocialItem(icon: ImageVector, label: String, value: String, color: Color) {
+private fun InsightItem(icon: ImageVector, label: String, value: String, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(24.dp))
-        Text(label, style = MaterialTheme.typography.labelSmall, color = Color.Gray, modifier = Modifier.padding(top = 4.dp))
-        Text(value, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        Text(label, style = MaterialTheme.typography.labelSmall, color = Color.Gray)
     }
 }
 

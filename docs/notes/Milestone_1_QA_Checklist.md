@@ -14,9 +14,16 @@ This checklist must be satisfied before Milestone 1 is considered "Closed."
 ## 2. Booking Core (Sprint 1A Hardening)
 - [x] Booking successfully saved to `/bookings`.
 - [x] **Verified**: Transactional occupancy update in `/occupancy`.
-- [x] **Verified**: Fallback policy applied (Venue=1, Decorator=4) when capacity field is missing.
-- [x] Dashboard counter increments automatically after booking creation.
-- [x] Calendar displays new booking with authoritative status coloration.
+- [x] Correct fallback capacity applied (Venue: 1, Decorator: 4)
+- [x] Standardized `CONFLICT_*` codes in repository logs
+- [x] Strictly scoped occupancy read/write in `firestore.rules`
+
+### 📊 Sprint 1B Verification (Metrics & Inventory)
+- [x] Dashboard: `totalRevenue` only sums `CONFIRMED` bookings
+- [x] Dashboard: `pendingCount` and `confirmedCount` match Firestore exactly
+- [x] Inventory: "Add Item" persists to `/inventory` with authenticated `vendorId`
+- [x] Inventory: Availability toggle updates live via `InventoryViewModel`
+- [/] Regression: OTP flow restores session into hardened Dashboard
 
 ## 3. Conflict Validation & Security
 - [x] **Verified**: `firestore.rules` enforces vendor isolation on `occupancy` collection.

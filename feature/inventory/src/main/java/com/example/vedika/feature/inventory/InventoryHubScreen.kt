@@ -25,19 +25,24 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.vedika.core.design.components.VedikaTabTopAppBar
 import com.example.vedika.core.design.theme.NotoSerif
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.vedika.core.data.model.VendorType
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryHubScreen(
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: InventoryViewModel = hiltViewModel()
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val primaryColor = MaterialTheme.colorScheme.primary
     val secondaryColor = MaterialTheme.colorScheme.secondary
     val surfaceColor = MaterialTheme.colorScheme.background
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    var showAddItemDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -78,12 +83,7 @@ fun InventoryHubScreen(
                 
                 Row(modifier = Modifier.padding(top = 24.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Button(
-                        onClick = {
-                            // Show Phase 3 snackbar
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Inventory management coming in Phase 3")
-                            }
-                        },
+                        onClick = { showAddItemDialog = true },
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
                         modifier = Modifier.weight(1f).height(56.dp)
@@ -111,9 +111,22 @@ fun InventoryHubScreen(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                InventoryStatCard(label = "Total Assets", value = "1,284", icon = Icons.Default.Category, color = primaryColor, modifier = Modifier.weight(1f))
-                InventoryStatCard(label = "Booked", value = "842", icon = Icons.Default.EventAvailable, color = secondaryColor, modifier = Modifier.weight(1f))
-                InventoryStatCard(label = "Maintenance", value = "12", icon = Icons.Default.Build, color = MaterialTheme.colorScheme.tertiary, modifier = Modifier.weight(1f))
+                InventoryStatCard(label = "Total Assets", value = state.items.size.toString(), icon = Icons.Default.Category, color = primaryColor, modifier = Modifier.weight(1f))
+                InventoryStatCard(label = "Available", value = state.items.count { it.isAvailable }.toString(), icon = Icons.Default.EventAvailable, color = secondaryColor, modifier = Modifier.weight(1f))
+                InventoryStatCard(label = "Maintenance", value = "0", icon = Icons.Default.Build, color = MaterialTheme.colorScheme.tertiary, modifier = Modifier.weight(1f))
+            }
+
+            if (state.isLoading) {
+                Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = primaryColor)
+                }
+            } else if (state.items.isEmpty()) {
+                Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Default.Inventory2, contentDescription = null, size = 48.dp, tint = Color.LightGray)
+                        Text("No inventory items found", style = MaterialTheme.typography.bodyLarge, color = Color.Gray)
+                    }
+                }
             }
 
             // Featured Asset Card (Maharaja Throne Style)
@@ -170,31 +183,41 @@ fun InventoryHubScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // Supporting Cards
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                SupportingAssetCard(
-                    title = "Crystal Chandelier",
-                    subtitle = "Victorian Series",
-                    price = "₹18,500",
-                    stock = "20",
-                    booked = "17",
-                    isLowStock = true,
-                    image = "https://lh3.googleusercontent.com/aida-public/AB6AXuAkNYLPL9Nc7NztFYT0rx4tqk68jKvLHMQXELpIFVBLFiabHYYnxwC5bCH-pToD5koZLGpJXfQihAWaWxiFeGfdCyqrdrGeQ0dPssHgmfFTYrSMQDfHa8k0b6cbl73xKurzu40OSrphrvLefsEFaRx9GnPYA5iDJRKuIcjmXYpkzhj_twGxL_KmBRX72o6FzBnZ74E8o4-5pu_V9gMHdgZjs8RFsL2Ut6xZLd8kIlfbqboKCVpCBz5tCiuNfCuhwzj5MVSxRcgmvYmb",
-                    modifier = Modifier.weight(1f)
-                )
-                SupportingAssetCard(
-                    title = "Mandap Frames",
-                    subtitle = "Teak Wood",
-                    price = "₹22,000",
-                    stock = "04",
-                    booked = "01",
-                    isLowStock = false,
-                    image = "https://lh3.googleusercontent.com/aida-public/AB6AXuBAm3kjn56oB1tLSFoh71iXQ71LMB2qU3O4GO0grnvhSkY7O_Y8uEov8UgKQndG_pKPXdbnZHPM33BIBxae4RXYtZVO2OJYoloSv_yIWsyYg7ZvlQvtyQrm8na6qb3J2zdl3Y03aCP0XSnebc3QAoo9pO30Ezbmh8Vxk-7O4rkolFCsPRb0RWmXkWS522D0xeX2m3mZtn_aR1LCYZ4Nh6Az4-KmZi1dbX53wj2dckS65cgEn36yegozEsfORZ3aog-lKfXbKhoDhm4N",
-                    modifier = Modifier.weight(1f)
-                )
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                state.items.chunked(2).forEach { rowItems ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        rowItems.forEach { item ->
+                            SupportingAssetCard(
+                                title = item.name,
+                                subtitle = item.description,
+                                price = "₹${item.price.toInt()}",
+                                isAvailable = item.isAvailable,
+                                modifier = Modifier.weight(1f),
+                                onToggle = { viewModel.toggleAvailability(item) }
+                            )
+                        }
+                        if (rowItems.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(100.dp))
         }
+    }
+
+    if (showAddItemDialog) {
+        AddInventoryItemDialog(
+            onDismiss = { showAddItemDialog = false },
+            onConfirm = { name, desc, price ->
+                viewModel.addInventoryItem(name, desc, price)
+                showAddItemDialog = false
+                scope.launch {
+                    snackbarHostState.showSnackbar("Item added to catalog")
+                }
+            }
+        )
     }
 }
 
@@ -220,54 +243,70 @@ private fun SupportingAssetCard(
     title: String,
     subtitle: String,
     price: String,
-    stock: String,
-    booked: String,
-    isLowStock: Boolean,
-    image: String,
+    isAvailable: Boolean,
+    onToggle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.height(300.dp),
+        modifier = modifier.height(180.dp),
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
-        Column {
-            Box(modifier = Modifier.weight(1.2f).fillMaxWidth()) {
-                AsyncImage(model = image, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-                if (isLowStock) {
-                    Surface(
-                        modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
-                        color = MaterialTheme.colorScheme.error,
-                        shape = CircleShape
-                    ) {
-                        Text("LOW STOCK", modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onError, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-            Column(modifier = Modifier.weight(1f).padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
-                Column {
-                    Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                Column {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Rate", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text(price, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    LinearProgressIndicator(
-                        progress = booked.toFloat() / stock.toFloat(),
-                        modifier = Modifier.fillMaxWidth().height(4.dp).clip(CircleShape),
-                        color = if (isLowStock) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary,
-                        trackColor = MaterialTheme.colorScheme.surfaceVariant
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
+            Column {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1)
+                    Switch(
+                        checked = isAvailable,
+                        onCheckedChange = { onToggle() },
+                        modifier = Modifier.scale(0.7f)
                     )
-                    Row(modifier = Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Stock: $stock", style = MaterialTheme.typography.labelSmall, fontSize = 9.sp)
-                        Text("Booked: $booked", style = MaterialTheme.typography.labelSmall, fontSize = 9.sp, color = if (isLowStock) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
+                }
+                Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
+                Text(price, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                if (!isAvailable) {
+                    Text("UNAVAILABLE", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
                 }
             }
         }
     }
 }
+
+@Composable
+fun AddInventoryItemDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String, String, Double) -> Unit
+) {
+    var name by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add Asset to Catalog", fontFamily = NotoSerif) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Asset Name") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = price, onValueChange = { price = it }, label = { Text("Price per Event") }, modifier = Modifier.fillMaxWidth())
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(name, description, price.toDoubleOrNull() ?: 0.0) },
+                enabled = name.isNotEmpty() && price.isNotEmpty()
+            ) {
+                Text("Add Asset")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+

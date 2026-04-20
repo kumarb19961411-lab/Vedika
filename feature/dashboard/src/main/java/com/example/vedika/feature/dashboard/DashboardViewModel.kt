@@ -36,7 +36,8 @@ data class DashboardUiState(
     val upcomingBookings: List<Booking> = emptyList(),
     val pendingCount: Int = 0,
     val confirmedCount: Int = 0,
-    val totalRevenue: Double = 0.0,
+    val totalBookings: Int = 0,
+    val cancelledCount: Int = 0,
     val isLoading: Boolean = true
 )
 
@@ -129,6 +130,8 @@ class DashboardViewModel @Inject constructor(
                         .take(5),
                     pendingCount = bookings.count { it.status == BookingStatus.PENDING },
                     confirmedCount = bookings.count { it.status == BookingStatus.CONFIRMED },
+                    cancelledCount = bookings.count { it.status == BookingStatus.CANCELLED },
+                    totalBookings = bookings.size,
                     totalRevenue = bookings.filter { it.status == BookingStatus.CONFIRMED }.sumOf { it.totalAmount },
                     isLoading = false
                 )

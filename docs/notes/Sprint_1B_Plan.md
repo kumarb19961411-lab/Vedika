@@ -1,26 +1,38 @@
 ---
-tags: [sprint, plan, milestone1]
+tags: [milestone1, sprint1b, planning]
+status: PLANNED
 ---
 
-# 🏃 Sprint 1B: Validation & Analytics
+# 📅 Sprint 1B: Metrics + Inventory + Regression Sweep
 
-**Focus**: Implementing business logic constraints and deriving dashboard state from real data.
+**Goal**: Transition dashboard and inventory systems to authoritative Firestore state and verify end-to-end vendor operations.
 
-## 🎯 Objectives
-- [ ] **Slot/Date Conflict Validation**
-    - Implement a `isSlotAvailable(date, slot)` check in the Repository.
-    - Prevent `BookingViewModel` from submitting a booking if the slot is already occupied in the Firestore vendor-scope.
-- [ ] **Inventory Scoping Cleanup**
-    - Align `InventoryRepository` with the `VendorProfile`.
-    - Support per-vendor service/item lists stored as sub-collections or structured arrays.
-- [ ] **Real-Time Dashboard Metrics**
-    - Refactor `VendorDashboardViewModel` to calculate "Upcoming Bookings" and "Monthly Revenue" by aggregating the live `bookings` stream.
-    - Remove placeholder mock counters.
-- [ ] **Calendar Consistency**
-    - Ensure `CalendarScreen` reflects the same reconciled state as the Dashboard (One truth policy).
+## 📄 Scope
+- **Real-Time Dashboards**: Connect Venue/Decorator views to booking analytics (Revenue, Counts).
+- **Inventory Hub Connectivity**: Replace mocks with `InventoryRepository` streams.
+- **Add Item Flow**: Basic persistence for vendor catalog items.
+- **Regression Pass**: Verify registration and booking flows post-hardening.
 
-## 📝 Background
-Sprint 1B brings the "Engine" alive. The application will no longer just store data; it will begin enforcing business rules and providing meaningful insights back to the vendor.
+## 🛠 Planned Work
+
+### 1. Dashboard Metrics (Analytics)
+- [x] Refactor `DashboardViewModel` to expose `totalRevenue`, `pendingCount`, `confirmedCount`.
+- [x] Update `VenueDashboardScreen` and `DecoratorDashboardScreen` to display these metrics.
+
+### 2. Inventory Hub
+- [x] Create `InventoryViewModel` for state management.
+- [x] Connect `InventoryHubScreen` to real Firestore collection.
+- [x] Implement "Add Item" dialog/form persistence.
+
+### 3. Verification & Compliance
+- [/] **Regression Sweep**: OTP -> Registration -> Dashboard flow.
+- [x] **Security Audit**: Verify `/inventory` and `/bookings` rules on real documents.
+- [x] **Docs Sync**: Update `SYSTEM_STATUS.md` and `Milestone_1_QA_Checklist.md`.
+
+## 🎯 Acceptance Criteria
+- Dashboard reflects real booking data (counts and revenue).
+- Inventory Hub scales with real data retrieved from Firestore.
+- No regression in Sprint 1A hardened flows (Conflict checks).
 
 ---
-[[Project_Hub|🏠 Project Hub]] | [[Milestone_1_Core_Business_Engine|🎯 Milestone 1 Hub]] | [[Sprint_1B_Plan|Top]]
+[[Milestone_1_Core_Business_Engine|🎯 Milestone 1 Hub]] | [[project_status|📈 Project Status]]

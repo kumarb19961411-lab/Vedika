@@ -330,9 +330,9 @@ private fun AnalyticsSection(state: DashboardUiState) {
             Spacer(modifier = Modifier.height(20.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                InsightItem(icon = Icons.Default.TrendingUp, label = "Profile Views", value = state.analyticsSummary?.get("views") ?: "1,284", color = MaterialTheme.colorScheme.secondary)
-                InsightItem(icon = Icons.Default.PendingActions, label = "Leads", value = state.leadsCount ?: "12 New", color = MaterialTheme.colorScheme.primary)
-                InsightItem(icon = Icons.Default.Star, label = "Rating", value = state.rating ?: "4.8 (212)", color = MaterialTheme.colorScheme.tertiary)
+                InsightItem(icon = Icons.Default.Event, label = "Confirmed", value = state.confirmedCount.toString(), color = MaterialTheme.colorScheme.secondary)
+                InsightItem(icon = Icons.Default.Pending, label = "Pending", value = state.pendingCount.toString(), color = MaterialTheme.colorScheme.primary)
+                InsightItem(icon = Icons.Default.Payments, label = "Revenue", value = "₹${state.totalRevenue.toInt()}", color = MaterialTheme.colorScheme.tertiary)
             }
             
             Spacer(modifier = Modifier.height(24.dp))
@@ -340,9 +340,9 @@ private fun AnalyticsSection(state: DashboardUiState) {
             Spacer(modifier = Modifier.height(16.dp))
             
             Text(
-                "\"Your listing is performing 20% better than average halls in your area.\"",
+                "Total current volume: ${state.totalBookings} bookings recorded.",
                 style = MaterialTheme.typography.bodyMedium,
-                fontStyle = FontStyle.Italic,
+                fontStyle = FontStyle.Normal,
                 color = Color.DarkGray
             )
             

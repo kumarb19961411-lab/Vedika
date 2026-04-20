@@ -17,13 +17,22 @@ last_updated: 2026-04-20
 | **Inventory System** | 🟡 | 20% | Planned for Sprint 1B. |
 | **Financial Ledger** | 🔴 | 0% | Planned for Milestone 2. |
 
+### 📊 Business Logic Sources
+- **Booking Metrics**: Calculated in `DashboardViewModel` from `/bookings` collection.
+- **Inventory**: Managed via `InventoryViewModel` via `/inventory` collection.
+- **Capacity/Conflicts**: Enforced via `/occupancy` index and transactional repository logic.
+
 ### 📅 Sprint Tracker
 - [x] **Sprint 1A: Booking & Calendar Integrity** (CLOSED)
     - [x] Authoritative `VendorProfile` resolution.
     - [x] Strict capacity fallbacks (Venue: 1, Decorator: 4).
     - [x] Standardized Conflict Indexing.
     - [x] `occupancy` collection rules enforced.
-- [ ] **Sprint 1B: Inventory & Block-Out Logic** (UPCOMING)
+- [x] **Sprint 1B: Metrics + Inventory** (IN PROGRESS)
+    - [x] Authoritative Dashboard Metrics (Revenue, Vol, Status Counts)
+    - [x] Inventory Hub live-data connectivity
+    - [x] Basic Inventory item persistence
+    - [/] Regression sweep across vendor ops
 - [ ] **Sprint 1C: Rescheduling & Exception Handling** (PLANNED)
 
 ### 📌 Critical Anchors
