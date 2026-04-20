@@ -64,14 +64,9 @@ class FirebaseCalendarRepositoryImpl @Inject constructor(
         return combine(bookingsFlow, blockedFlow, flow { emit(vendorRepository.getVendorProfile(vendorId).getOrNull()) }) { bookings, blocks, vendor ->
             val calendarMap = mutableMapOf<LocalDate, CalendarDayState>()
             
-            val vendorTypeStr = vendor?.vendorType ?: vendor?.primaryServiceCategory ?: "VENUE"
-            val vendorType = try {
-                VendorType.valueOf(vendorTypeStr.uppercase())
-            } catch (e: Exception) {
-                if (vendorTypeStr.contains("Venue", ignoreCase = true)) VendorType.VENUE else VendorType.DECORATOR
-            }
+            val vendorType = vendor!!.vendorType // Standardized on VendorProfile field
 
-            val capacityRaw = vendor?.capacity
+            val capacityRaw = vendor.capacity
             val capacity = when {
                 capacityRaw is Int -> capacityRaw
                 capacityRaw is String -> capacityRaw.toIntOrNull() ?: (if (vendorType == VendorType.VENUE) 1 else 4)

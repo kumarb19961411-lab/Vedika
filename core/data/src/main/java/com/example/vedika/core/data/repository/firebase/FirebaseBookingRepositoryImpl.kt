@@ -88,7 +88,7 @@ class FirebaseBookingRepositoryImpl @Inject constructor(
                     capacityRaw is Long -> capacityRaw.toInt()
                     capacityRaw is String -> capacityRaw.toIntOrNull() ?: (if (vendorType == VendorType.VENUE) DEFAULT_CAPACITY_VENUE else DEFAULT_CAPACITY_DECORATOR)
                     else -> {
-                        android.util.Log.w(TAG, "Missing or invalid capacity for vendor ${booking.vendorId}. Using fallback.")
+                        android.util.Log.w(TAG, "Missing or invalid capacity for vendor ${booking.vendorId}. Using fallbacks: Venue=1, Decorator=4.")
                         if (vendorType == VendorType.VENUE) DEFAULT_CAPACITY_VENUE else DEFAULT_CAPACITY_DECORATOR
                     }
                 }

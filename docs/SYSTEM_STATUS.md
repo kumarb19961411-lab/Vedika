@@ -1,45 +1,34 @@
 ---
-title: System Status
-type: status
-status: active
-owner: Product Architect
-phase: Phase 3
+tags: [status, dashboard, project_management]
 last_updated: 2026-04-20
-tags: [status, phase3, overview]
 ---
 
-# Vedika System Status
+# 📊 Vedika System Status
 
-## Source of Truth
-This document provides a high-level overview of the Vedika architecture implementation status.
+## 🚀 Current Milestone: Milestone 1 - Core Business Engine
+**Status**: 🟢 ON TRACK (Sprint 1A Complete)
 
-## Current Implementation
+### 🏗 Component Status
+| Component | Status | Health | Notes |
+| :--- | :--- | :--- | :--- |
+| **Auth Foundation** | 🟢 | 100% | Role-based routing locked. Session consistency verified. |
+| **Booking Engine** | 🟢 | 100% | **Sprint 1A Hardened.** Transactional integrity for creation. |
+| **Calendar Engine** | 🟢 | 100% | Authoritative state derivation. Fallback policies applied. |
+| **Inventory System** | 🟡 | 20% | Planned for Sprint 1B. |
+| **Financial Ledger** | 🔴 | 0% | Planned for Milestone 2. |
 
-### Phase 3: Backend Integration & Hardening (Active)
-The application has transitioned from mock-driven flows to a state-driven, Firebase-backed architecture.
+### 📅 Sprint Tracker
+- [x] **Sprint 1A: Booking & Calendar Integrity** (CLOSED)
+    - [x] Authoritative `VendorProfile` resolution.
+    - [x] Strict capacity fallbacks (Venue: 1, Decorator: 4).
+    - [x] Conflict Error Standardization (`CONFLICT_*`).
+    - [x] `occupancy` collection security rules.
+- [ ] **Sprint 1B: Inventory & Block-Out Logic** (UPCOMING)
+- [ ] **Sprint 1C: Rescheduling & Exception Handling** (PLANNED)
 
-### Fully Implemented and Verified
-- **Auth Foundation**: Firebase Phone Auth integration (with dev bypass toggle).
-- **Profile Resolution**: Identity (Firebase Auth) is decoupled from Profile (Firestore). Resolution occurs via `AuthViewModel` during login.
-- **Session Restoration**: `SplashViewModel` intercepts startup, resolving sessions via `FirebaseAuth` and `EncryptedSessionStorage` hints.
-- **V2 App Shell**: Modularized Jetpack Compose architecture with Hilt DI.
-- **Unified Navigation**: Centralized routing in `MainActivity` observing `StartupState` and `RoleResolutionState`.
-- **Dashboard & Profile Hardening**: Transitions Vendor dashboards and profiles to strictly consume live canonical `VendorProfile` streams.
-- **Obsidian MCP Tooling**: Lifecycle integration of `mcp-obsidian` server for architecture-aware development and documentation sync.
-
-### Partially Implemented / Scaffolding
-- **Vendor Registration**: Detailed form UI is fully integrated with a canonical `VendorProfile` contract. Registration data is persisted to `/vendors/{uid}` using production-ready structures.
-- **User Identity**: Barebones `users/{uid}` profiles are supported during Sign Up.
-
-## Future Work & Next Actions
-
-### 📅 Phase 3.7+ - Milestone 1: Core Business Engine
-- **Current Status**: 🏃 Execution (Sprint 1B Next)
-- **Target**: Booking & Calendar Integrity (Sprint 1A Complete)
-- **Key Files**: `FirebaseBookingRepositoryImpl.kt`, `FirebaseCalendarRepositoryImpl.kt`, `firestore.rules`
-
-1.  **State Synchronization**: Ensure real-time updates for booking states and inventory availability.
-2.  **Advanced Restoration**: Implement proactive session validation for edge cases (e.g., token revocation).
+### 📌 Critical Anchors
+- **Firebase Project**: `vedika-e44be`
+- **Owner**: `kumarb19961411-lab`
 
 ---
-[[Project_Hub|🏠 Project Hub]] | [[Phase_Tracker_Hub|⏱️ Phase Tracker]] | [[SYSTEM_STATUS|Top]]
+[[Project_Hub|🏠 Project Hub]] | [[Milestone_1_Hub|🎯 Milestone 1]] | [[project_status|📈 Project History]]
