@@ -1,7 +1,7 @@
 package com.example.vedika.data.fake
 
-import com.example.vedika.core.data.model.VendorMockState
-import com.example.vedika.core.data.model.VendorUser
+import com.example.vedika.core.data.model.VendorProfile
+import com.example.vedika.core.data.model.VendorType
 import com.example.vedika.core.data.repository.VendorRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,38 +13,29 @@ import javax.inject.Singleton
 @Singleton
 class FakeVendorRepository @Inject constructor() : VendorRepository {
     
-    private val _mockVendorState = MutableStateFlow<VendorMockState?>(null)
+    private val _vendorProfileState = MutableStateFlow<VendorProfile?>(null)
 
-    override fun getMockVendor(): Flow<VendorMockState?> = _mockVendorState.asStateFlow()
+    override fun getVendorProfileStream(vendorId: String): Flow<VendorProfile?> = _vendorProfileState.asStateFlow()
 
-    override suspend fun saveMockVendor(state: VendorMockState): Result<Unit> {
-        _mockVendorState.value = state
+    override suspend fun saveVendorProfile(profile: VendorProfile): Result<Unit> {
+        _vendorProfileState.value = profile
         return Result.success(Unit)
     }
     
-    override suspend fun getVendorProfile(vendorId: String): Result<VendorUser> {
-        val mock = _mockVendorState.value
+    override suspend fun getVendorProfile(vendorId: String): Result<VendorProfile> {
+        val current = _vendorProfileState.value
         return Result.success(
-            VendorUser(
+            current ?: VendorProfile(
                 id = vendorId,
-                businessName = mock?.venueName ?: "Heritage Halls & Catering",
+                businessName = "Heritage Halls & Catering",
                 ownerName = "Dev Vendor",
-                isVerified = true,
-                primaryServiceCategory = mock?.vendorType?.name ?: "Venue"
+                location = "Miyapur, Hyderabad",
+                pricing = "₹1,20,000",
+                primaryCategory = "Venue",
+                vendorType = VendorType.VENUE,
+                isVerified = true
             )
         )
-    }
-
-    override fun getVendorProfileStream(vendorId: String): Flow<VendorUser?> {
-        return _mockVendorState.map { mock ->
-            VendorUser(
-                id = vendorId,
-                businessName = mock?.venueName ?: "Heritage Halls & Catering",
-                ownerName = "Dev Vendor",
-                isVerified = true,
-                primaryServiceCategory = mock?.vendorType?.name ?: "Venue"
-            )
-        }
     }
 
     override suspend fun updateBusinessName(vendorId: String, newName: String): Result<Unit> {

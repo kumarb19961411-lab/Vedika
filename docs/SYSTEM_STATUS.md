@@ -27,7 +27,7 @@ The application has transitioned from mock-driven flows to a state-driven, Fireb
 - **Obsidian MCP Tooling**: Lifecycle integration of `mcp-obsidian` server for architecture-aware development and documentation sync.
 
 ### Partially Implemented / Scaffolding
-- **Vendor Registration**: Detailed form UI exists for Venues and Decorators. Profile creation is integrated with Firestore, but full business dashboards are under refinement.
+- **Vendor Registration**: Detailed form UI is fully integrated with a canonical `VendorProfile` contract. Registration data is persisted to `/vendors/{uid}` using production-ready structures, replacing legacy mock-shaped models.
 - **User Identity**: Barebones `users/{uid}` profiles are supported during Sign Up.
 
 ## Future Work & Next Actions

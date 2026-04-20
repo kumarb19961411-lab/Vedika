@@ -7,7 +7,7 @@ import com.example.vedika.core.data.model.AccountMode
 import com.example.vedika.core.data.model.AuthFlow
 import com.example.vedika.core.data.model.RoleResolutionState
 import com.example.vedika.core.data.model.AppUser
-import com.example.vedika.core.data.model.VendorMockState
+import com.example.vedika.core.data.model.VendorProfile
 import com.example.vedika.core.data.model.VendorType
 import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.UserRepository
@@ -358,24 +358,24 @@ class AuthViewModel @Inject constructor(
 
     fun saveRegistrationData(onSuccess: () -> Unit) {
         val state = _uiState.value
+        val vendorId = authRepository.getCurrentUserId() ?: return
         val vendorType = if (state.selectedCategory?.lowercase()?.contains("venue") == true) VendorType.VENUE else VendorType.DECORATOR
         
-        val mockState = if (vendorType == VendorType.VENUE) {
-            VendorMockState(
+        val profile = if (vendorType == VendorType.VENUE) {
+            VendorProfile(
+                id = vendorId,
                 businessName = state.venueName,
-                venueName = state.venueName,
+                ownerName = state.ownerName,
                 location = state.venueLocation,
-                capacity = state.venueCapacity,
                 pricing = state.venuePrice,
+                primaryCategory = state.selectedCategory ?: "Venue",
+                vendorType = VendorType.VENUE,
+                capacity = state.venueCapacity,
                 amenities = state.venueAmenities,
                 coverImage = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3", // High-fidelity Venue placeholder
-                galleryImages = emptyList(),
-                vendorType = VendorType.VENUE,
-                primaryCategory = state.selectedCategory ?: "Venue",
-                ownerName = state.ownerName,
-                area = "12,000 Sq Ft", // Derived mock for demo
-                venueType = "Indoor/Outdoor", // Derived mock for demo
-                rating = "4.8 (124)",
+                area = "12,000 Sq Ft", 
+                venueType = "Indoor/Outdoor",
+                rating = "4.8",
                 leadsCount = "8 New"
             )
         } else {
@@ -392,24 +392,24 @@ class AuthViewModel @Inject constructor(
                 )
             )
 
-            VendorMockState(
+            VendorProfile(
+                id = vendorId,
                 businessName = state.decoratorBusinessName,
+                ownerName = state.ownerName,
                 location = "Main Market, Hyderabad", // Generic location for decorators
                 pricing = state.decoratorTier1Price,
-                amenities = state.decoratorExpertise,
-                coverImage = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622", // High-fidelity Decorator placeholder
-                galleryImages = emptyList(),
-                vendorType = VendorType.DECORATOR,
                 primaryCategory = state.selectedCategory ?: "Decorator",
-                ownerName = state.ownerName,
+                vendorType = VendorType.DECORATOR,
                 yearsExperience = state.decoratorExperience,
                 packageTiers = tiers,
-                rating = "4.9 (86)",
+                amenities = state.decoratorExpertise,
+                coverImage = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622", // High-fidelity Decorator placeholder
+                rating = "4.9",
                 leadsCount = "12 New"
             )
         }
 
-        logDebug("Saving Registration for: $vendorType (Owner: ${state.ownerName})")
+        logDebug("Saving Registration Profile for: $vendorType (Owner: ${state.ownerName})")
 
         // Hard guard: ownerName must be present. The sendOtp and CategorySelection
         // steps should have already captured this, but we validate here as a safety net.
@@ -422,9 +422,9 @@ class AuthViewModel @Inject constructor(
 
         _uiState.value = _uiState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
-            vendorRepository.saveMockVendor(mockState)
+            vendorRepository.saveVendorProfile(profile)
                 .onSuccess {
-                    logDebug("Registration saved successfully.")
+                    logDebug("Registration Profile saved successfully.")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                     onSuccess()
                 }

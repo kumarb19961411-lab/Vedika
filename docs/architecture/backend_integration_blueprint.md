@@ -33,9 +33,13 @@ The Vedika client architecture rigidly leverages a "local-first UI, remote-secon
 - Exclusively formulated client layer write operations execute unconditionally across specifically designated `Dispatchers.IO` isolated Coroutine scopes using opportunistic patterns. Consequently, UI component states inherently modify optimistic caching registries without explicitly awaiting network round-trips ensuring highly snappy UI operations followed implicitly by explicit Firebase `document.set()` asynchronous tracking tasks.
 - Read interactions uniformly utilize Firebase Snapshot Listener integrations explicitly tied closely toward observing highly refined Repository patterns. This automatically yields lifecycle-bounded dynamic states; hence if external remote business conditions mutate successfully inside admin interfaces, connected frontend mobile layers receive differential updates precisely and uniformly without compelling arbitrary or unnecessary forced UI-reload actions.
 
-### 3. Production Deployment Security Measures
-- Deployment protocol permanently dictates strict `firestore.rules` compiler verification execution via explicit integration assertions located in standardized CI pipelines preceding any production rollout.
-- Environment global variables apply absolute `allow read, write: if false;` defaults preventing catastrophic wide-open database misconfigurations and inherently rejecting stray queries unless strictly governed under carefully formulated explicitly verified structural paths.
+### 4. Canonical Vendor Data Contract
+- **Contract**: The `VendorProfile` model (residing in `:core:data`) serves as the definitive schema for all vendor business data. It includes business metadata, location, pricing, and verification status.
+- **Registration Flow**: 
+    1.  `AuthViewModel` captures registration inputs.
+    2.  Inputs are mapped directly into a `VendorProfile` instance.
+    3.  `VendorRepository.saveVendorProfile()` persists the document to the `/vendors/{uid}` collection.
+- **Consistency**: Replaces all legacy `VendorMockState` and transitional naming conventions with production-ready, type-safe structures.
 
 ## Future work
 - Comprehensive custom domain logic Cloud Functions deployment replacing client-hosted verification checks.
