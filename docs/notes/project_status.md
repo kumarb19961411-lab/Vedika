@@ -9,9 +9,9 @@ tags: [project, roadmap, status]
 ### ✅ Completed Milestones
 - **Firebase Initialization**: Anchored `vedika-e44be`.
 - **Auth Foundation**: Role-resolution and session restoration hardened.
-- **Active**: Sprint 1B (Metrics + Inventory Realignment)
-- **Status**: Repository mismatches fixed; Dashboard KPIs consistent; Hub structural repair complete.
-- **Milestone 1 Core**: 80% Complete.
+- **Completed**: Sprint 1A (Booking & Calendar Integrity)
+- **Completed**: Sprint 1B (Metrics + Inventory)
+- **Status**: Sprint 1B closed; Milestone 1 at 90% completion.
     - Locked fallback policy: **Venue (1), Decorator (4)**.
     - Standardized conflict error codes established.
 

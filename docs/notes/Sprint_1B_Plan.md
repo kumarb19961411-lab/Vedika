@@ -1,6 +1,6 @@
 ---
 tags: [milestone1, sprint1b, planning]
-status: PLANNED
+status: CLOSED
 ---
 
 # 📅 Sprint 1B: Metrics + Inventory + Regression Sweep

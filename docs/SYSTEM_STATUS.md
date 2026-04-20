@@ -28,9 +28,9 @@ last_updated: 2026-04-20
     - [x] Strict capacity fallbacks (Venue: 1, Decorator: 4).
     - [x] Standardized Conflict Indexing.
     - [x] `occupancy` collection rules enforced.
-- **Active**: Sprint 1B (Metrics + Inventory Realignment)
-- **Status**: Repository mismatches fixed; Dashboard KPIs consistent; Hub structural repair complete.
-- **Identity Source**: `AuthRepository.getCurrentUserId()` (Canonical).
+- **Completed**: Sprint 1B (Metrics + Inventory)
+- **Status**: VERIFIED. Authoritative KPIs and Inventory activation complete.
+- **Milestone 1**: 90% Complete.
  Hub live-data connectivity
     - [x] Basic Inventory item persistence
     - [/] Regression sweep across vendor ops

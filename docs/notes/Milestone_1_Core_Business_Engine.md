@@ -14,7 +14,7 @@ tags: [milestone, status, hub-leaf, business-engine]
 This milestone is decomposed into two high-intensity sprints:
 
 - [x] **Sprint 1A**: Booking & Calendar Integrity (CLOSED)
-- [/] **Sprint 1B**: Metrics + Inventory + Regression Sweep (ACTIVE)
+- [x] **Sprint 1B**: Metrics + Inventory + Regression Sweep (CLOSED)
 - [ ] **Sprint 1C**: Rescheduling & Exception Handling (PLANNED)
 
 ## ✅ Definition of Done
