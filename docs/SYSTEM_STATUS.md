@@ -24,6 +24,7 @@ The application has transitioned from mock-driven flows to a state-driven, Fireb
 - **Session Restoration**: `SplashViewModel` intercepts startup, resolving sessions via `FirebaseAuth` and `EncryptedSessionStorage` hints.
 - **V2 App Shell**: Modularized Jetpack Compose architecture with Hilt DI.
 - **Unified Navigation**: Centralized routing in `MainActivity` observing `StartupState` and `RoleResolutionState`.
+- **Obsidian MCP Tooling**: Lifecycle integration of `mcp-obsidian` server for architecture-aware development and documentation sync.
 
 ### Partially Implemented / Scaffolding
 - **Vendor Registration**: Detailed form UI exists for Venues and Decorators. Profile creation is integrated with Firestore, but full business dashboards are under refinement.
