@@ -15,7 +15,7 @@ tags: [project, roadmap, status]
 
 ### 🏗 In Progress
 - [x] **Phase 3.8B: Obsidian Brain Hardening**: Documents now strictly connected via MOCs and hub notes.
-- [/] **Phase 3.8C: Sprint 1B Preparation**: Designing block-out management and inventory schema.
+- [x] **Phase 3.8C: Sprint 1B Completion**: Dashboard metrics and inventory hub verified.
 
 ### 🟢 Milestone 1 Completion (Current)
 MILESTONE 1 is now **CLOSED**. The core vendor engine is stable, validated, and ready for operations.

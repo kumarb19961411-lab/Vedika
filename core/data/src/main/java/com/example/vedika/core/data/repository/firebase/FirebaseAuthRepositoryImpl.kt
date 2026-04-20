@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import android.app.Activity
 import com.google.firebase.FirebaseException
@@ -34,7 +35,17 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
         awaitClose { auth.removeAuthStateListener(listener) }
     }.flatMapLatest { uid ->
         if (uid != null) {
-            vendorRepository.getVendorProfileStream(uid)
+            vendorRepository.getVendorProfileStream(uid).map { profile ->
+                profile?.let {
+                    VendorUser(
+                        id = it.id,
+                        businessName = it.businessName,
+                        ownerName = it.ownerName,
+                        isVerified = it.isVerified,
+                        primaryServiceCategory = it.primaryCategory
+                    )
+                }
+            }
         } else {
             kotlinx.coroutines.flow.flowOf(null)
         }

@@ -15,7 +15,7 @@ The platform has achieved its first major milestone: **Core Business Engine**.
 | **Auth Foundation** | 🟢 | 100% | Role-based routing locked. Session consistency verified. |
 | **Booking Engine** | 🟢 | 100% | **Sprint 1A CLOSED.** Transactional integrity and fallbacks locked. |
 | **Calendar Engine** | 🟢 | 100% | **Sprint 1A CLOSED.** Authoritative state derivation. |
-| **Inventory System** | 🟡 | 20% | Planned for Sprint 1B. |
+| **Inventory System** | 🟢 | 100% | **Sprint 1B CLOSED.** Vendor-scoped catalog persistence functional. |
 | **Financial Ledger** | 🔴 | 0% | Planned for Milestone 2. |
 
 ### 📊 Business Logic Sources
