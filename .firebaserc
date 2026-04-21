@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "vedika-e44be"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }

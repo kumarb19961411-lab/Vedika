@@ -24,18 +24,11 @@ class FakeVendorRepository @Inject constructor() : VendorRepository {
     
     override suspend fun getVendorProfile(vendorId: String): Result<VendorProfile> {
         val current = _vendorProfileState.value
-        return Result.success(
-            current ?: VendorProfile(
-                id = vendorId,
-                businessName = "Heritage Halls & Catering",
-                ownerName = "Dev Vendor",
-                location = "Miyapur, Hyderabad",
-                pricing = "₹1,20,000",
-                primaryCategory = "Venue",
-                vendorType = VendorType.VENUE,
-                isVerified = true
-            )
-        )
+        return if (current != null) {
+            Result.success(current)
+        } else {
+            Result.failure(Exception("VENDOR_NOT_FOUND"))
+        }
     }
 
     override suspend fun updateBusinessName(vendorId: String, newName: String): Result<Unit> {

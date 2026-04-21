@@ -8,6 +8,9 @@ import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import android.util.Log
 
 @HiltAndroidApp
 class MainApplication : Application() {
@@ -21,12 +24,26 @@ class MainApplication : Application() {
         // Initialize App Check with Debug Provider for all debug builds.
         // This allows physical devices to verify via debug tokens in the Firebase Console.
         if (BuildConfig.DEBUG) {
+            Log.d("VedikaDebug", "App Check Debug Provider Installation Started")
             try {
                 Firebase.appCheck.installAppCheckProviderFactory(
                     DebugAppCheckProviderFactory.getInstance()
                 )
+                Log.d("VedikaDebug", "App Check Debug Provider Installed Successfully")
+                
+                // Forced heartbeat: Fetch token immediately to trigger the Logcat output
+                // of the debug secret.
+                @Suppress("OptInUsageInspection")
+                GlobalScope.launch {
+                    try {
+                        Firebase.appCheck.getToken(false)
+                        Log.d("VedikaDebug", "App Check Heartbeat: Token request triggered.")
+                    } catch (e: Exception) {
+                        Log.e("VedikaDebug", "App Check Heartbeat failed: ${e.message}")
+                    }
+                }
             } catch (e: Exception) {
-                // Already initialized or provider already installed
+                Log.w("VedikaDebug", "App Check warning: ${e.message}")
             }
         }
 

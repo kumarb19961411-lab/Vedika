@@ -1,5 +1,6 @@
 package com.example.vedika.core.data.repository.firebase
 
+import android.util.Log
 import com.example.vedika.core.data.model.VendorUser
 import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.VendorRepository
@@ -59,15 +60,18 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
             .setActivity(activity)
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    Log.d("VedikaDebug", "AuthRepo: onVerificationCompleted (Auto-retrieval or Instant Validation)")
                     // Auto-retrieval handled by implicit device services if supported. 
                     // To keep state deterministic, we rely on the OTP input step for now.
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
+                    Log.e("VedikaDebug", "AuthRepo: onVerificationFailed - ${e.message}", e)
                     if (continuation.isActive) continuation.resume(Result.failure(e))
                 }
 
                 override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                    Log.d("VedikaDebug", "AuthRepo: onCodeSent - VerificationId: $verificationId")
                     if (continuation.isActive) continuation.resume(Result.success(verificationId))
                 }
             })

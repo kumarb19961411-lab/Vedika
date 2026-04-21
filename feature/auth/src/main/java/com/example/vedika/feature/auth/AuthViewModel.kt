@@ -83,20 +83,37 @@ class AuthViewModel @Inject constructor(
             _uiState.value = state.copy(error = "Please enter your full name to continue")
             return
         }
-        if (state.phoneNumber.length < 10) {
+        
+        // Format phone number to E.164 (+91 prefix for local 10-digit numbers)
+        val rawPhone = state.phoneNumber.trim()
+        val formattedPhone = when {
+            rawPhone.startsWith("+") -> rawPhone
+            rawPhone.length == 10 -> "+91$rawPhone"
+            else -> rawPhone // Fallback to raw if not 10 digits/prefixed
+        }
+
+        if (formattedPhone.length < 12) { // +91 + 10 digits = 13 chars (but let's be safe)
             _uiState.value = state.copy(error = "Please enter a valid 10-digit phone number")
             return
         }
+
+        logDebug("Triggering sendOtp for: $formattedPhone (Raw: $rawPhone)")
+
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoading = true, 
                 error = null,
                 roleResolutionState = RoleResolutionState.Loading
             )
-            val result = authRepository.sendOtp(_uiState.value.phoneNumber, activity)
-            logDebug("Sending OTP to ${_uiState.value.phoneNumber}...")
+            val startTime = System.currentTimeMillis()
+            logDebug("SEND_OTP_START: Requesting OTP for $formattedPhone")
+            val result = authRepository.sendOtp(formattedPhone, activity)
+            val duration = System.currentTimeMillis() - startTime
+            logDebug("SEND_OTP_RETURNED: Repository call took ${duration}ms")
+            
             _uiState.value = _uiState.value.copy(isLoading = false)
             result.onSuccess { verificationId ->
+                logDebug("SEND_OTP_SUCCESS: VerificationId: $verificationId")
                 _uiState.value = _uiState.value.copy(
                     verificationId = verificationId,
                     isResendEnabled = false,
@@ -106,6 +123,7 @@ class AuthViewModel @Inject constructor(
                 startCountdown()
                 onSuccess()
             }.onFailure { ex ->
+                logDebug("OTP Send FAILED: ${ex.message}")
                 _uiState.value = _uiState.value.copy(
                     error = ex.message,
                     roleResolutionState = RoleResolutionState.Error(ex.message ?: "Failed to send OTP")
@@ -135,31 +153,42 @@ class AuthViewModel @Inject constructor(
             return
         }
         val verificationId = _uiState.value.verificationId ?: "mock-session"
+        logDebug("VERIFY_OTP_START: OTP=${_uiState.value.otp}, Session=$verificationId")
+        
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoading = true, 
                 error = null,
                 roleResolutionState = RoleResolutionState.Loading
             )
+            val startTime = System.currentTimeMillis()
             val result = authRepository.verifyOtp(verificationId, _uiState.value.otp)
+            val duration = System.currentTimeMillis() - startTime
+            logDebug("VERIFY_OTP_RETURNED: Repository call took ${duration}ms")
+
             result.onSuccess { user ->
+                logDebug("VERIFY_OTP_SUCCESS: Uid=${user.id}")
                 if (_uiState.value.accountMode == AccountMode.PARTNER) {
+                    logDebug("PROFILE_FETCH_START: Checking Vendor Profile...")
                     val profileResult = vendorRepository.getVendorProfile(user.id)
                     _uiState.value = _uiState.value.copy(isLoading = false)
                     profileResult.onSuccess {
-                        sessionStorage.saveAccountMode(_uiState.value.accountMode)
+                        logDebug("STATE_UPDATE: RoleResolutionState -> Verified(profileExists=true)")
                         _uiState.value = _uiState.value.copy(
                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
                         )
                         onSuccess()
                     }.onFailure { ex ->
                         if (ex.message == "VENDOR_NOT_FOUND") {
+                            logDebug("PROFILE_FETCH_NOT_FOUND: No vendor profile yet.")
                             sessionStorage.saveAccountMode(_uiState.value.accountMode)
+                            logDebug("STATE_UPDATE: RoleResolutionState -> Verified(profileExists=false)")
                             _uiState.value = _uiState.value.copy(
                                 roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
                             )
                             onSuccess()
                         } else {
+                            logDebug("PROFILE_FETCH_FAILED: ${ex.message}")
                             _uiState.value = _uiState.value.copy(
                                 error = "Failed to load profile. Please try again.",
                                 roleResolutionState = RoleResolutionState.Error("Failed to load profile.")
@@ -167,8 +196,10 @@ class AuthViewModel @Inject constructor(
                         }
                     }
                 } else {
+                    logDebug("PROFILE_FETCH_START: Checking User Profile...")
                     val profileResult = userRepository.getUserProfile(user.id)
                     profileResult.onSuccess {
+                        logDebug("PROFILE_FETCH_SUCCESS: User profile exists.")
                         sessionStorage.saveAccountMode(_uiState.value.accountMode)
                         _uiState.update { it.copy(
                             isLoading = false,
@@ -239,13 +270,16 @@ class AuthViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(isLoading = false)
                     profileResult.onSuccess {
                         sessionStorage.saveAccountMode(_uiState.value.accountMode)
+                        logDebug("STATE_UPDATE: RoleResolutionState -> Verified(profileExists=true)")
                         _uiState.value = _uiState.value.copy(
                             roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = true)
                         )
                         onSuccess()
                     }.onFailure { ex ->
                         if (ex.message == "VENDOR_NOT_FOUND") {
+                            logDebug("DEV_BYPASS: PROFILE_FETCH_NOT_FOUND: No vendor profile yet.")
                             sessionStorage.saveAccountMode(_uiState.value.accountMode)
+                            logDebug("STATE_UPDATE: RoleResolutionState -> Verified(profileExists=false)")
                             _uiState.value = _uiState.value.copy(
                                 roleResolutionState = RoleResolutionState.Verified(user.id, profileExists = false)
                             )

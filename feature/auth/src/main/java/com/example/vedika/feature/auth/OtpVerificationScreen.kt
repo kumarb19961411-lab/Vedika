@@ -41,6 +41,8 @@ import coil.compose.AsyncImage
 import com.example.vedika.core.data.model.AccountMode
 import com.example.vedika.core.data.model.AuthFlow
 import com.example.vedika.core.data.model.RoleResolutionState
+import com.example.vedika.feature.auth.BuildConfig
+import android.util.Log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +55,10 @@ fun OtpVerificationScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val activity = context as? android.app.Activity
+
+    LaunchedEffect(Unit) {
+        Log.d("VedikaDebug", "SCREEN_ENTRY: OtpVerificationScreen composed")
+    }
 
     Scaffold(
         topBar = {
@@ -83,9 +89,35 @@ fun OtpVerificationScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(horizontal = 24.dp, vertical = 48.dp),
+                    .padding(horizontal = 24.dp, vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Mock Mode Indicator
+                if (BuildConfig.DEBUG) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 24.dp),
+                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(Icons.Default.SettingsSuggest, contentDescription = null, tint = MaterialTheme.colorScheme.onTertiaryContainer)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                "DEVELOPER MOCK MODE: Use OTP 123456",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
+                        }
+                    }
+                }
+
                 Surface(
                     modifier = Modifier.size(80.dp),
                     shape = CircleShape,
@@ -137,7 +169,7 @@ fun OtpVerificationScreen(
                                 val filteredOtp = newOtp.filter { it.isDigit() }
                                 if (filteredOtp.length <= 6) {
                                     viewModel.updateOtp(filteredOtp)
-                                    // Auto-submit on 6th digit entry
+                                    // Auto-submit on 6th digit entry if length is exactly 6
                                     if (filteredOtp.length == 6) {
                                         viewModel.verifyOtp { onVerificationSuccess() }
                                     }
@@ -146,7 +178,7 @@ fun OtpVerificationScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                             decorationBox = {
                                 Row(
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -154,8 +186,8 @@ fun OtpVerificationScreen(
                                         val char = uiState.otp.getOrNull(index)?.toString() ?: ""
                                         val isFocused = uiState.otp.length == index
                                         Surface(
-                                            modifier = Modifier.size(64.dp, 80.dp),
-                                            shape = RoundedCornerShape(16.dp),
+                                            modifier = Modifier.size(48.dp, 64.dp),
+                                            shape = RoundedCornerShape(12.dp),
                                             color = if (char.isNotEmpty()) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else Color.White.copy(alpha = 0.5f),
                                             border = if (isFocused) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
                                         ) {

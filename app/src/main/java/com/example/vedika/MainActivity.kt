@@ -195,10 +195,11 @@ fun VedikaAppShell() {
                         onNavigateToOtp = { navController.navigate(VedikaDestination.OtpVerification.route) },
                         onNavigateToSignUp = { navController.navigate(VedikaDestination.SignUp.route) },
                         onDevBypassSuccess = {
+                            val state = authViewModel.uiState.value
                             navigateToResolution(
                                 navController = navController,
-                                accountMode = currentAuthState.accountMode,
-                                resolutionState = currentAuthState.roleResolutionState
+                                accountMode = state.accountMode,
+                                resolutionState = state.roleResolutionState
                             )
                         }
                     )
@@ -223,10 +224,11 @@ fun VedikaAppShell() {
                     OtpVerificationScreen(
                         viewModel = authViewModel,
                         onVerificationSuccess = {
+                            val state = authViewModel.uiState.value
                             navigateToResolution(
                                 navController = navController,
-                                accountMode = currentAuthState.accountMode,
-                                resolutionState = currentAuthState.roleResolutionState
+                                accountMode = state.accountMode,
+                                resolutionState = state.roleResolutionState
                             )
                         },
                         onNavigateBack = { navController.popBackStack() }
@@ -322,8 +324,8 @@ fun VedikaAppShell() {
             composable(VedikaDestination.Profile.route) {
                 ProfileScreen(
                     onLogout = {
-                        navController.navigate(VedikaDestination.Login.route) {
-                            popUpTo(0) { inclusive = true }
+                        navController.navigate(VedikaDestination.AuthGraph.route) {
+                            popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
                         }
                     },
                     appVersion = BuildConfig.VERSION_NAME

@@ -7,10 +7,11 @@ This document contains strictly enforced build and configuration policies for Ve
 - **Why**: `google-services.json` is hardcoded to `com.example.vedika`. Suffixes like `.dev` break client resolution during build.
 - **Reference**: `androidstudiochanges.md` (Issue 1).
 
-## 2. Hilt & Annotation Processor Guard
+## 2. Hilt & Build Environment Guard
+- **Toolchain**: AGP `8.7.2` + Kotlin `2.0.21` is the current stable baseline.
+- **Compiler**: Hilt must be pinned to `2.52` or later for Kotlin 2.0+ compatibility.
 - **Order of Operations**: In every `build.gradle.kts`, `kotlin("kapt")` **must** be applied before `libs.plugins.hilt.android`.
 - **Error Types**: The `kapt` block must contain `correctErrorTypes = true`.
-- **Compiler**: Hilt must be pinned to `2.59.2` or later for Kotlin 2.1+ compatibility.
 
 ## 3. Toolchain & Standard Guard
 - **Java Version**: Always use **Java 17**.
@@ -31,6 +32,7 @@ This document contains strictly enforced build and configuration policies for Ve
 ## 6. Data Continuity Guard
 - **Mock Authority**: `core:data:VendorRepository` is the singleton source of truth for mock vendor data during Phase 2.
 - **Contract**: Any new field entered during registration MUST be added to `VendorMockState` and mapped in `AuthViewModel` to ensure it reflects on the Dashboard.
+- **OTP Logic**: All authentication bypasses must use a standardized **6-digit** code: `123456`. The UI must provide 6 distinct input slots (sized appropriately for mobile displays, e.g., 48dp width) and trigger auto-verification on the 6th digit. Stale 4-digit logic is prohibited.
 
 ---
 *Policy violations will lead to build breakage. Re-verify after any dependency update.*
