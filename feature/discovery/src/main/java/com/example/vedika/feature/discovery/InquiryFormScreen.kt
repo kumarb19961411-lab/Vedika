@@ -21,7 +21,7 @@ fun InquiryFormScreen(
     var date by remember { mutableStateOf("") }
     var guests by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
+    var isSuccess by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -35,67 +35,118 @@ fun InquiryFormScreen(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(20.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Text(
-                "Inquiring for Vendor ID: $vendorId",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-
-            OutlinedTextField(
-                value = date,
-                onValueChange = { date = it },
-                label = { Text("Preferred Date") },
-                placeholder = { Text("DD-MM-YYYY") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = guests,
-                onValueChange = { guests = it },
-                label = { Text("Estimated Guest Count") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = message,
-                onValueChange = { message = it },
-                label = { Text("Your Message") },
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-                maxLines = 5
-            )
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(20.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    "Inquiring for Vendor ID: $vendorId",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.width(32.dp))
-            } else {
-                Button(
-                    onClick = {
-                        isLoading = true
-                        // Mock submission
-                        onSuccess()
-                    },
+                OutlinedTextField(
+                    value = date,
+                    onValueChange = { date = it },
+                    label = { Text("Preferred Date") },
+                    placeholder = { Text("DD-MM-YYYY") },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = date.isNotEmpty() && message.isNotEmpty()
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = guests,
+                    onValueChange = { guests = it },
+                    label = { Text("Estimated Guest Count") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = message,
+                    onValueChange = { message = it },
+                    label = { Text("Your Message") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    maxLines = 5
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.width(32.dp))
+                } else {
+                    Button(
+                        onClick = {
+                            isLoading = true
+                            // Mock submission logic or navigate to success state
+                            isSuccess = true
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = date.isNotEmpty() && message.isNotEmpty()
+                    ) {
+                        Text(
+                            "Send Inquiry",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+
+            // Success Ceremony Overlay
+            androidx.compose.animation.AnimatedVisibility(
+                visible = isSuccess,
+                enter = androidx.compose.animation.fadeIn()
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.primary
                 ) {
-                    Text("Submit Inquiry", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = androidx.compose.material.icons.filled.CheckCircle,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(80.dp)
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Text(
+                            text = "Inquiry Sent",
+                            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        Text(
+                            text = "The vendor will contact you soon.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                        )
+                        Spacer(modifier = Modifier.height(48.dp))
+                        Button(
+                            onClick = onSuccess,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                contentColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text("Dismiss", fontWeight = FontWeight.SemiBold)
+                        }
+                    }
                 }
             }
         }

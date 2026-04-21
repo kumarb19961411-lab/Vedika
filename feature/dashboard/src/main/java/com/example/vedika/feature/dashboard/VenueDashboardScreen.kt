@@ -40,7 +40,7 @@ fun VenueDashboardScreen(
 
     Scaffold(
         topBar = {
-            VedikaTabTopAppBar(title = "Venue Command")
+            VedikaTabTopAppBar(title = "Venue Manager")
         },
         containerColor = surfaceColor,
         modifier = modifier
@@ -332,7 +332,7 @@ private fun AnalyticsSection(state: DashboardUiState) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 InsightItem(icon = Icons.Default.Event, label = "Confirmed", value = state.confirmedCount.toString(), color = MaterialTheme.colorScheme.secondary)
                 InsightItem(icon = Icons.Default.Pending, label = "Pending", value = state.pendingCount.toString(), color = MaterialTheme.colorScheme.primary)
-                InsightItem(icon = Icons.Default.Payments, label = "Revenue", value = "₹${state.totalRevenue.toInt()}", color = MaterialTheme.colorScheme.tertiary)
+                InsightItem(icon = Icons.Default.Payments, label = "Earnings", value = "₹${state.totalRevenue.toInt()}", color = MaterialTheme.colorScheme.tertiary)
             }
             
             Spacer(modifier = Modifier.height(24.dp))

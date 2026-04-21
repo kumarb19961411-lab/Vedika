@@ -39,7 +39,8 @@ data class DashboardUiState(
     val totalBookings: Int = 0,
     val cancelledCount: Int = 0,
     val totalRevenue: Double = 0.0,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val errorMessage: String? = null
 )
 
 @HiltViewModel
@@ -60,57 +61,68 @@ class DashboardViewModel @Inject constructor(
         loadDashboard()
     }
 
+    fun retry() {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+        loadDashboard()
+    }
+
     private fun loadDashboard() {
         viewModelScope.launch {
-            logDebug("Resolving User ID...")
-            val uid = authRepository.getCurrentUserId()
-            if (uid == null) {
-                logDebug("No active UID found. Dashboard loading failed.")
-                _uiState.value = _uiState.value.copy(isLoading = false)
-                return@launch
-            }
+            try {
+                logDebug("Resolving User ID...")
+                val uid = authRepository.getCurrentUserId()
+                if (uid == null) {
+                    logDebug("No active UID found. Dashboard loading failed.")
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Authentication required")
+                    return@launch
+                }
 
-            logDebug("Subscribing to Vendor Profile: $uid")
-            vendorRepository.getVendorProfileStream(uid).collect { profile ->
-                if (profile != null) {
-                    logDebug("Canonical Profile Loaded: ${profile.businessName} (${profile.vendorType})")
-                    _uiState.value = _uiState.value.copy(
-                        businessName = profile.businessName,
-                        vendorName = profile.ownerName,
-                        location = profile.location,
-                        pricing = profile.pricing,
-                        capacity = profile.capacity,
-                        amenities = profile.amenities,
-                        coverImage = profile.coverImage ?: "",
-                        vendorType = profile.vendorType,
-                        yearsExperience = profile.yearsExperience,
-                        packageTiers = profile.packageTiers,
-                        rating = profile.rating,
-                        leadsCount = profile.leadsCount,
-                        area = profile.area,
-                        venueType = profile.venueType,
-                        isLoading = false
-                    )
-                    
-                    // Fetch real bookings for this vendor
-                    loadBookings(profile.id)
-                } else {
-                    logDebug("No Vendor Profile document found for UID: $uid. Attempting fallback to Auth identity.")
-                    // This scenario should primarily happen for brand new users before profile persistence completes
-                    authRepository.getActiveVendor().collect { vendor ->
-                        if (vendor != null) {
-                            _uiState.value = _uiState.value.copy(
-                                businessName = vendor.businessName,
-                                vendorName = vendor.ownerName,
-                                vendorType = if (vendor.primaryServiceCategory.contains("Venue", ignoreCase = true)) VendorType.VENUE else VendorType.DECORATOR,
-                                isLoading = false
-                            )
-                            loadBookings(vendor.id)
-                        } else {
-                            _uiState.value = _uiState.value.copy(isLoading = false)
+                logDebug("Subscribing to Vendor Profile: $uid")
+                vendorRepository.getVendorProfileStream(uid).collect { profile ->
+                    if (profile != null) {
+                        logDebug("Canonical Profile Loaded: ${profile.businessName} (${profile.vendorType})")
+                        _uiState.value = _uiState.value.copy(
+                            businessName = profile.businessName,
+                            vendorName = profile.ownerName,
+                            location = profile.location,
+                            pricing = profile.pricing,
+                            capacity = profile.capacity,
+                            amenities = profile.amenities,
+                            coverImage = profile.coverImage ?: "",
+                            vendorType = profile.vendorType,
+                            yearsExperience = profile.yearsExperience,
+                            packageTiers = profile.packageTiers,
+                            rating = profile.rating,
+                            leadsCount = profile.leadsCount,
+                            area = profile.area,
+                            venueType = profile.venueType,
+                            isLoading = false,
+                            errorMessage = null
+                        )
+                        
+                        // Fetch real bookings for this vendor
+                        loadBookings(profile.id)
+                    } else {
+                        logDebug("No Vendor Profile document found for UID: $uid. Attempting fallback to Auth identity.")
+                        authRepository.getActiveVendor().collect { vendor ->
+                            if (vendor != null) {
+                                _uiState.value = _uiState.value.copy(
+                                    businessName = vendor.businessName,
+                                    vendorName = vendor.ownerName,
+                                    vendorType = if (vendor.primaryServiceCategory.contains("Venue", ignoreCase = true)) VendorType.VENUE else VendorType.DECORATOR,
+                                    isLoading = false,
+                                    errorMessage = null
+                                )
+                                loadBookings(vendor.id)
+                            } else {
+                                _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Vendor profile not found")
+                            }
                         }
                     }
                 }
+            } catch (e: Exception) {
+                logDebug("Error loading dashboard: ${e.message}")
+                _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message ?: "An unexpected error occurred")
             }
         }
     }

@@ -17,7 +17,8 @@ data class FinanceUiState(
     val pendingRevenue: Double = 0.0,
     val completedRevenue: Double = 0.0,
     val recentTransactions: List<Booking> = emptyList(),
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val errorMessage: String? = null
 )
 
 @HiltViewModel
@@ -33,22 +34,32 @@ class FinanceViewModel @Inject constructor(
         loadFinance()
     }
 
+    fun retry() {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+        loadFinance()
+    }
+
     private fun loadFinance() {
         viewModelScope.launch {
-            authRepository.getActiveVendor().collect { vendor ->
-                if (vendor != null) {
-                    bookingRepository.getBookingsForVendor(vendor.id).collect { bookings ->
-                        _uiState.value = FinanceUiState(
-                            confirmedRevenue = bookings.filter { it.status == BookingStatus.CONFIRMED }.sumOf { it.totalAmount },
-                            pendingRevenue = bookings.filter { it.status == BookingStatus.PENDING }.sumOf { it.totalAmount },
-                            completedRevenue = bookings.filter { it.status == BookingStatus.COMPLETED }.sumOf { it.totalAmount },
-                            recentTransactions = bookings.sortedByDescending { it.eventDate }.take(10),
-                            isLoading = false
-                        )
+            try {
+                authRepository.getActiveVendor().collect { vendor ->
+                    if (vendor != null) {
+                        bookingRepository.getBookingsForVendor(vendor.id).collect { bookings ->
+                            _uiState.value = FinanceUiState(
+                                confirmedRevenue = bookings.filter { it.status == BookingStatus.CONFIRMED }.sumOf { it.totalAmount },
+                                pendingRevenue = bookings.filter { it.status == BookingStatus.PENDING }.sumOf { it.totalAmount },
+                                completedRevenue = bookings.filter { it.status == BookingStatus.COMPLETED }.sumOf { it.totalAmount },
+                                recentTransactions = bookings.sortedByDescending { it.eventDate }.take(10),
+                                isLoading = false,
+                                errorMessage = null
+                            )
+                        }
+                    } else {
+                        _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = "Vendor profile not found")
                     }
-                } else {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
                 }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = e.message ?: "An unexpected error occurred")
             }
         }
     }

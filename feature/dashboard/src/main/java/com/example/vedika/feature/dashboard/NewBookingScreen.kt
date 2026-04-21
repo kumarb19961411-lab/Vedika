@@ -101,18 +101,6 @@ fun NewBookingScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            // Section header
-            Column {
-                Text(
                     text = "Booking Details",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onBackground
@@ -312,14 +300,14 @@ fun NewBookingScreen(
             // Submit button
             Button(
                 onClick = { viewModel.submitBooking(onNavigateBack) },
-                enabled = !formState.isSubmitting && !formState.isSlotConflict,
+                enabled = !formState.isSubmitting && !formState.isSlotConflict && !formState.isSubmitSuccess,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                    disabledContainerColor = if (formState.isSubmitSuccess) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.surfaceVariant
                 )
             ) {
                 if (formState.isSubmitting) {
@@ -327,6 +315,17 @@ fun NewBookingScreen(
                         modifier = Modifier.size(22.dp),
                         strokeWidth = 2.dp,
                         color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else if (formState.isSubmitSuccess) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Booking Saved",
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
                     )
                 } else {
                     Icon(
@@ -339,6 +338,50 @@ fun NewBookingScreen(
                         text = "Create Booking",
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
                     )
+                }
+            }
+        }
+
+        // Success Ceremony Overlay
+        AnimatedVisibility(
+            visible = formState.isSubmitSuccess,
+            enter = fadeIn()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.95f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(80.dp)
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = "Booking Confirmed",
+                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Text(
+                        text = "The event has been added to your calendar.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                    )
+                    Spacer(modifier = Modifier.height(48.dp))
+                    Button(
+                        onClick = onNavigateBack,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.onPrimary,
+                            contentColor = MaterialTheme.colorScheme.primary
+                        ),
+                        shape = RoundedCornerShape(26.dp)
+                    ) {
+                        Text("Back to Dashboard", fontWeight = FontWeight.SemiBold)
+                    }
                 }
             }
         }

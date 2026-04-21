@@ -29,6 +29,23 @@ fun DashboardScreen(
         return
     }
 
+    if (state.errorMessage != null) {
+        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            androidx.compose.foundation.layout.Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                androidx.compose.material3.Text(
+                    text = state.errorMessage ?: "Something went wrong",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
+                androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(16.dp))
+                androidx.compose.material3.Button(onClick = { viewModel.retry() }) {
+                    androidx.compose.material3.Text("Retry")
+                }
+            }
+        }
+        return
+    }
+
     when (state.vendorType) {
         VendorType.VENUE -> {
             VenueDashboardScreen(

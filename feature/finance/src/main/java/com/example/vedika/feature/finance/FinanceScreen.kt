@@ -35,6 +35,23 @@ fun FinanceScreen(
         return
     }
 
+    if (state.errorMessage != null) {
+        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = state.errorMessage ?: "Something went wrong",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = { viewModel.retry() }) {
+                    Text("Retry")
+                }
+            }
+        }
+        return
+    }
+
     val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "IN"))
 
     LazyColumn(
@@ -46,7 +63,7 @@ fun FinanceScreen(
     ) {
         item {
             Text(
-                text = "Finance",
+                text = "Earnings",
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(top = 8.dp)
@@ -79,7 +96,7 @@ fun FinanceScreen(
 
         item {
             Text(
-                text = "Recent Transactions",
+                text = "Recent Payment Activity",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = MaterialTheme.colorScheme.onBackground
             )

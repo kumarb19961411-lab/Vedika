@@ -2,6 +2,18 @@
 
 A record of significant architectural and feature milestones in the Vedika V2 project.
 
+## [2026-04-22] — Milestone 3: Operational Polish & UX Hardening
+### Added
+- **Global Auth & Deep Link Guard**: Implemented centralized navigation security in `MainActivity.kt` with support for `vedika://app` scheme.
+- **Premium Success Ceremonies**: Added high-fidelity animated success overlays for critical user actions (New Booking, Lead Inquiry).
+- **Hardened Error states**: Standardized Error UI with retry capability across Finance and Dashboard modules.
+
+### Changed
+- **Terminology Standardization**: 
+    - Renamed "Finance" module to **"Earnings"** for better persona alignment.
+    - Updated "Command" titles to **"Manager"** (Venue Manager, Design Manager) or **"Profile"**.
+- **Wording Polish**: Refined CTA text (e.g., "Send Inquiry") and analytics labels for a more professional, functional tone.
+
 ## [2026-04-22] — Auth Navigation & Firebase Infrastructure Hardening
 ### Fixed
 - **Navigation Hang**: Resolved a critical state-loss bug in `MainActivity.kt` where stale `AuthViewModel` state was preventing navigation after OTP verification.

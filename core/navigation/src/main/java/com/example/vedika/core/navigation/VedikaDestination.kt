@@ -44,6 +44,19 @@ sealed class VedikaDestination(val route: String) {
     data object InquiryForm : VedikaDestination("inquiry_form/{id}") {
         fun createRoute(id: String) = "inquiry_form/$id"
     }
+
+    // Deep Link Constants
+    companion object {
+        const val DEEP_LINK_SCHEME = "vedika"
+        const val DEEP_LINK_HOST = "app"
+        const val DEEP_LINK_PREFIX = "$DEEP_LINK_SCHEME://$DEEP_LINK_HOST"
+
+        const val DEEP_LINK_DASHBOARD = "$DEEP_LINK_PREFIX/dashboard"
+        const val DEEP_LINK_FINANCE = "$DEEP_LINK_PREFIX/finance"
+        const val DEEP_LINK_DISCOVERY = "$DEEP_LINK_PREFIX/discovery"
+        const val DEEP_LINK_VENDOR_DETAIL = "$DEEP_LINK_PREFIX/vendor/{id}"
+        const val DEEP_LINK_PROFILE = "$DEEP_LINK_PREFIX/profile"
+    }
 }
 
 data class BottomNavItem(

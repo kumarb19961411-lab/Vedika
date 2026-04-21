@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import com.example.vedika.core.design.theme.VedikaTheme
 import com.example.vedika.core.navigation.VedikaDestination
 import com.example.vedika.core.navigation.getBottomNavItems
@@ -95,23 +96,11 @@ fun VedikaAppShell(
                                     restoreState = true
                                 }
                             },
-                            icon = {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = item.label
-                                )
-                            },
-                            label = {
-                                Text(
-                                    text = item.label,
-                                    style = MaterialTheme.typography.labelSmall
-                                )
-                            },
+                            icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
+                            label = { Text(text = item.label, style = MaterialTheme.typography.labelSmall) },
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = MaterialTheme.colorScheme.primary,
                                 selectedTextColor = MaterialTheme.colorScheme.primary,
-                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                 indicatorColor = MaterialTheme.colorScheme.primaryContainer
                             )
                         )
@@ -120,6 +109,27 @@ fun VedikaAppShell(
             }
         }
     ) { innerPadding ->
+        // Global Auth & Deep Link Guard
+        val splashViewModel: SplashViewModel = hiltViewModel()
+        val startupState by splashViewModel.startupState.collectAsState()
+
+        LaunchedEffect(startupState, currentRoute) {
+            val isProtectedRoute = currentRoute in listOf(
+                VedikaDestination.Dashboard.route,
+                VedikaDestination.Finance.route,
+                VedikaDestination.Profile.route,
+                VedikaDestination.InventoryHub.route,
+                VedikaDestination.Calendar.route
+            )
+
+            if (isProtectedRoute && startupState is StartupState.Unauthenticated) {
+                // Redirect to auth if trying to access protected screen while unauthenticated
+                navController.navigate(VedikaDestination.AuthGraph.route) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+        }
+
         NavHost(
             navController = navController,
             startDestination = VedikaDestination.Splash.route,
@@ -299,7 +309,12 @@ fun VedikaAppShell(
                     }
                 )
             }
-            composable(VedikaDestination.Dashboard.route) {
+            composable(
+                route = VedikaDestination.Dashboard.route,
+                deepLinks = listOf(
+                    navDeepLink { uriPattern = VedikaDestination.DEEP_LINK_DASHBOARD }
+                )
+            ) {
                 DashboardScreen(
                     onNavigateToNewBooking = {
                         navController.navigate(VedikaDestination.NewBooking.route)
@@ -319,9 +334,16 @@ fun VedikaAppShell(
                     }
                 )
             }
+            composable(
+                route = VedikaDestination.Finance.route,
+                deepLinks = listOf(
+                    navDeepLink { uriPattern = VedikaDestination.DEEP_LINK_FINANCE }
+                )
+            ) {
+                FinanceScreen()
+            }
             composable(VedikaDestination.Inventory.route) {
                 // Tab shell: InventoryHubScreen is the canonical, premium inventory view.
-                // onNavigateBack is a no-op here since root tabs do not have back navigation.
                 InventoryHubScreen(
                     onNavigateBack = { /* Root tab — no back action */ }
                 )
@@ -329,7 +351,12 @@ fun VedikaAppShell(
             composable(VedikaDestination.DecoratorsGallery.route) {
                 DecoratorsGalleryScreen()
             }
-            composable(VedikaDestination.Profile.route) {
+            composable(
+                route = VedikaDestination.Profile.route,
+                deepLinks = listOf(
+                    navDeepLink { uriPattern = VedikaDestination.DEEP_LINK_PROFILE }
+                )
+            ) {
                 ProfileScreen(
                     onLogout = {
                         navController.navigate(VedikaDestination.AuthGraph.route) {
@@ -371,7 +398,10 @@ fun VedikaAppShell(
             }
             composable(
                 route = VedikaDestination.VendorBrowse.route,
-                arguments = listOf(navArgument("category") { type = NavType.StringType })
+                arguments = listOf(navArgument("category") { type = NavType.StringType }),
+                deepLinks = listOf(
+                    navDeepLink { uriPattern = VedikaDestination.DEEP_LINK_DISCOVERY }
+                )
             ) { backStackEntry ->
                 val category = backStackEntry.arguments?.getString("category") ?: "All"
                 VendorBrowseScreen(
@@ -384,7 +414,10 @@ fun VedikaAppShell(
             }
             composable(
                 route = VedikaDestination.VendorDetail.route,
-                arguments = listOf(navArgument("id") { type = NavType.StringType })
+                arguments = listOf(navArgument("id") { type = NavType.StringType }),
+                deepLinks = listOf(
+                    navDeepLink { uriPattern = VedikaDestination.DEEP_LINK_VENDOR_DETAIL }
+                )
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("id") ?: ""
                 VendorDetailScreen(

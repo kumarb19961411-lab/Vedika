@@ -36,7 +36,7 @@ fun DecoratorDashboardScreen(
 
     Scaffold(
         topBar = {
-            VedikaTabTopAppBar(title = "Decorator Command")
+            VedikaTabTopAppBar(title = "Design Manager")
         },
         containerColor = surfaceColor,
         modifier = modifier
@@ -222,7 +222,7 @@ private fun BusinessInsightsSection(state: DashboardUiState, primaryColor: Color
             Spacer(modifier = Modifier.height(20.dp))
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                InsightItem(icon = Icons.Default.Payments, label = "Revenue", value = "₹${state.totalRevenue.toInt()}", color = primaryColor)
+                InsightItem(icon = Icons.Default.Payments, label = "Earnings", value = "₹${state.totalRevenue.toInt()}", color = primaryColor)
                 InsightItem(icon = Icons.Default.EventAvailable, label = "Volume", value = state.totalBookings.toString(), color = primaryColor)
                 InsightItem(icon = Icons.Default.Cancel, label = "Cancelled", value = state.cancelledCount.toString(), color = Color.Gray)
             }

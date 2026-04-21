@@ -50,7 +50,7 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            VedikaTabTopAppBar(title = "Partner Command")
+            VedikaTabTopAppBar(title = "Partner Profile")
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = surfaceColor
