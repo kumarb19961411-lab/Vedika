@@ -105,50 +105,7 @@ fun InquiryFormScreen(
                 }
             }
 
-            // Success Ceremony Overlay
-            androidx.compose.animation.AnimatedVisibility(
-                visible = isSuccess,
-                enter = androidx.compose.animation.fadeIn()
-            ) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.primary
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            imageVector = androidx.compose.material.icons.filled.CheckCircle,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(80.dp)
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text(
-                            text = "Inquiry Sent",
-                            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                        Text(
-                            text = "The vendor will contact you soon.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
-                        )
-                        Spacer(modifier = Modifier.height(48.dp))
-                        Button(
-                            onClick = onSuccess,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onPrimary,
-                                contentColor = MaterialTheme.colorScheme.primary
-                            )
-                        ) {
-                            Text("Dismiss", fontWeight = FontWeight.SemiBold)
-                        }
-                    }
-                }
-            }
+
         }
     }
 }

@@ -342,49 +342,7 @@ fun NewBookingScreen(
             }
         }
 
-        // Success Ceremony Overlay
-        AnimatedVisibility(
-            visible = formState.isSubmitSuccess,
-            enter = fadeIn()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.95f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(80.dp)
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        text = "Booking Confirmed",
-                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Text(
-                        text = "The event has been added to your calendar.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
-                    )
-                    Spacer(modifier = Modifier.height(48.dp))
-                    Button(
-                        onClick = onNavigateBack,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.onPrimary,
-                            contentColor = MaterialTheme.colorScheme.primary
-                        ),
-                        shape = RoundedCornerShape(26.dp)
-                    ) {
-                        Text("Back to Dashboard", fontWeight = FontWeight.SemiBold)
-                    }
-                }
-            }
-        }
+
     }
 }
 

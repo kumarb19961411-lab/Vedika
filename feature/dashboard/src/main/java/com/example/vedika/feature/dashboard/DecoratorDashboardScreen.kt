@@ -36,7 +36,7 @@ fun DecoratorDashboardScreen(
 
     Scaffold(
         topBar = {
-            VedikaTabTopAppBar(title = "Design Manager")
+            VedikaTabTopAppBar(title = "Dashboard")
         },
         containerColor = surfaceColor,
         modifier = modifier
@@ -143,7 +143,7 @@ fun DecoratorDashboardScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    SectionHeader(title = "Couture Designs", actionText = "Browse All", onAction = onNavigateToGallery)
+                    SectionHeader(title = "Featured Designs", actionText = "Browse All", onAction = onNavigateToGallery)
                     Row(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             AsyncImage(

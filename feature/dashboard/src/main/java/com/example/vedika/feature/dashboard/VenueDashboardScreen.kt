@@ -40,7 +40,7 @@ fun VenueDashboardScreen(
 
     Scaffold(
         topBar = {
-            VedikaTabTopAppBar(title = "Venue Manager")
+            VedikaTabTopAppBar(title = "Dashboard")
         },
         containerColor = surfaceColor,
         modifier = modifier
@@ -157,7 +157,7 @@ fun VenueDashboardScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    SectionTitle(title = "Visual Heritage", actionText = "Manage Photos")
+                    SectionTitle(title = "Gallery", actionText = "Manage Photos")
                     Row(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         AsyncImage(
                             model = "https://images.unsplash.com/photo-1519167758481-83f550bb49b3",
@@ -175,7 +175,7 @@ fun VenueDashboardScreen(
 
                     Spacer(modifier = Modifier.height(40.dp))
 
-                    SectionTitle(title = "Luxury Amenities")
+                    SectionTitle(title = "Amenities")
                     Column(modifier = Modifier.padding(top = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             AmenityCard(icon = Icons.Default.KingBed, title = "Bridal Suite", subtitle = "Private AC sanctuary", color = primaryColor, modifier = Modifier.weight(1f))

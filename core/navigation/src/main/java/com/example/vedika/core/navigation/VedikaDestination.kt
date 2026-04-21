@@ -53,7 +53,7 @@ sealed class VedikaDestination(val route: String) {
 
         const val DEEP_LINK_DASHBOARD = "$DEEP_LINK_PREFIX/dashboard"
         const val DEEP_LINK_FINANCE = "$DEEP_LINK_PREFIX/finance"
-        const val DEEP_LINK_DISCOVERY = "$DEEP_LINK_PREFIX/discovery"
+        const val DEEP_LINK_DISCOVERY = "$DEEP_LINK_PREFIX/discovery" // Maps to All category
         const val DEEP_LINK_VENDOR_DETAIL = "$DEEP_LINK_PREFIX/vendor/{id}"
         const val DEEP_LINK_PROFILE = "$DEEP_LINK_PREFIX/profile"
     }

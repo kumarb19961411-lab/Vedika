@@ -72,6 +72,9 @@ fun VedikaAppShell(
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStack?.destination?.route
 
+    // Hardening: Track intended destination for unauthenticated deep links
+    var pendingDestination by remember { mutableStateOf<String?>(null) }
+
     val navItems = getBottomNavItems(authState.accountMode)
     val topLevelRoutes = navItems.map { it.destination.route }
     val showBottomBar = currentRoute in topLevelRoutes
@@ -119,11 +122,13 @@ fun VedikaAppShell(
                 VedikaDestination.Finance.route,
                 VedikaDestination.Profile.route,
                 VedikaDestination.InventoryHub.route,
-                VedikaDestination.Calendar.route
+                VedikaDestination.Calendar.route,
+                VedikaDestination.InquiryForm.route
             )
 
             if (isProtectedRoute && startupState is StartupState.Unauthenticated) {
-                // Redirect to auth if trying to access protected screen while unauthenticated
+                // Hardening: Store intended destination before redirecting to login
+                pendingDestination = currentRoute
                 navController.navigate(VedikaDestination.AuthGraph.route) {
                     popUpTo(0) { inclusive = true }
                 }
@@ -217,7 +222,9 @@ fun VedikaAppShell(
                             navigateToResolution(
                                 navController = navController,
                                 accountMode = state.accountMode,
-                                resolutionState = state.roleResolutionState
+                                resolutionState = state.roleResolutionState,
+                                pendingDestination = pendingDestination,
+                                onClearPending = { pendingDestination = null }
                             )
                         }
                     )
@@ -246,7 +253,9 @@ fun VedikaAppShell(
                             navigateToResolution(
                                 navController = navController,
                                 accountMode = state.accountMode,
-                                resolutionState = state.roleResolutionState
+                                resolutionState = state.roleResolutionState,
+                                pendingDestination = pendingDestination,
+                                onClearPending = { pendingDestination = null }
                             )
                         },
                         onNavigateBack = { navController.popBackStack() }
@@ -398,7 +407,12 @@ fun VedikaAppShell(
             }
             composable(
                 route = VedikaDestination.VendorBrowse.route,
-                arguments = listOf(navArgument("category") { type = NavType.StringType }),
+                arguments = listOf(
+                    navArgument("category") { 
+                        type = NavType.StringType 
+                        defaultValue = "All"
+                    }
+                ),
                 deepLinks = listOf(
                     navDeepLink { uriPattern = VedikaDestination.DEEP_LINK_DISCOVERY }
                 )
@@ -448,15 +462,29 @@ fun VedikaAppShell(
 /**
  * Shared routing logic for both real OTP verification and developer bypass flows.
  * Ensures that both flows resolve profile status before landing on terminal screens.
+ * Hardening: Includes pending destination support for deep-link entry.
  */
 private fun navigateToResolution(
     navController: androidx.navigation.NavController,
     accountMode: AccountMode,
-    resolutionState: RoleResolutionState
+    resolutionState: RoleResolutionState,
+    pendingDestination: String? = null,
+    onClearPending: () -> Unit = {}
 ) {
     if (resolutionState !is RoleResolutionState.Verified) return
 
     val profileExists = resolutionState.profileExists
+    
+    // Priority 1: Pending deep-link destination (authenticated entry)
+    if (pendingDestination != null) {
+        navController.navigate(pendingDestination) {
+            popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
+        }
+        onClearPending()
+        return
+    }
+
+    // Priority 2: Default home screens based on role
     val destination = when {
         accountMode == AccountMode.USER -> {
             VedikaDestination.UserHome.route
