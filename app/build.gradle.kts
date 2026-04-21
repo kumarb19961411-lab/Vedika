@@ -87,6 +87,7 @@ dependencies {
     implementation(project(":feature:inventory"))
     implementation(project(":feature:finance"))
     implementation(project(":feature:gallery"))
+    implementation(project(":feature:discovery") as ProjectDependency)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

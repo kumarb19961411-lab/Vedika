@@ -20,7 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.vedika.core.design.theme.VedikaTheme
 import com.example.vedika.core.navigation.VedikaDestination
-import com.example.vedika.core.navigation.bottomNavItems
+import com.example.vedika.core.navigation.getBottomNavItems
 import com.example.vedika.feature.auth.LoginScreen
 import com.example.vedika.feature.auth.SignupScreen
 import com.example.vedika.feature.auth.OtpVerificationScreen
@@ -43,6 +43,10 @@ import com.example.vedika.feature.finance.FinanceScreen
 import com.example.vedika.feature.gallery.DecoratorsGalleryScreen
 import com.example.vedika.feature.inventory.InventoryHubScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.vedika.feature.discovery.UserHomeScreen
+import com.example.vedika.feature.discovery.VendorBrowseScreen
+import com.example.vedika.feature.discovery.VendorDetailScreen
+import com.example.vedika.feature.discovery.InquiryFormScreen
 import com.example.vedika.BuildConfig
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -59,12 +63,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun VedikaAppShell() {
+fun VedikaAppShell(
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
+    val authState by authViewModel.uiState.collectAsState()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStack?.destination?.route
 
-    val topLevelRoutes = bottomNavItems.map { it.destination.route }
+    val navItems = getBottomNavItems(authState.accountMode)
+    val topLevelRoutes = navItems.map { it.destination.route }
     val showBottomBar = currentRoute in topLevelRoutes
 
     Scaffold(
@@ -75,7 +83,7 @@ fun VedikaAppShell() {
                     containerColor = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.primary
                 ) {
-                    bottomNavItems.forEach { item ->
+                    navItems.forEach { item ->
                         NavigationBarItem(
                             selected = currentRoute == item.destination.route,
                             onClick = {
@@ -169,7 +177,7 @@ fun VedikaAppShell() {
                                     if (authenticatedState.profileExists) VedikaDestination.Dashboard.route
                                     else VedikaDestination.CategorySelection.route
                                 }
-                                else -> VedikaDestination.DecoratorsGallery.route
+                                else -> VedikaDestination.UserHome.route
                             }
                             navController.navigate(destRoute) {
                                 popUpTo(VedikaDestination.Splash.route) { inclusive = true }
@@ -349,6 +357,57 @@ fun VedikaAppShell() {
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
+
+            // Consumer Discovery Routes
+            composable(VedikaDestination.UserHome.route) {
+                UserHomeScreen(
+                    onNavigateToBrowse = { category ->
+                        navController.navigate(VedikaDestination.VendorBrowse.createRoute(category))
+                    },
+                    onNavigateToVendorDetail = { id ->
+                        navController.navigate(VedikaDestination.VendorDetail.createRoute(id))
+                    }
+                )
+            }
+            composable(
+                route = VedikaDestination.VendorBrowse.route,
+                arguments = listOf(navArgument("category") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val category = backStackEntry.arguments?.getString("category") ?: "All"
+                VendorBrowseScreen(
+                    category = category,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToDetail = { id ->
+                        navController.navigate(VedikaDestination.VendorDetail.createRoute(id))
+                    }
+                )
+            }
+            composable(
+                route = VedikaDestination.VendorDetail.route,
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("id") ?: ""
+                VendorDetailScreen(
+                    vendorId = id,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToInquiry = { vendorId ->
+                        navController.navigate(VedikaDestination.InquiryForm.createRoute(vendorId))
+                    }
+                )
+            }
+            composable(
+                route = VedikaDestination.InquiryForm.route,
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("id") ?: ""
+                InquiryFormScreen(
+                    vendorId = id,
+                    onNavigateBack = { navController.popBackStack() },
+                    onSuccess = {
+                        navController.popBackStack(VedikaDestination.UserHome.route, false)
+                    }
+                )
+            }
         }
     }
 }
@@ -367,13 +426,13 @@ private fun navigateToResolution(
     val profileExists = resolutionState.profileExists
     val destination = when {
         accountMode == AccountMode.USER -> {
-            VedikaDestination.DecoratorsGallery.route
+            VedikaDestination.UserHome.route
         }
         accountMode == AccountMode.PARTNER -> {
             if (profileExists) VedikaDestination.Dashboard.route
             else VedikaDestination.CategorySelection.route
         }
-        else -> VedikaDestination.DecoratorsGallery.route
+        else -> VedikaDestination.UserHome.route
     }
 
     navController.navigate(destination) {

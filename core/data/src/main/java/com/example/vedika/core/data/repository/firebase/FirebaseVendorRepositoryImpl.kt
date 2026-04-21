@@ -11,6 +11,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -135,5 +136,44 @@ class FirebaseVendorRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    override fun getVendorsByCategory(category: String): Flow<List<VendorProfile>> = callbackFlow {
+        val query = firestore.collection(FirestorePaths.COL_VENDORS)
+            .whereEqualTo("primaryServiceCategory", category)
+        
+        val subscription = query.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                close(error)
+                return@addSnapshotListener
+            }
+            if (snapshot != null) {
+                val list = snapshot.documents.map { doc ->
+                    mapDocumentToProfile(doc.id, doc.data ?: emptyMap())
+                }
+                trySend(list)
+            }
+        }
+        awaitClose { subscription.remove() }
+    }
+
+    override fun getFeaturedVendors(): Flow<List<VendorProfile>> = callbackFlow {
+        val query = firestore.collection(FirestorePaths.COL_VENDORS)
+            .whereEqualTo("isVerified", true)
+            .limit(10)
+        
+        val subscription = query.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                close(error)
+                return@addSnapshotListener
+            }
+            if (snapshot != null) {
+                val list = snapshot.documents.map { doc ->
+                    mapDocumentToProfile(doc.id, doc.data ?: emptyMap())
+                }
+                trySend(list)
+            }
+        }
+        awaitClose { subscription.remove() }
     }
 }

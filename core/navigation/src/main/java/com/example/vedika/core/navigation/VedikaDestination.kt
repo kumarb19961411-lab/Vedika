@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.vedika.core.data.model.AccountMode
 
 sealed class VedikaDestination(val route: String) {
     object Splash     : VedikaDestination("splash")
@@ -30,6 +31,18 @@ sealed class VedikaDestination(val route: String) {
     object AuthGraph  : VedikaDestination("auth_graph")
     object DecoratorsGallery : VedikaDestination("decorators_gallery")
     object InventoryHub : VedikaDestination("inventory_hub")
+
+    // Consumer Milestone 2 Routes
+    object UserHome : VedikaDestination("user_home")
+    data object VendorBrowse : VedikaDestination("vendor_browse/{category}") {
+        fun createRoute(category: String) = "vendor_browse/$category"
+    }
+    data object VendorDetail : VedikaDestination("vendor_detail/{id}") {
+        fun createRoute(id: String) = "vendor_detail/$id"
+    }
+    data object InquiryForm : VedikaDestination("inquiry_form/{id}") {
+        fun createRoute(id: String) = "inquiry_form/$id"
+    }
 }
 
 data class BottomNavItem(
@@ -38,10 +51,17 @@ data class BottomNavItem(
     val icon: ImageVector
 )
 
-val bottomNavItems = listOf(
-    BottomNavItem(VedikaDestination.Dashboard, "Dashboard", Icons.Default.Dashboard),
-    BottomNavItem(VedikaDestination.Calendar,  "Calendar",  Icons.Default.CalendarMonth),
-    BottomNavItem(VedikaDestination.DecoratorsGallery, "Gallery", Icons.Default.Collections),
-    BottomNavItem(VedikaDestination.Inventory, "Inventory", Icons.Default.Inventory2),
-    BottomNavItem(VedikaDestination.Profile,   "Profile",   Icons.Default.Person),
-)
+fun getBottomNavItems(mode: AccountMode) = when (mode) {
+    AccountMode.PARTNER -> listOf(
+        BottomNavItem(VedikaDestination.Dashboard, "Dashboard", Icons.Default.Dashboard),
+        BottomNavItem(VedikaDestination.Calendar,  "Calendar",  Icons.Default.CalendarMonth),
+        BottomNavItem(VedikaDestination.DecoratorsGallery, "Gallery", Icons.Default.Collections),
+        BottomNavItem(VedikaDestination.Inventory, "Inventory", Icons.Default.Inventory2),
+        BottomNavItem(VedikaDestination.Profile,   "Profile",   Icons.Default.Person),
+    )
+    AccountMode.USER -> listOf(
+        BottomNavItem(VedikaDestination.UserHome, "Home", Icons.Default.Dashboard),
+        BottomNavItem(VedikaDestination.DecoratorsGallery, "Discovery", Icons.Default.Collections), // Using Gallery as placeholder for Discovery
+        BottomNavItem(VedikaDestination.Profile,  "Profile",   Icons.Default.Person),
+    )
+}

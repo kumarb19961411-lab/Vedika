@@ -5,11 +5,12 @@ last_updated: 2026-04-22
 
 # 📊 Vedika System Status
 
-### Phase 4: Milestone 1 Completion (Current)
-The platform has achieved its first major milestone: **Core Business Engine**. 
-- Status: **CLOSED (Verified)**
+###- **Current Status**: 🟢 Milestone 2: Consumer Entry & Discovery (Completed)
+- **Next Milestone**: 🟡 Milestone 3: Lead Management & Lead Capture v2
+The platform is now moving toward the consumer journey. Milestone 1 (Core Business Engine) remains the hardened foundation.
+- Status: **ACTIVE (Plan Locked)**
 - Date: April 2026
-- Core Logic: Conflict validation, authorized inventory, and booking-derived dashboard are 100% functional.
+- Consumer Flow: User Home, Discovery, and Inquiry path are the primary focus.
 | Component | Status | Health | Notes |
 | :--- | :--- | :--- | :--- |
 | **Auth Foundation** | 🟢 | 100% | Role-based routing locked. **Navigation Hang Fixed.** |
@@ -25,19 +26,20 @@ The platform has achieved its first major milestone: **Core Business Engine**.
 - **Capacity/Conflicts**: Enforced via `/occupancy` index and transactional repository logic.
 
 ### 📅 Sprint Tracker
-- [x] **Sprint 1A (Booking & Conflict Hardening)**: [CLOSED] ✅
-- [x] **Repo Health**: Build stabilized; **Firebase SHA Registered** (Phone Auth ready).
-- [x] **Auth Stability**: Navigation fix for OTP verification verified on real hardware.
-- [x] **Dev Experience**: App Check Debug Provider and SHA Fingerprints locked.
-- [ ] **Sprint 1C: Rescheduling & Exception Handling** (PLANNED)
+- [x] **Milestone 1 Core Engine**: [CLOSED] ✅ (Conflicts, Inventory, Shell)
+- [x] **Milestone 2 Planning**: [LOCKED] 🛡️ (Journey, Regression Guard)
+- [ ] **Sprint 2A: Nav Shell Refactor**: Dynamic Bottom Bar and Role-Aware Routing.
+- [ ] **Sprint 2B: Discovery Module**: Home Screen and Vendor Browse Flow.
+- [ ] **Sprint 2C: Action Path**: Terminal "Send Inquiry" flow.
 
 ### 📌 Critical Anchors
 - **Firebase Project**: `vedika-e44be`
 - **Owner**: `kumarb19961411-lab`
 
 ---
-[[Project_Hub|🏠 Project Hub]] | [[Milestone_1_Core_Business_Engine|🎯 Milestone 1]] | [[project_status|📈 Project History]]
-- [[android_build_regression_guard|🛡️ Build Regression Guard]]
+[[Project_Hub|🏠 Project Hub]] | [[Milestone_2_Consumer_Discovery|🎯 Milestone 2]] | [[project_status|📈 Project History]]
+- [[milestone_2_plan|📝 Milestone 2 Locked Plan]]
+- [[milestone_2_regression_checklist|🛡️ Milestone 2 Regression Guard]]
+- [[android_build_regression_guard|🛡️ General Build Guard]]
 - [[backend_integration_blueprint|🧱 Backend Blueprint]]
 - [[repo_map|🗺️ Module Topology]]
-- [[App_Shell_Architecture|🏗️ App Shell]]

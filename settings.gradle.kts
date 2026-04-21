@@ -33,4 +33,5 @@ include(":feature:calendar")
 include(":feature:inventory")
 include(":feature:finance")
 include(":feature:gallery")
+include(":feature:discovery")
 

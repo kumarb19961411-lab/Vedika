@@ -34,6 +34,9 @@ interface VendorRepository {
     fun getVendorProfileStream(vendorId: String): Flow<VendorProfile?>
     suspend fun updateBusinessName(vendorId: String, newName: String): Result<Unit>
     suspend fun saveVendorProfile(profile: VendorProfile): Result<Unit>
+    // Milestone 2 Discovery
+    fun getVendorsByCategory(category: String): Flow<List<VendorProfile>>
+    fun getFeaturedVendors(): Flow<List<VendorProfile>>
 }
 
 interface BookingRepository {
