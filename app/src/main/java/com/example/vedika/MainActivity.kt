@@ -127,8 +127,9 @@ fun VedikaAppShell(
             )
 
             if (isProtectedRoute && startupState is StartupState.Unauthenticated) {
-                // Hardening: Store intended destination before redirecting to login
-                pendingDestination = currentRoute
+                // Hardening: Store intended destination with actual arguments before redirecting
+                val resolvedRoute = currentBackStack?.getResolvedRoute() ?: currentRoute ?: ""
+                pendingDestination = resolvedRoute
                 navController.navigate(VedikaDestination.AuthGraph.route) {
                     popUpTo(0) { inclusive = true }
                 }
@@ -179,6 +180,9 @@ fun VedikaAppShell(
                 )
 
                 LaunchedEffect(state) {
+                    // Hardening: Only perform default startup redirect if we are still on Splash
+                    if (navController.currentDestination?.route != VedikaDestination.Splash.route) return@LaunchedEffect
+
                     when (state) {
                         is StartupState.Unauthenticated -> {
                             navController.navigate(VedikaDestination.AuthGraph.route) {
@@ -499,4 +503,23 @@ private fun navigateToResolution(
     navController.navigate(destination) {
         popUpTo(VedikaDestination.AuthGraph.route) { inclusive = true }
     }
+}
+
+/**
+ * Hardening Helper: Reconstructs a full route string with resolved arguments from a NavBackStackEntry.
+ * Ensures parameterized deep links and internal redirects can be restored accurately.
+ */
+private fun androidx.navigation.NavBackStackEntry.getResolvedRoute(): String {
+    var resolvedRoute = destination.route ?: return ""
+    val bundle = arguments ?: return resolvedRoute
+    
+    // Replace mandatory arguments {id}
+    destination.arguments.forEach { (key, _) ->
+        if (bundle.containsKey(key)) {
+            val value = bundle.get(key)?.toString() ?: ""
+            resolvedRoute = resolvedRoute.replace("{$key}", value)
+        }
+    }
+    
+    return resolvedRoute
 }
