@@ -5,9 +5,9 @@ last_updated: 2026-04-22
 
 # 📊 Vedika System Status
 
-###- **Current Status**: 🟢 Milestone 2: Consumer Entry & Discovery (Verified)
+###- **Current Status**: 🟢 Milestone 2: Consumer Entry & Discovery (Verified & Closed)
 - **Next Milestone**: 🟡 Milestone 3: Lead Management & Lead Capture v2
-The platform has completed the consumer journey foundation. Milestone 1 and 2 are now hardened and verified.
+The platform has completed the foundation for both Partners and Consumers. Milestone 2 is fully verified with role-aware discovery routing.
 - Status: **COMPLETED**
 - Date: April 2026
 - Consumer Flow: User Home, Discovery, and Inquiry path are the primary focus.
@@ -18,7 +18,7 @@ The platform has completed the consumer journey foundation. Milestone 1 and 2 ar
 | **Booking Engine** | 🟢 | 100% | **Sprint 1A CLOSED.** Transactional integrity and fallbacks locked. |
 | **Calendar Engine** | 🟢 | 100% | **Sprint 1A CLOSED.** Authoritative state derivation. |
 | **Inventory System** | 🟢 | 100% | **Sprint 1B CLOSED.** Vendor-scoped catalog persistence functional. |
-| **Financial Ledger** | 🔴 | 0% | Planned for Milestone 2. |
+| **Financial Ledger** | ⚪ | 0% | Deferred/Backlog. |
 
 ### 📊 Business Logic Sources
 - **Booking Metrics**: Calculated in `DashboardViewModel` from `/bookings` collection.

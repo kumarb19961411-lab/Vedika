@@ -34,6 +34,7 @@ sealed class VedikaDestination(val route: String) {
 
     // Consumer Milestone 2 Routes
     object UserHome : VedikaDestination("user_home")
+    object Discovery : VedikaDestination("vendor_browse/All")
     data object VendorBrowse : VedikaDestination("vendor_browse/{category}") {
         fun createRoute(category: String) = "vendor_browse/$category"
     }
@@ -61,7 +62,7 @@ fun getBottomNavItems(mode: AccountMode) = when (mode) {
     )
     AccountMode.USER -> listOf(
         BottomNavItem(VedikaDestination.UserHome, "Home", Icons.Default.Dashboard),
-        BottomNavItem(VedikaDestination.DecoratorsGallery, "Discovery", Icons.Default.Collections), // Using Gallery as placeholder for Discovery
+        BottomNavItem(VedikaDestination.Discovery, "Discovery", Icons.Default.Collections),
         BottomNavItem(VedikaDestination.Profile,  "Profile",   Icons.Default.Person),
     )
 }
