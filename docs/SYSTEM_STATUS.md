@@ -5,10 +5,10 @@ last_updated: 2026-04-22
 
 # 📊 Vedika System Status
 
-###- **Current Status**: 🟢 Milestone 2: Consumer Entry & Discovery (Completed)
+###- **Current Status**: 🟢 Milestone 2: Consumer Entry & Discovery (Verified)
 - **Next Milestone**: 🟡 Milestone 3: Lead Management & Lead Capture v2
-The platform is now moving toward the consumer journey. Milestone 1 (Core Business Engine) remains the hardened foundation.
-- Status: **ACTIVE (Plan Locked)**
+The platform has completed the consumer journey foundation. Milestone 1 and 2 are now hardened and verified.
+- Status: **COMPLETED**
 - Date: April 2026
 - Consumer Flow: User Home, Discovery, and Inquiry path are the primary focus.
 | Component | Status | Health | Notes |
@@ -28,9 +28,9 @@ The platform is now moving toward the consumer journey. Milestone 1 (Core Busine
 ### 📅 Sprint Tracker
 - [x] **Milestone 1 Core Engine**: [CLOSED] ✅ (Conflicts, Inventory, Shell)
 - [x] **Milestone 2 Planning**: [LOCKED] 🛡️ (Journey, Regression Guard)
-- [ ] **Sprint 2A: Nav Shell Refactor**: Dynamic Bottom Bar and Role-Aware Routing.
-- [ ] **Sprint 2B: Discovery Module**: Home Screen and Vendor Browse Flow.
-- [ ] **Sprint 2C: Action Path**: Terminal "Send Inquiry" flow.
+- [x] **Sprint 2A: Nav Shell Refactor**: Dynamic Bottom Bar and Role-Aware Routing. ✅
+- [x] **Sprint 2B: Discovery Module**: Home Screen and Vendor Browse Flow. ✅
+- [x] **Sprint 2C: Action Path**: Terminal "Send Inquiry" flow. ✅
 
 ### 📌 Critical Anchors
 - **Firebase Project**: `vedika-e44be`
