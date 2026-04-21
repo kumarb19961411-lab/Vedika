@@ -89,7 +89,7 @@ fun VendorListCard(vendor: VendorSummary, onClick: () -> Unit) {
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1.dp)) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = vendor.name,
                     style = MaterialTheme.typography.titleMedium,

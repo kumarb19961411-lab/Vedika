@@ -35,4 +35,14 @@ class FakeVendorRepository @Inject constructor() : VendorRepository {
         // Just simulate a successful update
         return Result.success(Unit)
     }
+
+    override fun getVendorsByCategory(category: String): Flow<List<VendorProfile>> {
+        // Return empty list in dev/fake mode
+        return kotlinx.coroutines.flow.flowOf(emptyList())
+    }
+
+    override fun getFeaturedVendors(): Flow<List<VendorProfile>> {
+        // Return empty list in dev/fake mode
+        return kotlinx.coroutines.flow.flowOf(emptyList())
+    }
 }

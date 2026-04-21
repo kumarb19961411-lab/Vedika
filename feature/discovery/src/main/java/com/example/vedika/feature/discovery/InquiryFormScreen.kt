@@ -21,6 +21,7 @@ fun InquiryFormScreen(
     var date by remember { mutableStateOf("") }
     var guests by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
     var isSuccess by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -90,8 +91,9 @@ fun InquiryFormScreen(
                     Button(
                         onClick = {
                             isLoading = true
-                            // Mock submission logic or navigate to success state
+                            // Mock submission logic: toggle success and reset loading
                             isSuccess = true
+                            isLoading = false
                         },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = date.isNotEmpty() && message.isNotEmpty()
