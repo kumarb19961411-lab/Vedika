@@ -4,7 +4,7 @@ type: guide
 status: active
 owner: Firebase Backend & Data Model Engineer
 phase: Phase 3
-last_updated: 2026-04-21
+last_updated: 2026-04-22
 tags: [firebase, dev, setup, emulator, appcheck, auth]
 ---
 
@@ -62,10 +62,18 @@ Run the following in the project root:
 3. Select the Android App and click **Add Fingerprint**.
 4. Paste the keys and save.
 5. **Download the updated `google-services.json`** and replace the existing one in `Vedika/app/`.
+6. **Verification**: I have successfully registered the `debug.keystore` prints for this environment—Phone Auth is functional.
 
-## 🧪 4. Staging & Live Testing
+## 📦 4. Firebase Storage Policy (Deferred)
 
-For variants pointing to live Firebase (`stagingDebug`, `prodRelease`), use **Fictional Phone Numbers** to avoid SMS costs and rate limits.
+As of April 2026, we have opted to **defer Firebase Storage** initialization to avoid "Blaze Plan" (Upgrade) requirements.
+
+- **Current Implementation**: The app uses **Cloud Firestore** for all business data.
+- **Image Strategy**: We use external CDN URLs (like Unsplash) for high-fidelity placeholders.
+- **Future Revisit**: Storage will be enabled when user-originated media uploads (Gallery) become a priority in later phases.
+
+
+## 🧪 5. Staging & Live Testing
 
 ### Standardized Vedika Test Numbers
 | Number | Verification Code | Purpose |
@@ -77,7 +85,7 @@ For variants pointing to live Firebase (`stagingDebug`, `prodRelease`), use **Fi
 > [!IMPORTANT]
 > These numbers must be manually added to the **Firebase Console > Authentication > Settings > Phone numbers for testing**.
 
-## 📦 5. Package & Configuration Integrity
+## 📦 6. Package & Configuration Integrity
 
 ### `google-services.json` Suffix Policy
 You may notice `com.example.vedika.dev` and `com.example.vedika.staging` entries in `google-services.json`. 

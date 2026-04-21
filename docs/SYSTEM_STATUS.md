@@ -1,6 +1,6 @@
 ---
 tags: [status, dashboard, project_management]
-last_updated: 2026-04-21
+last_updated: 2026-04-22
 ---
 
 # 📊 Vedika System Status
@@ -12,7 +12,8 @@ The platform has achieved its first major milestone: **Core Business Engine**.
 - Core Logic: Conflict validation, authorized inventory, and booking-derived dashboard are 100% functional.
 | Component | Status | Health | Notes |
 | :--- | :--- | :--- | :--- |
-| **Auth Foundation** | 🟢 | 100% | Role-based routing locked. Session consistency verified. |
+| **Auth Foundation** | 🟢 | 100% | Role-based routing locked. **Navigation Hang Fixed.** |
+| **Connectivity** | 🟢 | 100% | **Firebase SHA Hardened.** Storage Deferred for Firestore + CDN. |
 | **Booking Engine** | 🟢 | 100% | **Sprint 1A CLOSED.** Transactional integrity and fallbacks locked. |
 | **Calendar Engine** | 🟢 | 100% | **Sprint 1A CLOSED.** Authoritative state derivation. |
 | **Inventory System** | 🟢 | 100% | **Sprint 1B CLOSED.** Vendor-scoped catalog persistence functional. |
@@ -25,9 +26,9 @@ The platform has achieved its first major milestone: **Core Business Engine**.
 
 ### 📅 Sprint Tracker
 - [x] **Sprint 1A (Booking & Conflict Hardening)**: [CLOSED] ✅
-- [x] **Repo Health**: Build stabilized; **Firebase Dev Hardened** (App Check Debug active).
-- [x] **Wiki Integrity**: Connectivity & Auth flows documented (Standardized 6-digit OTP).
-- [x] **Dev Experience**: App Check Debug Provider enabled for emulator & physical hardware.
+- [x] **Repo Health**: Build stabilized; **Firebase SHA Registered** (Phone Auth ready).
+- [x] **Auth Stability**: Navigation fix for OTP verification verified on real hardware.
+- [x] **Dev Experience**: App Check Debug Provider and SHA Fingerprints locked.
 - [ ] **Sprint 1C: Rescheduling & Exception Handling** (PLANNED)
 
 ### 📌 Critical Anchors

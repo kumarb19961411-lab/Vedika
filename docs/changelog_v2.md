@@ -1,8 +1,18 @@
 # Changelog — Vedika V2
 
 A record of significant architectural and feature milestones in the Vedika V2 project.
-6: 
-7: ## [2026-04-14] — Phase 2B: High-Fidelity Vendor Shell & Data Continuity
+
+## [2026-04-22] — Auth Navigation & Firebase Infrastructure Hardening
+### Fixed
+- **Navigation Hang**: Resolved a critical state-loss bug in `MainActivity.kt` where stale `AuthViewModel` state was preventing navigation after OTP verification.
+- **Signup Flow Testing**: Updated `FakeVendorRepository` to correctly trigger the registration path when no profile is found, unblocking end-to-end testing of the onboarding funnel.
+- **Firebase Registration**: Successfully registered local `SHA-1` and `SHA-256` fingerprints in the Firebase Console, enabling Phone Authentication on physical hardware.
+
+### Changed
+- **Storage Strategy**: Formally deferred the use of Firebase Storage in favor of Firestore + external CDN placeholders to maintain "Spark Plan" (Free) compatibility.
+- **Logging**: Added diagnostic logs in `AuthViewModel` to track `RoleResolutionState` transitions.
+
+## [2026-04-14] — Phase 2B: High-Fidelity Vendor Shell & Data Continuity
 ### Added
 - **Data Continuity Binding (Run C)**:
     - **Personalization**: Added `Full Name` field to Signup to drive `ownerName` across the dashboard and profile.
