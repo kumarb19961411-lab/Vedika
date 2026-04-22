@@ -25,9 +25,9 @@ Use these hubs to navigate specific domains:
 
 ## 📋 Quick Links
 - **[[SYSTEM_STATUS|🚀 System Status]]**: Real-time feature checklist and build health.
+- **[[Build_Troubleshooting_Guide|🛠️ Build Troubleshooting]]**: Solutions to common environment and compilation errors.
 - **[[Milestone_4_Stabilization_Report|🛡️ Milestone 4 Report]]**: Latest stabilization and test foundation results.
 - **[[repo_map|🗺️ Repository Map]]**: Module topology and dependency graph.
-- **[[backend_integration_blueprint|🧱 Backend Blueprint]]**: The source of truth for Firestore integration.
 
 -----
 ## 🛠️ Developer Toolbox

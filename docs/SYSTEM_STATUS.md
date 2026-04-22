@@ -36,12 +36,12 @@ The platform has completed stabilization and established a robust automated test
 
 ### 📌 Critical Anchors
 - **Milestone 4 Report**: [[Milestone_4_Stabilization_Report|📝 Milestone 4 Stabilization Report]]
+- **Build Guard**: [[android_build_regression_guard|🛡️ Build Regression Guard]]
+- **Troubleshooting**: [[Build_Troubleshooting_Guide|🛠️ Build Troubleshooting Guide]]
 - **Firebase Project**: `vedika-e44be`
-- **Owner**: `kumarb19961411-lab`
 
 -----
 [[Project_Hub|🏠 Project Hub]] | [[milestone_2_plan|🎯 Milestone 2]] | [[project_status|📈 Project History]]
 - [[milestone_2_regression_checklist|🛡️ Milestone 2 Regression Guard]]
-- [[android_build_regression_guard|🛡️ General Build Guard]]
 - [[backend_integration_blueprint|🧱 Backend Blueprint]]
 - [[repo_map|🗺️ Module Topology]]

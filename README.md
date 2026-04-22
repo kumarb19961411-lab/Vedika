@@ -25,6 +25,7 @@ These files define the fundamental structure and behaviors of the system in Phas
 
 ### 2. Operational Implementation Guides
 These guides provide exact step-by-step instructions for implementing features securely and correctly according to design constraints.
+- [Build Troubleshooting & Resolution Guide](docs/BUILD_TROUBLESHOOTING.md)
 - [Vendor Signin Implementation Guide](docs/guides/vendor_signin_implementation_guide.md)
 - [User Signup Implementation Guide](docs/guides/user_signup_implementation_guide.md)
 - [User Signin Implementation Guide](docs/guides/user_signin_implementation_guide.md)

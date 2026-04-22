@@ -437,7 +437,6 @@ fun VedikaAppShell(
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("id") ?: ""
                 VendorDetailScreen(
-                    vendorId = id,
                     onNavigateBack = { navController.popBackStack() },
                     onNavigateToInquiry = { vendorId ->
                         navController.navigate(VedikaDestination.InquiryForm.createRoute(vendorId))

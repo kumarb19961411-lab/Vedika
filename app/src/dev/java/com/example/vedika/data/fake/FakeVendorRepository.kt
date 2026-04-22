@@ -1,5 +1,6 @@
 package com.example.vedika.data.fake
 
+import com.example.vedika.core.data.model.PackageTier
 import com.example.vedika.core.data.model.VendorProfile
 import com.example.vedika.core.data.model.VendorType
 import com.example.vedika.core.data.repository.VendorRepository
