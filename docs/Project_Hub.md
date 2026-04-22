@@ -1,7 +1,10 @@
 ---
-tags: [status, overview, hub]
+tags:
+  - status
+  - overview
+  - hub
+last_updated: '2026-04-22T00:00:00.000Z'
 ---
-
 # 🕉️ Vedika: Project Hub
 
 Welcome to the Vedika Knowledge Graph. This is the central Map of Content (MOC) for the project.
@@ -22,16 +25,17 @@ Use these hubs to navigate specific domains:
 
 ## 📋 Quick Links
 - **[[SYSTEM_STATUS|🚀 System Status]]**: Real-time feature checklist and build health.
+- **[[Milestone_4_Stabilization_Report|🛡️ Milestone 4 Report]]**: Latest stabilization and test foundation results.
 - **[[repo_map|🗺️ Repository Map]]**: Module topology and dependency graph.
 - **[[backend_integration_blueprint|🧱 Backend Blueprint]]**: The source of truth for Firestore integration.
 
----
+-----
 ## 🛠️ Developer Toolbox
 - [[obsidian_mcp_setup|Obsidian Setup Guide]]
 - [[debug_capture_workflow|Debug & Capture Workflow]]
 - [[android_build_regression_guard|Build Regression Guard]]
 
----
+-----
 > [!TIP]
 > Use `Ctrl+G` (or `Cmd+G`) in Obsidian to see how all these notes are connected in the Graph View!
 
