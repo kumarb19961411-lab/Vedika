@@ -69,11 +69,9 @@ fun VedikaAppShell(
 ) {
     val navController = rememberNavController()
     val authState by authViewModel.uiState.collectAsState()
+    val pendingDestination by authViewModel.pendingDestination.collectAsState()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStack?.destination?.route
-
-    // Hardening: Track intended destination for unauthenticated deep links
-    var pendingDestination by remember { mutableStateOf<String?>(null) }
 
     val navItems = getBottomNavItems(authState.accountMode)
     val topLevelRoutes = navItems.map { it.destination.route }
@@ -129,7 +127,7 @@ fun VedikaAppShell(
             if (isProtectedRoute && startupState is StartupState.Unauthenticated) {
                 // Hardening: Store intended destination with actual arguments before redirecting
                 val resolvedRoute = currentBackStack?.getResolvedRoute() ?: currentRoute ?: ""
-                pendingDestination = resolvedRoute
+                authViewModel.setPendingDestination(resolvedRoute)
                 navController.navigate(VedikaDestination.AuthGraph.route) {
                     popUpTo(0) { inclusive = true }
                 }
@@ -228,7 +226,7 @@ fun VedikaAppShell(
                                 accountMode = state.accountMode,
                                 resolutionState = state.roleResolutionState,
                                 pendingDestination = pendingDestination,
-                                onClearPending = { pendingDestination = null }
+                                onClearPending = { authViewModel.clearPendingDestination() }
                             )
                         }
                     )
@@ -259,7 +257,7 @@ fun VedikaAppShell(
                                 accountMode = state.accountMode,
                                 resolutionState = state.roleResolutionState,
                                 pendingDestination = pendingDestination,
-                                onClearPending = { pendingDestination = null }
+                                onClearPending = { authViewModel.clearPendingDestination() }
                             )
                         },
                         onNavigateBack = { navController.popBackStack() }

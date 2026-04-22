@@ -18,22 +18,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.example.vedika.core.data.model.VendorProfile
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VendorBrowseScreen(
     category: String,
     onNavigateBack: () -> Unit,
-    onNavigateToDetail: (String) -> Unit
+    onNavigateToDetail: (String) -> Unit,
+    viewModel: VendorBrowseViewModel = hiltViewModel()
 ) {
-    // Mock data based on category
-    val vendors = remember(category) {
-        listOf(
-            VendorSummary("1", "Grand Plaza Royale", "Venue", "4.8", "₹50,000", "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=60&w=400"),
-            VendorSummary("2", "Crystal Gardens", "Venue", "4.6", "₹35,000", "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&q=60&w=400"),
-            VendorSummary("3", "Royal Heritage Hall", "Venue", "4.9", "₹75,000", "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=60&w=400"),
-            VendorSummary("4", "The Marigold Deck", "Venue", "4.5", "₹40,000", "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=60&w=400")
-        ).filter { it.type == category || category == "All" }
-    }
+    val vendors by viewModel.vendors.collectAsState()
 
     Scaffold(
         topBar = {
@@ -67,7 +65,7 @@ fun VendorBrowseScreen(
 }
 
 @Composable
-fun VendorListCard(vendor: VendorSummary, onClick: () -> Unit) {
+fun VendorListCard(vendor: VendorProfile, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -81,7 +79,7 @@ fun VendorListCard(vendor: VendorSummary, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = vendor.imageUrl,
+                model = vendor.coverImage,
                 contentDescription = null,
                 modifier = Modifier
                     .size(100.dp)
@@ -91,18 +89,18 @@ fun VendorListCard(vendor: VendorSummary, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = vendor.name,
+                    text = vendor.businessName,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "${vendor.type} • ${vendor.rating} ★",
+                    text = "${vendor.primaryCategory} • ${vendor.rating ?: "0.0"} ★",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Starting from ${vendor.price}",
+                    text = "Starting from ${vendor.pricing}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Medium

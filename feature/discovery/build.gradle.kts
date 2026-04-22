@@ -12,6 +12,7 @@ android {
 
     defaultConfig {
         minSdk = 24
+        testInstrumentationRunner = "com.example.vedika.feature.discovery.HiltTestRunner"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -44,4 +45,22 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.coil.compose)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.mockk)
+
+    // Android Testing
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.compiler)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(libs.mockk.android)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

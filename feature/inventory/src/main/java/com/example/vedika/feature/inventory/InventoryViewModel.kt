@@ -33,7 +33,12 @@ class InventoryViewModel @Inject constructor(
         loadInventory()
     }
 
+    fun retry() {
+        loadInventory()
+    }
+
     private fun loadInventory() {
+        _uiState.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
             val vendorId = authRepository.getCurrentUserId()
             if (vendorId == null) {

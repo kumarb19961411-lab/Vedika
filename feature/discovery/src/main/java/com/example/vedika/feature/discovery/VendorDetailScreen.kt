@@ -1,5 +1,3 @@
-package com.example.vedika.feature.discovery
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -15,6 +13,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,36 +21,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.example.vedika.core.data.model.VendorProfile
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VendorDetailScreen(
-    vendorId: String,
     onNavigateBack: () -> Unit,
-    onNavigateToInquiry: (String) -> Unit
+    onNavigateToInquiry: (String) -> Unit,
+    viewModel: VendorDetailViewModel = hiltViewModel()
 ) {
-    // Mock detailed data
-    val vendor = VendorDetail(
-        id = vendorId,
-        name = "Grand Plaza Royale",
-        type = "Venue",
-        rating = "4.8",
-        reviewCount = "124",
-        location = "Jubilee Hills, Hyderabad",
-        price = "₹50,000",
-        description = "Experience luxury at its finest. Grand Plaza Royale offers the perfect blend of traditional elegance and modern amenities for your special day.",
-        images = listOf(
-            "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1000",
-            "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&q=80&w=1000",
-            "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1000"
-        ),
-        amenities = listOf("Air Conditioned", "Valet Parking", "Catering Included", "Changing Rooms")
-    )
+    val vendor by viewModel.vendorProfile.collectAsStateWithLifecycle()
+
+    if (vendor == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    val currentVendor = vendor!!
 
     Scaffold(
         bottomBar = {
-            InquiryBottomBar(price = vendor.price, onInquiryClick = { onNavigateToInquiry(vendorId) })
+            InquiryBottomBar(
+                price = currentVendor.pricing,
+                onInquiryClick = { onNavigateToInquiry(currentVendor.id) }
+            )
         }
     ) { padding ->
         Column(
@@ -62,7 +60,7 @@ fun VendorDetailScreen(
         ) {
             Box {
                 AsyncImage(
-                    model = vendor.images.first(),
+                    model = currentVendor.coverImage ?: currentVendor.galleryImages.firstOrNull(),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -93,7 +91,7 @@ fun VendorDetailScreen(
 
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(
-                    text = vendor.name,
+                    text = currentVendor.businessName,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -104,25 +102,25 @@ fun VendorDetailScreen(
                 ) {
                     Icon(Icons.Default.Star, contentDescription = null, tint = Color(0xFFFFB400), modifier = Modifier.size(20.dp))
                     Text(
-                        text = " ${vendor.rating} ",
+                        text = " ${currentVendor.rating ?: "New"} ",
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "(${vendor.reviewCount} Reviews)",
+                        text = "(Featured)",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.secondary
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier.size(18.dp))
                     Text(
-                        text = vendor.location,
+                        text = currentVendor.location,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.secondary
                     )
                 }
 
-                Divider(modifier = Modifier.padding(vertical = 16.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 
                 Text(
                     text = "About",
@@ -131,51 +129,55 @@ fun VendorDetailScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = vendor.description,
+                    text = currentVendor.description ?: "No description available.",
                     style = MaterialTheme.typography.bodyMedium,
                     lineHeight = MaterialTheme.typography.bodyMedium.lineHeight * 1.5
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                if (currentVendor.amenities.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                Text(
-                    text = "Amenities",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    vendor.amenities.forEach { amenity ->
-                        AssistChip(
-                            onClick = {},
-                            label = { Text(amenity) },
-                            shape = RoundedCornerShape(8.dp)
-                        )
+                    Text(
+                        text = "Amenities",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        currentVendor.amenities.forEach { amenity ->
+                            AssistChip(
+                                onClick = {},
+                                label = { Text(amenity) },
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                        }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                if (currentVendor.galleryImages.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                Text(
-                    text = "Gallery",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    items(vendor.images) { imageUrl ->
-                        AsyncImage(
-                            model = imageUrl,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(160.dp)
-                                .clip(RoundedCornerShape(12.dp)),
-                            contentScale = ContentScale.Crop
-                        )
+                    Text(
+                        text = "Gallery",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        items(currentVendor.galleryImages) { imageUrl ->
+                            AsyncImage(
+                                model = imageUrl,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(160.dp)
+                                    .clip(RoundedCornerShape(12.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                 }
                 
@@ -231,16 +233,3 @@ private fun FlowRow(
         content()
     }
 }
-
-data class VendorDetail(
-    val id: String,
-    val name: String,
-    val type: String,
-    val rating: String,
-    val reviewCount: String,
-    val location: String,
-    val price: String,
-    val description: String,
-    val images: List<String>,
-    val amenities: List<String>
-)

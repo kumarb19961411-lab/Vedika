@@ -104,6 +104,7 @@ class NewBookingViewModel @Inject constructor(
 
     fun submitBooking(onSuccess: () -> Unit) {
         val state = _formState.value
+        if (state.isSubmitting) return
 
         // Validate
         var hasError = false

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 import android.app.Activity
 import com.google.firebase.FirebaseException
@@ -28,29 +29,34 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getActiveVendor(): Flow<VendorUser?> = callbackFlow<String?> {
-        val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-            trySend(firebaseAuth.currentUser?.uid)
-        }
-        auth.addAuthStateListener(listener)
-        awaitClose { auth.removeAuthStateListener(listener) }
-    }.flatMapLatest { uid ->
-        if (uid != null) {
-            vendorRepository.getVendorProfileStream(uid).map { profile ->
-                profile?.let {
-                    VendorUser(
-                        id = it.id,
-                        businessName = it.businessName,
-                        ownerName = it.ownerName,
-                        isVerified = it.isVerified,
-                        primaryServiceCategory = it.primaryCategory
-                    )
-                }
+    override fun getActiveVendor(): Flow<VendorUser?> {
+        val authFlow: Flow<String?> = callbackFlow {
+            val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+                trySend(firebaseAuth.currentUser?.uid)
             }
-        } else {
-            kotlinx.coroutines.flow.flowOf(null)
+            auth.addAuthStateListener(listener)
+            awaitClose { auth.removeAuthStateListener(listener) }
+        }
+
+        return authFlow.flatMapLatest { uid ->
+            if (uid != null) {
+                vendorRepository.getVendorProfileStream(uid).map { profile ->
+                    profile?.let {
+                        VendorUser(
+                            id = it.id,
+                            businessName = it.businessName,
+                            ownerName = it.ownerName,
+                            isVerified = it.isVerified,
+                            primaryServiceCategory = it.primaryCategory
+                        )
+                    }
+                }
+            } else {
+                flowOf(null)
+            }
         }
     }
+
 
 
     override suspend fun sendOtp(phoneNumber: String, activity: Activity): Result<String> = suspendCancellableCoroutine { continuation ->

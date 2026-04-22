@@ -102,5 +102,6 @@ data class VendorProfile(
     val venueType: String? = null,
     val featuredAssetTitle: String? = null,
     val featuredAssetImage: String? = null,
-    val featuredAssetPrice: String? = null
+    val featuredAssetPrice: String? = null,
+    val description: String? = null
 )

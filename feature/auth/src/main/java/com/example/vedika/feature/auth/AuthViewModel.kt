@@ -1,6 +1,7 @@
 package com.example.vedika.feature.auth
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vedika.core.data.model.AccountMode
@@ -26,8 +27,12 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val vendorRepository: VendorRepository,
     private val userRepository: UserRepository,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val _pendingDestination = savedStateHandle.getStateFlow<String?>("pendingDestination", null)
+    val pendingDestination: StateFlow<String?> = _pendingDestination
 
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
@@ -470,6 +475,16 @@ class AuthViewModel @Inject constructor(
                     )
                 }
         }
+    }
+
+    fun setPendingDestination(destination: String?) {
+        logDebug("Setting pending destination: $destination")
+        savedStateHandle["pendingDestination"] = destination
+    }
+
+    fun clearPendingDestination() {
+        logDebug("Clearing pending destination")
+        savedStateHandle["pendingDestination"] = null
     }
 }
 
