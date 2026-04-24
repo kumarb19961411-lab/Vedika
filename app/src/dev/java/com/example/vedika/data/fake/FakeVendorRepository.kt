@@ -128,6 +128,11 @@ class FakeVendorRepository @Inject constructor() : VendorRepository {
         }
     }
 
+    override suspend fun getPublicVendorProfile(vendorId: String): Result<VendorProfile> {
+        val mock = mockVendors.find { it.id == vendorId }
+        return if (mock != null) Result.success(mock) else Result.failure(Exception("VENDOR_NOT_FOUND"))
+    }
+
     override suspend fun updateBusinessName(vendorId: String, newName: String): Result<Unit> {
         return Result.success(Unit)
     }

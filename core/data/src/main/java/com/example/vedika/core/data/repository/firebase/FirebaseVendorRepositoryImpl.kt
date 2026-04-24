@@ -32,6 +32,19 @@ class FirebaseVendorRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun getPublicVendorProfile(vendorId: String): Result<VendorProfile> {
+        return try {
+            val doc = firestore.collection(FirestorePaths.COL_PUBLIC_VENDORS).document(vendorId).get().await()
+            if (doc.exists()) {
+                Result.success(mapDocumentToProfile(doc.id, doc.data ?: emptyMap()))
+            } else {
+                Result.failure(Exception("VENDOR_NOT_FOUND"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
     
     @Suppress("UNCHECKED_CAST")
     private fun mapDocumentToProfile(id: String, map: Map<String, Any>): VendorProfile {
@@ -139,7 +152,7 @@ class FirebaseVendorRepositoryImpl @Inject constructor(
     }
 
     override fun getVendorsByCategory(category: String): Flow<List<VendorProfile>> = callbackFlow {
-        val query = firestore.collection(FirestorePaths.COL_VENDORS)
+        val query = firestore.collection(FirestorePaths.COL_PUBLIC_VENDORS)
             .whereEqualTo("primaryServiceCategory", category)
         
         val subscription = query.addSnapshotListener { snapshot, error ->
@@ -158,7 +171,7 @@ class FirebaseVendorRepositoryImpl @Inject constructor(
     }
 
     override fun getFeaturedVendors(): Flow<List<VendorProfile>> = callbackFlow {
-        val query = firestore.collection(FirestorePaths.COL_VENDORS)
+        val query = firestore.collection(FirestorePaths.COL_PUBLIC_VENDORS)
             .whereEqualTo("isVerified", true)
             .limit(10)
         

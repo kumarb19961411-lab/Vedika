@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,10 +20,11 @@ class VendorDetailViewModel @Inject constructor(
 
     private val vendorId: String = checkNotNull(savedStateHandle["vendorId"])
 
-    val vendorProfile: StateFlow<VendorProfile?> = vendorRepository.getVendorProfileStream(vendorId)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = null
-        )
+    val vendorProfile: StateFlow<VendorProfile?> = flow {
+        emit(vendorRepository.getPublicVendorProfile(vendorId).getOrNull())
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 }

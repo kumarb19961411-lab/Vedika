@@ -35,6 +35,7 @@ interface VendorRepository {
     suspend fun updateBusinessName(vendorId: String, newName: String): Result<Unit>
     suspend fun saveVendorProfile(profile: VendorProfile): Result<Unit>
     // Milestone 2 Discovery
+    suspend fun getPublicVendorProfile(vendorId: String): Result<VendorProfile>
     fun getVendorsByCategory(category: String): Flow<List<VendorProfile>>
     fun getFeaturedVendors(): Flow<List<VendorProfile>>
 }

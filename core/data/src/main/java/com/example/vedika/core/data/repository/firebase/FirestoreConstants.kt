@@ -5,6 +5,7 @@ package com.example.vedika.core.data.repository.firebase
  */
 object FirestorePaths {
     const val COL_VENDORS = "vendors"
+    const val COL_PUBLIC_VENDORS = "public_vendors"
     const val COL_BOOKINGS = "bookings"
     const val COL_BLOCKED_DATES = "blocked_dates"
     const val COL_INVENTORY = "inventory"
