@@ -29,15 +29,33 @@ function Invoke-Adb($Arguments) {
 }
 
 function Get-ConnectedDevice {
-    $devices = & $ADB_PATH devices | Select-String -Pattern "\tdevice$"
-    if ($devices.Count -eq 0) {
+    $devices = & $ADB_PATH devices | Select-String -Pattern "\tdevice$" | ForEach-Object { $_.ToString().Split("`t")[0].Trim() }
+    
+    if ($null -eq $devices -or $devices.Count -eq 0) {
         Write-Warning "No devices connected via ADB."
         return $null
     }
-    if ($devices.Count -gt 1) {
-        Write-Host "Multiple devices found. Using the first one." -ForegroundColor Yellow
+
+    if ($devices.Count -eq 1) {
+        return $devices[0]
     }
-    return ($devices[0].ToString().Split("`t")[0]).Trim()
+
+    Write-Host "`nMultiple devices detected:" -ForegroundColor Yellow
+    for ($i = 0; $i -lt $devices.Count; $i++) {
+        Write-Host " [$($i + 1)] $($devices[$i])"
+    }
+
+    $choice = Read-Host "`nSelect a device serial [1-$($devices.Count)] (or press Enter for first)"
+    if ([string]::IsNullOrWhiteSpace($choice)) {
+        return $devices[0]
+    }
+
+    if ($choice -as [int] -and [int]$choice -le $devices.Count) {
+        return $devices[[int]$choice - 1]
+    }
+
+    Write-Error "Invalid selection. Stopping."
+    return $null
 }
 
 function Get-DeviceSetting($serial, $namespace, $key) {

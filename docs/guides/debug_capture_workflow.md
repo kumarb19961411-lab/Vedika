@@ -35,11 +35,13 @@ If you prefer direct command execution:
 | **Stop Capture** | `.\tools\debug\stop_debug_capture.ps1` |
 | **Take Screenshot** | `.\tools\debug\take_screenshot.ps1` |
 | **Generate Bugreport** | `.\tools\debug\generate_bugreport.ps1` |
+| **Physical-Device QA Report** | `.\tools\debug\run_device_test_report.ps1` |
 | **Open Reports** | `.\tools\debug\open_latest_report.ps1` |
 
 ---
 
 ## Capture Bundle Content
+### 1. Standard Capture (Video + Logs)
 A successful capture session creates a folder in `debug_reports/YYYYMMDD_HHMMSS/` containing:
 
 - `session_video.mp4`: A screen recording of your interaction (**3-minute limit**).
@@ -47,6 +49,16 @@ A successful capture session creates a folder in `debug_reports/YYYYMMDD_HHMMSS/
 - `device_info.txt`: Hardware and Android OS version details.
 - `screenshots/`: Any screenshots taken during the session.
 - `bugreport.zip`: (Optional) Comprehensive system state diagnostic.
+
+### 2. Physical-Device QA Report (Diagnostics Only)
+The automated report mode creates a folder in `debug_reports/device_test_YYYYMMDD_HHMMSS/` containing:
+
+- `device_test_report.md`: A structured summary of the device state and launch result.
+- `logcat_full.txt`: Full device logs.
+- `logcat_errors.txt`: Filtered logcat containing only `E` (Error) and `F` (Fatal) levels.
+- `app_launch_log.txt`: Detailed log of the `am start` and `monkey` launch attempts.
+- `dumpsys_*.txt`: Memory, activity, and package state dumps.
+- `smoke_test_results.json`: Machine-readable summary for QA tracking.
 
 ## Troubleshooting
 

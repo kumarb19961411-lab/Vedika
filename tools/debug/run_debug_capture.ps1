@@ -20,14 +20,15 @@ function Show-Menu {
     Write-Host " 3. Take Screenshot"
     Write-Host " 4. Generate Full Bugreport"
     Write-Host " 5. Open Latest Report Folder"
-    Write-Host " 6. Exit"
+    Write-Host " 6. Run Device Test Report — No Screen Recording"
+    Write-Host " 7. Exit"
     Write-Host "----------------------------------------"
 }
 
 do {
     Show-Menu
     $choice = $null
-    Write-Host "`nSelect an option [1-6] (or wait if capturing) " -NoNewline
+    Write-Host "`nSelect an option [1-7] (or wait if capturing) " -NoNewline
 
     while ($true) {
         $session = Get-ActiveSession
@@ -64,7 +65,8 @@ do {
         "3" { & "$PSScriptRoot\take_screenshot.ps1"; Start-Sleep -Seconds 1 }
         "4" { & "$PSScriptRoot\generate_bugreport.ps1"; Pause }
         "5" { & "$PSScriptRoot\open_latest_report.ps1"; Start-Sleep -Seconds 1 }
-        "6" { Write-Host "Goodbye!" -ForegroundColor Cyan; break }
+        "6" { & "$PSScriptRoot\run_device_test_report.ps1"; Pause }
+        "7" { Write-Host "Goodbye!" -ForegroundColor Cyan; break }
         default { Write-Host "Invalid choice." -ForegroundColor Red; Start-Sleep -Seconds 1 }
     }
-} while ($choice -ne "6")
+} while ($choice -ne "7")

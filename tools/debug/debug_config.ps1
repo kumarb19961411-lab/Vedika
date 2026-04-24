@@ -6,6 +6,7 @@ $ADB_PATH = "C:\Users\Welcome\AppData\Local\Android\Sdk\platform-tools\adb.exe" 
 
 # Application Details
 $PACKAGE_NAME = "com.example.vedika"
+$LAUNCH_ACTIVITY = ".MainActivity"
 
 # Debug Capture Settings
 $REPORT_ROOT = "debug_reports"
