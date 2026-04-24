@@ -2,30 +2,20 @@
 # Use this file to customize your local debug environment.
 
 function Get-AdbPath {
-    # 1. Check ANDROID_HOME environment variable
-    if ($env:ANDROID_HOME) {
-        $path = Join-Path $env:ANDROID_HOME "platform-tools\adb.exe"
-        if (Test-Path $path) { return $path }
-    }
-
-    # 2. Check common Windows installation paths
-    $commonPaths = @(
-        "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe",
-        "$env:ProgramFiles\Android\Android Studio\bin\adb.exe",
-        "C:\Android\platform-tools\adb.exe"
-    )
-
-    foreach ($path in $commonPaths) {
-        if (Test-Path $path) { return $path }
-    }
-
-    # 3. Check system PATH
+    # 1. Check system PATH first
     $pathFromWhere = where.exe adb 2>$null | Select-Object -First 1
     if ($null -ne $pathFromWhere -and (Test-Path $pathFromWhere)) {
         return $pathFromWhere
     }
 
-    return $null
+    # 2. Check ANDROID_HOME environment variable
+    if ($env:ANDROID_HOME) {
+        $path = Join-Path $env:ANDROID_HOME "platform-tools\adb.exe"
+        if (Test-Path $path) { return $path }
+    }
+
+    # 3. Fallback to generic command
+    return "adb"
 }
 
 # ADB Execution
