@@ -1,44 +1,131 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Core Identity
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+  
+    // --- Helper Functions ---
+    function isAuthenticated() {
+      return request.auth != null;
     }
     
-    match /vendors/{vendorId} {
-      allow read: if true; // Enable Public Discovery
-      allow update: if request.auth != null && request.auth.uid == vendorId 
-                    && request.resource.data.keys().hasOnly(['businessName', 'primaryServiceCategory', 'imageUrl', 'location', 'capacity', 'pricing', 'amenities', 'ownerName', 'vendorType']);
-      allow create: if request.auth != null && request.auth.uid == vendorId;
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+    
+    function hasNoFinanceFields(data) {
+      // Prevents client manipulation of sensitive settlement fields
+      return !('payoutStatus' in data) &&
+             !('internalStatus' in data) &&
+             !('ledgerId' in data) &&
+             !('settlementStatus' in data) &&
+             !('payoutId' in data) &&
+             !('advancePaid' in data) &&
+             !('balanceDue' in data) &&
+             !('totalAmount' in data);
     }
 
-    // Bookings & Occupancy (Authority Chain)
+    // --- Core Identity ---
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // --- Vendor Operational Data (Strictly Private) ---
+    match /vendors/{vendorId} {
+      allow read, write: if isOwner(vendorId);
+    }
+
+    // --- Public Discovery Projection ---
+    match /public_vendors/{vendorId} {
+      allow read: if true; 
+      
+      // Backend-Only Write (RECOMMENDED for Beta Safety)
+      // Note: Manual seeding must be done by Firebase Admin SDK / console import, not client SDK.
+      allow write: if false; 
+    }
+
+    // --- Bookings & Authority Chain ---
     match /bookings/{bookingId} {
-      allow read: if request.auth != null && (resource.data.vendorId == request.auth.uid || resource.data.userId == request.auth.uid);
-      allow create: if request.auth != null && (request.resource.data.vendorId == request.auth.uid || request.resource.data.userId == request.auth.uid);
-      allow update: if request.auth != null && (resource.data.vendorId == request.auth.uid || resource.data.userId == request.auth.uid);
+      
+      // Existing access
+      allow read: if isAuthenticated() && (isOwner(resource.data.userId) || isOwner(resource.data.vendorId));
+      
+      // Creation: Strict Field Allowlists
+      allow create: if isAuthenticated() && hasNoFinanceFields(request.resource.data) && (
+        // 1. Consumer-created booking
+        (
+          request.auth.uid == request.resource.data.userId &&
+          'vendorId' in request.resource.data &&
+          request.resource.data.status == 'PENDING' &&
+          request.resource.data.keys().hasOnly([
+            'userId', 'vendorId', 'eventDate', 'eventType', 
+            'guestCount', 'status', 'createdAt', 'updatedAt', 'notes'
+          ])
+        )
+        ||
+        // 2. Vendor-created manual booking
+        (
+          request.auth.uid == request.resource.data.vendorId &&
+          request.resource.data.isManual == true &&
+          !('userId' in request.resource.data) && // Cannot impersonate an authenticated consumer
+          request.resource.data.status == 'CONFIRMED' && // Starts CONFIRMED since it's out-of-band finalized
+          request.resource.data.keys().hasOnly([
+            'vendorId', 'isManual', 'guestName', 'guestPhone', 
+            'eventDate', 'eventType', 'guestCount', 'status', 
+            'createdAt', 'updatedAt', 'vendorNotes'
+          ])
+        )
+      );
+
+      // Updates: Strict Changed-Key Allowlists
+      allow update: if isAuthenticated() && (
+        // 1. Consumer logic
+        (isOwner(resource.data.userId) && (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'status', 'cancellationReason', 'updatedAt'
+          ]) &&
+          resource.data.status == 'PENDING' && 
+          request.resource.data.status == 'CANCELLED'
+        ))
+        ||
+        // 2. Vendor logic
+        (isOwner(resource.data.vendorId) && (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'status', 'vendorNotes', 'updatedAt'
+          ]) &&
+          resource.data.status == 'PENDING' && 
+          request.resource.data.status in ['CONFIRMED', 'REJECTED', 'CANCELLED']
+        ))
+      );
+      
       allow delete: if false; 
     }
 
-    // Occupancy (Conflict Validation Index)
-    // Format: ${vendorId}_${date}
+    // --- Inventory & Availability (Strictly Private for Beta) ---
     match /occupancy/{occupancyId} {
-      allow read, write: if request.auth != null && occupancyId.split('_')[0] == request.auth.uid;
+      allow read, write: if isAuthenticated() && occupancyId.split('_')[0] == request.auth.uid;
     }
 
-    // Blocked Dates
     match /blocked_dates/{blockId} {
-      allow read: if request.auth != null && (resource == null || resource.data.vendorId == request.auth.uid);
-      allow write: if request.auth != null && (request.resource == null || request.resource.data.vendorId == request.auth.uid);
+      allow read: if isAuthenticated() && (resource == null || resource.data.vendorId == request.auth.uid);
+      allow write: if isAuthenticated() && (request.resource == null || request.resource.data.vendorId == request.auth.uid);
     }
 
-    // Inventory Catalog
     match /inventory/{itemId} {
-      allow read: if request.auth != null && (resource == null || resource.data.vendorId == request.auth.uid);
-      allow create, update: if request.auth != null && request.resource.data.vendorId == request.auth.uid;
-      allow delete: if request.auth != null && resource.data.vendorId == request.auth.uid;
+      allow read: if isAuthenticated() && (resource == null || resource.data.vendorId == request.auth.uid);
+      allow create, update: if isAuthenticated() && request.resource.data.vendorId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.vendorId == request.auth.uid;
+    }
+
+    // --- Finance & Ledger (Strictly Backend) ---
+    match /finance/{document=**} {
+      allow read, write: if false;
+    }
+    match /ledgers/{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Default Deny Fallback ---
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

@@ -1,12 +1,45 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+
+    // --- Helper Functions ---
+    function isAuthenticated() {
+      return request.auth != null;
+    }
     
-    match /vendors/{vendorId}/{allPaths=**} {
-      // Gallery & Profile Assets
-      // Enable public read for discovery
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+    
+    function isValidImage() {
+      // Allows deletion (request.resource == null) or strict image constraints
+      return request.resource == null || 
+             (request.resource.contentType.matches('image/.*') &&
+              request.resource.size < 5 * 1024 * 1024); // 5 MB limit
+    }
+    
+    function isValidPrivateDocument() {
+      return request.resource == null ||
+             ((request.resource.contentType.matches('image/(jpeg|png)') || 
+               request.resource.contentType == 'application/pdf') &&
+              request.resource.size < 5 * 1024 * 1024); // 5 MB limit
+    }
+
+    // --- Public Assets (Gallery, Logo, Discovery) ---
+    match /public_assets/{vendorId}/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == vendorId;
+      allow write: if isOwner(vendorId) && isValidImage();
+    }
+
+    // --- Private Assets (KYC, Bank, UPI, Internal) ---
+    match /vendors/{vendorId}/{allPaths=**} {
+      allow read: if isOwner(vendorId);
+      allow write: if isOwner(vendorId) && isValidPrivateDocument();
+    }
+
+    // --- Default Deny Fallback ---
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

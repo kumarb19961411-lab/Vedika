@@ -20,7 +20,7 @@ last_updated: '2026-04-22T00:00:00.000Z'
 | **Auth & Session**  | 🟢 | 100% | Deep Link Restoration verified. Role-based branching stable. |
 | **Booking Engine**  | 🟢 | 100% | Transactional integrity verified. |
 | **Inventory**       | 🟢 | 100% | Verified on Physical Device. |
-| **Security**        | 🟡 | 60% | Hardening required for Firestore/Storage rules. |
+| **Security**        | 🟡 | 80% | Rules V2.1 drafted locally. Deployment pending. |
 
 ### 📊 Business Logic Sources
 - **Discovery**: Managed via `UserHomeViewModel`, `VendorBrowseViewModel`, and `VendorDetailViewModel`.
