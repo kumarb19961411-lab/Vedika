@@ -20,7 +20,7 @@ last_updated: '2026-04-22T00:00:00.000Z'
 | **Auth & Session**  | 🟢 | 100% | Deep Link Restoration verified. Role-based branching stable. |
 | **Booking Engine**  | 🟢 | 100% | Transactional integrity verified. |
 | **Inventory**       | 🟢 | 100% | Verified on Physical Device. |
-| **Security**        | 🟡 | 80% | Rules V2.1 drafted locally. Deployment pending. |
+| **Security**        | 🚨 | 60% | V2.1 rules drafted. App is **INCOMPATIBLE**. Deployment Blocked. |
 
 ### 📊 Business Logic Sources
 - **Discovery**: Managed via `UserHomeViewModel`, `VendorBrowseViewModel`, and `VendorDetailViewModel`.
@@ -37,6 +37,7 @@ last_updated: '2026-04-22T00:00:00.000Z'
 
 ### 📌 Critical Anchors
 - **Beta QA Report**: [[reports/beta_qa/go_no_go_recommendation|🚦 Physical Device QA Gate Recommendation]]
+- **Firebase V2.1 Audit**: [[reports/beta_qa/firebase_rules_app_compatibility_audit|🔥 V2.1 Rules App Compatibility Audit]]
 - **Defect Log**: [[reports/beta_qa/defect_log|🐞 Defect Log]]
 - **Device Report**: [[debug_reports/device_test_20260424_210929/device_test_report|🛡️ Physical Device Test Report]]
 - **Milestone 4 Report**: [[Milestone_4_Stabilization_Report|📝 Milestone 4 Stabilization Report]]
