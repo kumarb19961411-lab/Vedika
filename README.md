@@ -1,47 +1,70 @@
+# 🕉️ Vedika: Elevate Your Service Discovery
+
+![Vedika Banner](resources/brand/banner.png)
+
+**Vedika** is a premium, multi-module Android application designed to bridge the gap between service vendors and consumers. Built with a modern, reactive architecture, Vedika provides a seamless experience for discovering, booking, and managing services with transactional integrity.
+
 ---
-title: Vedika Repository Index
-type: readme
-status: active
-owner: Core Development Team
-phase: Phase 3
-last_updated: 2026-04-20
+
+## ✨ Key Features
+
+### 🏢 For Vendors
+- **Unified Dashboard**: At-a-glance metrics for bookings, revenue, and inventory health.
+- **Smart Inventory Management**: Real-time availability tracking with double-submission protection and conflict detection.
+- **Role-Based Workflows**: Tailored onboarding and management screens designed for professional operations.
+
+### 👤 For Consumers
+- **Discover & Explore**: A reactive discovery engine to find high-quality local vendors.
+- **Instant Bookings**: Seamless booking flow with real-time feedback and premium success UX.
+- **Deep Link Integration**: Instant access to vendor profiles via `vedika://app/vendor/{id}`.
+
+### 🛡️ Security & Reliability
+- **Firebase App Check**: Hardened backend security to protect against unauthorized traffic.
+- **Transactional Integrity**: Ensuring every booking and inventory update is atomic and consistent.
+- **Build Regression Guard**: A robust suite of unit and lint tests ensuring every release is production-ready.
+
 ---
 
-# Vedika Project Docs & Index
+## 🏗️ Architecture & Tech Stack
 
-## Source of truth
-The README functions as the primary project navigation index, maintaining direct links to the structured Obsidian knowledge base.
+Vedika is engineered for scalability and maintainability using **Clean Architecture** principles.
 
-## Core Documentation Sections
+- **UI Framework**: [Jetpack Compose](https://developer.android.com/jetpack/compose) for a modern, declarative UI.
+- **Programming Language**: [Kotlin](https://kotlinlang.org/) with Coroutines & Flow for reactive state management.
+- **Dependency Injection**: [Hilt](https://dagger.dev/hilt/) for robust modular DI.
+- **Backend**: [Firebase](https://firebase.google.com/) (Authentication, Firestore, Storage, App Check).
+- **Navigation**: Type-safe Jetpack Navigation with Deep Link support.
 
-### 1. Canonical Current Architecture
-These files define the fundamental structure and behaviors of the system in Phase 3.
-- [System Status Tracking](docs/SYSTEM_STATUS.md)
-- [Repository Map & Boundaries](docs/architecture/repo_map.md)
-- [Auth Master Workflow](docs/architecture/auth_master_workflow.md)
-- [Role Behavior Matrix](docs/architecture/role_behavior_matrix.md)
-- [Backend Integration Blueprint](docs/architecture/backend_integration_blueprint.md)
-- [Session Restoration Architecture](docs/architecture/session_restoration.md)
+---
 
-### 2. Operational Implementation Guides
-These guides provide exact step-by-step instructions for implementing features securely and correctly according to design constraints.
-- [Build Troubleshooting & Resolution Guide](docs/BUILD_TROUBLESHOOTING.md)
-- [Vendor Signin Implementation Guide](docs/guides/vendor_signin_implementation_guide.md)
-- [User Signup Implementation Guide](docs/guides/user_signup_implementation_guide.md)
-- [User Signin Implementation Guide](docs/guides/user_signin_implementation_guide.md)
-- [Session Restoration Implementation Guide](docs/guides/session_restoration_guide.md)
+## 🚀 Getting Started
 
-### 3. Execution Templates
-These templates ensure consistent logging and structuring of development tasks and anomaly resolutions.
-- [Bug Analysis Template](docs/templates/Bug_Analysis_Template.md)
-- [Daily Log Template](docs/templates/Daily_Log_Template.md)
-- [Feature Log Template](docs/templates/Feature_Log_Template.md)
+### Prerequisites
+- Android Studio Iguana (or newer)
+- JDK 17
+- Firebase Project Configuration (`google-services.json`)
 
-### 4. Historical Elements (Archived)
-Legacy Phase 1 and Phase 2 items that are preserved for context but no longer represent valid architectural decisions.
-- [Archive Index](docs/archive/README.md)
+### Build Commands
+```bash
+# Assemble the debug build
+./gradlew assembleDevDebug
 
-## Future work
-- Continuous maintenance of index links ensuring structural alignment with Phase 3/4 iterations.
-- Add links to deep module documentation as specific subsystems mature and stabilize.
-- Incorporate automated generated API docs linked directly from CI/CD pipeline structures.
+# Run unit tests across all modules
+./gradlew testDebugUnitTest
+
+# Run quality checks
+./gradlew lintDevDebug
+```
+
+---
+
+## 📚 Documentation & Knowledge Base
+
+Vedika maintains a comprehensive **Obsidian-ready** documentation vault in the `docs/` folder.
+
+- **[🕉️ Project Hub](docs/hubs/Project_Hub.md)**: The central entry point for all documentation.
+- **[📊 System Status](docs/SYSTEM_STATUS.md)**: Real-time feature checklist and build health.
+- **[🛡️ Beta Readiness Report](docs/reports/beta_qa/non_device_qa_report.md)**: Current status of the pre-release QA gate.
+
+---
+Built with ❤️ by the Vedika Engineering Team.
