@@ -29,7 +29,7 @@ function Invoke-Adb($Arguments) {
 }
 
 function Get-ConnectedDevice {
-    $devices = & $ADB_PATH devices | Select-String -Pattern "\tdevice$" | ForEach-Object { $_.ToString().Split("`t")[0].Trim() }
+    $devices = @(& $ADB_PATH devices | Select-String -Pattern "\tdevice$" | ForEach-Object { $_.ToString().Split("`t")[0].Trim() })
     
     if ($null -eq $devices -or $devices.Count -eq 0) {
         Write-Warning "No devices connected via ADB."
