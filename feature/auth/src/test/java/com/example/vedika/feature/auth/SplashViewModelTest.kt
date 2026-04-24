@@ -72,7 +72,15 @@ class SplashViewModelTest {
         coEvery { authRepository.getCurrentUserId() } returns uid
         coEvery { sessionStorage.getAccountMode() } returns AccountMode.PARTNER
         coEvery { vendorRepository.getVendorProfile(uid) } returns Result.success(
-            VendorProfile(id = uid, businessName = "Test Business", vendorType = VendorType.VENUE)
+            VendorProfile(
+                id = uid,
+                businessName = "Test Business",
+                ownerName = "Test Owner",
+                location = "Test Location",
+                pricing = "Test Pricing",
+                vendorType = VendorType.VENUE,
+                primaryCategory = "Test Category"
+            )
         )
 
         val viewModel = SplashViewModel(authRepository, vendorRepository, userRepository, sessionStorage)

@@ -47,7 +47,15 @@ class InventoryViewModelTest {
         val items = listOf(
             InventoryItem("1", vendorId, "Item 1", "Desc 1", 100.0, true)
         )
-        val profile = VendorProfile(id = vendorId, businessName = "Biz", vendorType = VendorType.VENUE)
+        val profile = VendorProfile(
+            id = vendorId,
+            businessName = "Biz",
+            ownerName = "Owner",
+            location = "City",
+            pricing = "100",
+            vendorType = VendorType.VENUE,
+            primaryCategory = "Venue"
+        )
 
         coEvery { authRepository.getCurrentUserId() } returns vendorId
         coEvery { vendorRepository.getVendorProfile(vendorId) } returns Result.success(profile)
@@ -80,7 +88,15 @@ class InventoryViewModelTest {
 
         // Setup success for retry
         coEvery { vendorRepository.getVendorProfile(vendorId) } returns Result.success(
-            VendorProfile(id = vendorId, businessName = "Biz", vendorType = VendorType.VENUE)
+            VendorProfile(
+                id = vendorId,
+                businessName = "Biz",
+                ownerName = "Owner",
+                location = "City",
+                pricing = "100",
+                vendorType = VendorType.VENUE,
+                primaryCategory = "Venue"
+            )
         )
 
         viewModel.retry()

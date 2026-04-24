@@ -1,10 +1,9 @@
-package com.example.vedika.feature.discovery
+package com.example.vedika
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.example.vedika.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
@@ -22,8 +21,6 @@ class DiscoveryRegressionTest {
     @Test
     fun testDiscoveryBrowseFlow() {
         // Start on Home Screen (assuming we are bypassed/logged in or starting at home)
-        // Note: In a real CI, we'd use a @TestInstallIn to swap with a mock repository
-        // but for this stabilization milestone, we verify the "Fake" path works as intended.
         
         // 1. Verify Category "Marriage Garden" is visible
         composeTestRule.onNodeWithText("Marriage Garden").assertIsDisplayed()

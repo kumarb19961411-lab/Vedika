@@ -2,7 +2,7 @@ package com.example.vedika.feature.dashboard
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
-import com.example.vedika.core.data.model.VendorProfile
+import com.example.vedika.core.data.model.VendorUser
 import com.example.vedika.core.data.model.VendorType
 import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.BookingRepository
@@ -38,6 +38,8 @@ class NewBookingViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         every { authRepository.getActiveVendor() } returns flowOf(null)
+        coEvery { bookingRepository.checkConflict(any(), any(), any()) } returns Result.success(false)
+        coEvery { calendarRepository.isDateBlocked(any(), any()) } returns false
     }
 
     @After
@@ -62,7 +64,7 @@ class NewBookingViewModelTest {
 
     @Test
     fun `submitBooking prevents duplicate submissions when already submitting`() = runTest {
-        val vendor = VendorProfile(id = "v1", businessName = "Biz", vendorType = VendorType.VENUE)
+        val vendor = VendorUser(id = "v1", businessName = "Biz", ownerName = "Owner", isVerified = true, primaryServiceCategory = "Venue")
         every { authRepository.getActiveVendor() } returns flowOf(vendor)
         coEvery { bookingRepository.createBooking(any()) } coAnswers {
             kotlinx.coroutines.delay(1000)
@@ -88,7 +90,7 @@ class NewBookingViewModelTest {
 
     @Test
     fun `submitBooking success updates state and triggers callback`() = runTest {
-        val vendor = VendorProfile(id = "v1", businessName = "Biz", vendorType = VendorType.VENUE)
+        val vendor = VendorUser(id = "v1", businessName = "Biz", ownerName = "Owner", isVerified = true, primaryServiceCategory = "Venue")
         every { authRepository.getActiveVendor() } returns flowOf(vendor)
         coEvery { bookingRepository.createBooking(any()) } returns Result.success(Unit)
 
