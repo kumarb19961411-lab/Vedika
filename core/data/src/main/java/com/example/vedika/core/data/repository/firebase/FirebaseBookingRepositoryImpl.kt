@@ -10,6 +10,8 @@ import com.example.vedika.core.data.repository.firebase.FirestorePaths
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.FirebaseFunctionsException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -18,7 +20,8 @@ import java.util.UUID
 import javax.inject.Inject
 
 class FirebaseBookingRepositoryImpl @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val functions: FirebaseFunctions
 ) : BookingRepository {
 
     companion object {
@@ -61,91 +64,44 @@ class FirebaseBookingRepositoryImpl @Inject constructor(
 
     override suspend fun createBooking(booking: Booking): Result<Unit> {
         return try {
-            firestore.runTransaction { transaction ->
-                val dateId = "${booking.vendorId}_${booking.eventDate}"
-                val blockRef = firestore.collection(FirestorePaths.COL_BLOCKED_DATES).document(dateId)
-                val vendorRef = firestore.collection(FirestorePaths.COL_VENDORS).document(booking.vendorId)
-                val occupancyRef = firestore.collection(FirestorePaths.COL_OCCUPANCY).document(dateId)
+            val idempotencyKey = UUID.randomUUID().toString()
+            val data = hashMapOf(
+                "vendorId" to booking.vendorId,
+                "eventDate" to booking.eventDate,
+                "eventType" to booking.status.name, // Event type not strictly defined in Booking, pass status for now or define it
+                "guestCount" to 0,
+                "slotType" to booking.slotType.name,
+                "notes" to "",
+                "idempotencyKey" to idempotencyKey
+            )
 
-                // 1. Check for manual blocks
-                if (transaction.get(blockRef).exists()) {
-                    throw Exception("CONFLICT_DATE_BLOCKED")
-                }
+            functions
+                .getHttpsCallable("createBooking")
+                .call(data)
+                .await()
 
-                // 2. Fetch Vendor Profile for type and capacity
-                val vendorDoc = transaction.get(vendorRef)
-                if (!vendorDoc.exists()) throw Exception("ERROR_VENDOR_NOT_FOUND")
-                
-                val vendorTypeStr = vendorDoc.getString("vendorType") ?: vendorDoc.getString("primaryServiceCategory") ?: "VENUE"
-                val vendorType = try {
-                    VendorType.valueOf(vendorTypeStr.uppercase())
-                } catch (e: Exception) {
-                    VendorType.VENUE
-                }
-
-                val capacityRaw = vendorDoc.get("capacity")
-                val capacity = when {
-                    capacityRaw is Long -> capacityRaw.toInt()
-                    capacityRaw is String -> capacityRaw.toIntOrNull() ?: (if (vendorType == VendorType.VENUE) DEFAULT_CAPACITY_VENUE else DEFAULT_CAPACITY_DECORATOR)
-                    else -> {
-                        android.util.Log.w(TAG, "Missing/invalid capacity for vendor ${booking.vendorId}. Falling back: Venue=1, Decorator=4.")
-                        if (vendorType == VendorType.VENUE) DEFAULT_CAPACITY_VENUE else DEFAULT_CAPACITY_DECORATOR
-                    }
-                }
-
-                // 3. Check current occupancy
-                val occupancyDoc = transaction.get(occupancyRef)
-                val currentSlots = (occupancyDoc.get(FirestoreFields.SLOTS_OCCUPIED) as? List<*>)?.map { it.toString() } ?: emptyList()
-                val currentJobCount = occupancyDoc.getLong(FirestoreFields.JOB_COUNT) ?: 0L
-
-                // 4. Apply Conflict Logic
-                if (vendorType == VendorType.VENUE) {
-                    val overlap = when (booking.slotType) {
-                        SlotType.FULL_DAY -> currentSlots.isNotEmpty()
-                        SlotType.MORNING -> currentSlots.contains(SlotType.FULL_DAY.name) || currentSlots.contains(SlotType.MORNING.name)
-                        SlotType.EVENING -> currentSlots.contains(SlotType.FULL_DAY.name) || currentSlots.contains(SlotType.EVENING.name)
-                    }
-                    if (overlap) throw Exception("CONFLICT_SLOT_OCCUPIED")
-                } else {
-                    if (currentJobCount >= capacity) {
-                        throw Exception("CONFLICT_CAPACITY_FULL")
-                    }
-                }
-
-                // 5. Commit Writes
-                val bookingData = mutableMapOf(
-                    FirestoreFields.VENDOR_ID to booking.vendorId,
-                    "customerName" to booking.customerName,
-                    FirestoreFields.DATE to booking.eventDate,
-                    "totalAmount" to booking.totalAmount,
-                    FirestoreFields.STATUS to booking.status.name,
-                    FirestoreFields.SLOT_TYPE to booking.slotType.name,
-                    "vendorType" to vendorType.name,
-                    FirestoreFields.CREATED_AT to com.google.firebase.Timestamp.now()
-                )
-                
-                val bookingRef = firestore.collection(FirestorePaths.COL_BOOKINGS).document()
-                transaction.set(bookingRef, bookingData)
-
-                // 6. Update Occupancy Shadow Doc
-                val occupancyUpdate = if (occupancyDoc.exists()) {
-                    mapOf(
-                        FirestoreFields.SLOTS_OCCUPIED to FieldValue.arrayUnion(booking.slotType.name),
-                        FirestoreFields.JOB_COUNT to FieldValue.increment(1)
-                    )
-                } else {
-                    mapOf(
-                        FirestoreFields.VENDOR_ID to booking.vendorId,
-                        FirestoreFields.DATE to booking.eventDate,
-                        FirestoreFields.SLOTS_OCCUPIED to listOf(booking.slotType.name),
-                        FirestoreFields.JOB_COUNT to 1L
-                    )
-                }
-                transaction.set(occupancyRef, occupancyUpdate, com.google.firebase.firestore.SetOptions.merge())
-            }.await()
             Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(e)
+            val mappedError = if (e is FirebaseFunctionsException) {
+                when (e.code) {
+                    FirebaseFunctionsException.Code.NOT_FOUND -> Exception("ERROR_VENDOR_NOT_FOUND")
+                    FirebaseFunctionsException.Code.FAILED_PRECONDITION -> {
+                        if (e.message?.contains("CONFLICT_DATE_BLOCKED") == true) {
+                            Exception("CONFLICT_DATE_BLOCKED")
+                        } else if (e.message?.contains("CONFLICT_SLOT_OCCUPIED") == true) {
+                            Exception("CONFLICT_SLOT_OCCUPIED")
+                        } else if (e.message?.contains("CONFLICT_CAPACITY_FULL") == true) {
+                            Exception("CONFLICT_CAPACITY_FULL")
+                        } else {
+                            e
+                        }
+                    }
+                    else -> e
+                }
+            } else {
+                e
+            }
+            Result.failure(mappedError)
         }
     }
 
