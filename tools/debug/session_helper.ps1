@@ -45,16 +45,12 @@ function Get-ConnectedDevice {
         Write-Host " [$($i + 1)] $($devices[$i])"
     }
 
-    $choice = Read-Host "`nSelect a device serial [1-$($devices.Count)] (or press Enter for first)"
-    if ([string]::IsNullOrWhiteSpace($choice)) {
-        return $devices[0]
-    }
-
-    if ($choice -as [int] -and [int]$choice -le $devices.Count) {
+    $choice = Read-Host "`nSelect a device serial [1-$($devices.Count)]"
+    if ($choice -as [int] -and [int]$choice -ge 1 -and [int]$choice -le $devices.Count) {
         return $devices[[int]$choice - 1]
     }
 
-    Write-Error "Invalid selection. Stopping."
+    Write-Error "A valid device selection is required. Stopping."
     return $null
 }
 

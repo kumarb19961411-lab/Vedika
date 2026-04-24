@@ -21,10 +21,13 @@ To ensure your screen recordings are useful, follow these steps on your phone:
 The toolkit is located in the `tools/debug/` directory.
 
 ### Quick Start (Interactive Menu)
-The easiest way to use the toolkit is via the interactive wrapper:
 ```powershell
 .\tools\debug\run_debug_capture.ps1
 ```
+
+### When to Use Which Mode?
+*   **Video Capture (Option 1)**: Best for reproducing UI bugs, navigation issues, or providing a walkthrough for developers.
+*   **Device Test Report (Option 6)**: Best for final sign-off, verifying installation stability, checking for silent backend errors (logcat), and generating formal QA records for Beta readiness.
 
 ### Manual Commands
 If you prefer direct command execution:

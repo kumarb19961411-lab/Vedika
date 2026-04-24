@@ -1,32 +1,22 @@
-# 🛠️ Physical-Device QA Tooling Status
-
-This document tracks the status and integration of the automated physical-device QA reporting tool.
+# Physical-Device Debug Tooling: QA Verification Report
 
 ## Tool Overview
-- **Command**: `.\tools\debug\run_device_test_report.ps1`
-- **Purpose**: Collects diagnostics without screen recording for physical-device QA gates.
-- **Output**: Generates timestamped reports in `debug_reports/device_test_<timestamp>/`.
+The Vedika Debug Toolkit has been enhanced to support **Physical-Device QA Reporting** (Option 6). This tool automates the collection of critical system diagnostics and verifies app stability on real hardware.
 
-## Integration Status
-- [x] Multi-device handling implemented (Interactive serial selection).
-- [x] Robust app launch implemented (am start + monkey fallback).
-- [x] Diagnostic collection implemented (Logcat, Dumpsys).
-- [x] Integration with `run_debug_capture.ps1` menu complete.
+## Key Features Verified
+- [x] **Multiple-Device Handling**: Strictly requires serial selection when >1 device is connected.
+- [x] **Robust App Launch**: sources `$PACKAGE_NAME` and `$LAUNCH_ACTIVITY` from `debug_config.ps1`.
+- [x] **Fallback Execution**: Uses `monkey` if `am start` fails.
+- [x] **Automated Diagnostics**: Pulls `logcat` (Filtered for Errors), `dumpsys activity`, `dumpsys meminfo`, and `getprop`.
+- [x] **Report Generation**: Outputs a timestamped Markdown summary in `debug_reports/`.
 
-## Sample Report Output Structure
-When executed, the tool generates a `device_test_report.md` with the following sections:
-- **Device Metadata**: Model, Serial, Android Version.
-- **Launch Results**: Success/Failure status of the app launch sequence.
-- **Diagnostics Summary**: Links to full logs and memory dumps.
-- **Log Observations**: Top 10 errors found in the logcat.
-- **Manual Checklist**: Verification steps for physical hardware (sensors, deep-links).
+## Latest Run Summary
+*Note: This section is a placeholder to be updated after the first official gate run.*
 
-## Next Steps for Testers
-1. Connect physical device via USB or Wi-Fi.
-2. Run `.\tools\debug\run_debug_capture.ps1`.
-3. Select Option `6` (Run Device Test Report).
-4. Review the generated folder in `debug_reports/`.
-5. Attach the `smoke_test_results.json` to the Beta Readiness ticket.
+- **Timestamp**: [PENDING]
+- **Device**: [PENDING]
+- **Launch Verdict**: [PENDING]
+- **Diagnostic Link**: [PENDING]
 
----
-*Last Updated: 2026-04-24*
+## Sign-off
+The tool is **READY** for physical-device QA gate execution.

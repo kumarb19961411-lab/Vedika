@@ -2,13 +2,17 @@
 
 ![Vedika Banner](resources/brand/banner.png)
 
-**Vedika** is a premium, multi-module Android application designed to bridge the gap between service vendors and consumers. Built with a modern, reactive architecture, Vedika provides a seamless experience for discovering, booking, and managing services with transactional integrity.
-
----
+**Vedika** is a premium, multi-module Android application designed to bridge the gap between service vendors and consumers. Built with
 
 ## 🚀 Beta Status: CONDITIONAL GO
 The project has successfully passed the **Physical Device QA Gate** (Android API 35). 
 Current phase: **Final Stabilization & Beta Bug Bash**.
+
+### 🛠️ Technical Details
+- **Build Target**: Android API 35 (U)
+- **Min SDK**: 24
+- **OTP Bypass (Dev/Debug)**: `123456` (Standardized 6-digit bypass)
+- **Primary Auth**: Firebase Phone Auth
 
 ---
 
@@ -28,6 +32,12 @@ Current phase: **Final Stabilization & Beta Bug Bash**.
 - **Firebase App Check**: Hardened backend security to protect against unauthorized traffic.
 - **Transactional Integrity**: Ensuring every booking and inventory update is atomic and consistent.
 - **Build Regression Guard**: A robust suite of unit and lint tests ensuring every release is production-ready.
+
+### 🛠️ Technical Details
+- **Build Target**: Android API 35 (U)
+- **Min SDK**: 24
+- **OTP Bypass (Dev/Debug)**: `123456` (System requires exactly 6 digits)
+- **Primary Auth**: Firebase Phone Auth (OTP)
 
 ---
 

@@ -8,7 +8,7 @@ service cloud.firestore {
     }
     
     match /vendors/{vendorId} {
-      allow read: if request.auth != null && request.auth.uid == vendorId;
+      allow read: if true; // Enable Public Discovery
       allow update: if request.auth != null && request.auth.uid == vendorId 
                     && request.resource.data.keys().hasOnly(['businessName', 'primaryServiceCategory', 'imageUrl', 'location', 'capacity', 'pricing', 'amenities', 'ownerName', 'vendorType']);
       allow create: if request.auth != null && request.auth.uid == vendorId;
@@ -16,8 +16,9 @@ service cloud.firestore {
 
     // Bookings & Occupancy (Authority Chain)
     match /bookings/{bookingId} {
-      allow read: if request.auth != null && resource.data.vendorId == request.auth.uid;
-      allow create, update: if request.auth != null && request.resource.data.vendorId == request.auth.uid;
+      allow read: if request.auth != null && (resource.data.vendorId == request.auth.uid || resource.data.userId == request.auth.uid);
+      allow create: if request.auth != null && (request.resource.data.vendorId == request.auth.uid || request.resource.data.userId == request.auth.uid);
+      allow update: if request.auth != null && (resource.data.vendorId == request.auth.uid || resource.data.userId == request.auth.uid);
       allow delete: if false; 
     }
 

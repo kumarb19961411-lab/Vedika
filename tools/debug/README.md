@@ -14,6 +14,10 @@ The toolkit is designed to be run via the interactive wrapper. Use PowerShell:
 - **`take_screenshot.ps1`**: Snap a high-res screenshot directly into the active session.
 - **`generate_bugreport.ps1`**: Trigger a full system diagnostic.
 - **`run_device_test_report.ps1`**: Automated diagnostic collection and app launch verification (No Video).
+  - Collects `getprop`, `pm list packages`, and `dumpsys` data.
+  - Verifies app launch via `am start` with fallback to `monkey`.
+  - Optionally runs connected Android unit tests.
+  - Generates a standalone Markdown report in `debug_reports/`.
 - **`open_latest_report.ps1`**: Instantly browse the results.
 
 ## Configuration
