@@ -39,7 +39,13 @@ async function seedPublicVendors() {
         yearsExperience: data.yearsExperience || '',
         coverImage: data.coverImage || '',
         galleryImages: data.galleryImages || [],
-        packageTiers: data.packageTiers || []
+        packageTiers: data.packageTiers || [],
+        rating: data.rating || '',
+        area: data.area || '',
+        venueType: data.venueType || '',
+        featuredAssetTitle: data.featuredAssetTitle || '',
+        featuredAssetImage: data.featuredAssetImage || '',
+        featuredAssetPrice: data.featuredAssetPrice || ''
       };
 
       const publicRef = db.collection('public_vendors').document(doc.id);
