@@ -7,11 +7,11 @@ last_updated: '2026-04-22T00:00:00.000Z'
 ---
 # 📊 Vedika System Status
 
-### - **Current Status**: 🟢 Milestone 4: Beta Readiness Hardening (In Progress)
+### - **Current Status**: 🟡 **CONDITIONAL GO TO BETA BUG BASH**
 - **Previous Milestone**: 🟢 Milestone 4: Stabilization & Test Foundation (Completed)
-- **Current Gate**: **GO TO BETA BUG BASH** (Security Hardened)
+- **Current Gate**: **PRE-BASH SYNC & CLEANUP** (In Progress)
 - **Date**: April 2026
-- **Focus**: Final documentation sync, Firebase Rule enforcement, and App Check verification.
+- **Focus**: Final documentation sync, debug toolkit hygiene, and remediation planning.
 
 | Component | Status | Health | Notes |
 | :--- | :--- | :--- | :--- |
@@ -29,10 +29,11 @@ last_updated: '2026-04-22T00:00:00.000Z'
 - **Capacity/Conflicts**: Enforced via `/occupancy` index and transactional repository logic.
 
 ### 📅 Sprint Tracker
-- [x] **Milestone 1 Core Engine**: [CLOSED] ✅ (Conflicts, Inventory, Shell)
-- [x] **Milestone 2 Planning**: [LOCKED] 🛡️ (Journey, Regression Guard) ✅
-- [x] **Milestone 3: Operational Polish**: Navigation Hardening, Deep Links, Premium Success UX. ✅
-- [x] **Milestone 4: Stabilization**: Physical Device QA Gate closed. ✅
+- [x] **Milestone 1 Core Engine**: [CLOSED] ✅
+- [x] **Milestone 2 Planning**: [LOCKED] 🛡️ ✅
+- [x] **Milestone 3 Operational Polish**: ✅
+- [x] **Milestone 4 Stabilization**: Physical Device QA Gate (CONDITIONAL PASS). ✅
+- [ ] **Final Sync & Cleanup**: [IN PROGRESS] 🟡
 
 ### 📌 Critical Anchors
 - **Beta QA Report**: [[reports/beta_qa/go_no_go_recommendation|🚦 Physical Device QA Gate Recommendation]]

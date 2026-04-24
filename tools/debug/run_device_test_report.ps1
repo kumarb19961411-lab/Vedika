@@ -135,27 +135,56 @@ $reportMd = @"
 - **Errors/Fatals**: [logcat_errors.txt](./logcat_errors.txt)
 - **Activity State**: [dumpsys_activity.txt](./dumpsys_activity.txt)
 - **Memory Info**: [dumpsys_meminfo.txt](./dumpsys_meminfo.txt)
+- **Installed Packages**: [installed_packages.txt](./installed_packages.txt)
+- **Device Info**: [device_info.txt](./device_info.txt)
 
 ## 🔍 Log Observations (Top Errors)
-$(Get-Content (Join-Path $reportDir "logcat_errors.txt") | Select-Object -First 10 | ForEach-Object { "- $_" } | Out-String)
+$(if (Test-Path (Join-Path $reportDir "logcat_errors.txt")) {
+    $errors = Get-Content (Join-Path $reportDir "logcat_errors.txt") | Select-Object -First 10
+    if ($errors) {
+        $errors | ForEach-Object { "- $_" } | Out-String
+    } else {
+        "No critical errors found in logcat buffer."
+    }
+} else {
+    "Logcat error collection failed."
+})
 
 ## 🧪 Manual Physical-Device Checklist
 - [ ] Firebase App Check enforcement verified.
 - [ ] Storage image loading verified on real sensors.
 - [ ] Deep link restoration (`vedika://app/vendor/123`) verified.
-- [ ] Push notification token registration verified.
+- [ ] (Phase 5) Push notification token registration verified. (DEFERRED)
 
 ---
-**Final Status**: $(if ($launchResult -match "SUCCESS") { "PASS" } else { "FAIL" })
 "@
 
+# 10. Final Status Classification
+Write-Host "Evaluating final status..."
+$hasFatal = $false
+if (Test-Path (Join-Path $reportDir "logcat_errors.txt")) {
+    $errorContent = Get-Content (Join-Path $reportDir "logcat_errors.txt") -Raw
+    if ($errorContent -match "FATAL EXCEPTION" -or $errorContent -match "ANR in") {
+        $hasFatal = $true
+    }
+}
+
+$finalStatus = "FAIL"
+if ($launchResult -match "SUCCESS" -and $isInstalled -and !$hasFatal) {
+    $finalStatus = "PASS"
+} elseif ($launchResult -match "SUCCESS") {
+    $finalStatus = "CONDITIONAL_PASS"
+}
+
+# Update report with final status
+$reportMd = $reportMd -replace "Final Status: .*", "Final Status: $finalStatus"
 $reportMd | Out-File $reportFile -Encoding utf8
 
-# 10. Update Summary
 $smokeResults.LaunchStatus = $launchResult
 $smokeResults.DiagnosticCollection = "SUCCESS"
-$smokeResults.FinalStatus = if ($launchResult -match "SUCCESS") { "PASS" } else { "FAIL" }
+$smokeResults.FinalStatus = $finalStatus
 $smokeResults | ConvertTo-Json | Out-File (Join-Path $reportDir "smoke_test_results.json") -Encoding utf8
 
 Write-Host "`nReport Generated: $reportFile" -ForegroundColor Green
+Write-Host "Final Status: $finalStatus" -ForegroundColor (if ($finalStatus -eq "PASS") { "Green" } elseif ($finalStatus -eq "CONDITIONAL_PASS") { "Yellow" } else { "Red" })
 Write-Host "---"

@@ -4,7 +4,7 @@
 
 **Vedika** is a premium, multi-module Android application designed to bridge the gap between service vendors and consumers. Built with
 
-## 🚀 Beta Status: CONDITIONAL GO
+## 🚀 Beta Status: CONDITIONAL GO TO BETA BUG BASH
 The project has successfully passed the **Physical Device QA Gate** (Android API 35). 
 Current phase: **Final Stabilization & Beta Bug Bash**.
 

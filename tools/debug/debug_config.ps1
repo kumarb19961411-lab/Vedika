@@ -1,8 +1,35 @@
 # Vedika Debug Capture Toolkit Config
 # Use this file to customize your local debug environment.
 
+function Get-AdbPath {
+    # 1. Check ANDROID_HOME environment variable
+    if ($env:ANDROID_HOME) {
+        $path = Join-Path $env:ANDROID_HOME "platform-tools\adb.exe"
+        if (Test-Path $path) { return $path }
+    }
+
+    # 2. Check common Windows installation paths
+    $commonPaths = @(
+        "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe",
+        "$env:ProgramFiles\Android\Android Studio\bin\adb.exe",
+        "C:\Android\platform-tools\adb.exe"
+    )
+
+    foreach ($path in $commonPaths) {
+        if (Test-Path $path) { return $path }
+    }
+
+    # 3. Check system PATH
+    $pathFromWhere = where.exe adb 2>$null | Select-Object -First 1
+    if ($null -ne $pathFromWhere -and (Test-Path $pathFromWhere)) {
+        return $pathFromWhere
+    }
+
+    return $null
+}
+
 # ADB Execution
-$ADB_PATH = "C:\Users\Welcome\AppData\Local\Android\Sdk\platform-tools\adb.exe" # Discovered local path
+$ADB_PATH = Get-AdbPath
 
 # Application Details
 $PACKAGE_NAME = "com.example.vedika"

@@ -19,17 +19,17 @@ Use these hubs to navigate specific domains:
 - **[[Firebase_Hub|🔥 Firebase Hub]]**: Firestore schema, security rules, and sync contracts.
 
 ## 📋 Quick Links
-- **[[SYSTEM_STATUS|🚀 System Status]]**: Real-time feature checklist and build health.
+- **[[../SYSTEM_STATUS|🚀 System Status]]**: Real-time feature checklist and build health.
 - **[[Build_Troubleshooting_Guide|🛠️ Build Troubleshooting]]**: Solutions to common environment and compilation errors.
 - **[[Authentication_Implementation|🔐 Auth Implementation]]**: Technical details for sign-in/up.
 - **[[Flow_Architecture|🗺️ Journey Maps]]**: Onboarding and Discovery flow architecture.
 
 ## 🧪 Quality Assurance (Beta Readiness)
-- **[[non_device_qa_report|📝 Non-Device QA Summary]]**: Final status before physical device gate.
-- **[[go_no_go_recommendation|🚦 Go/No-Go Recommendation]]**: Release gate assessment.
-- **[[defect_log|🐞 Defect Log]]**: Tracked issues and remediations.
-- **[[test_matrix|🧪 Test Matrix]]**: Verification coverage.
-- **[[build_regression|🛡️ Build Regression]]**: Automated verification results.
+- **[[../reports/beta_qa/non_device_qa_report|📝 Non-Device QA Summary]]**: Final status before physical device gate.
+- **[[../reports/beta_qa/go_no_go_recommendation|🚦 Go/No-Go Recommendation]]**: Release gate assessment.
+- **[[../reports/beta_qa/defect_log|🐞 Defect Log]]**: Tracked issues and remediations.
+- **[[../reports/beta_qa/test_matrix|🧪 Test Matrix]]**: Verification coverage.
+- **[[../reports/beta_qa/build_regression|🛡️ Build Regression]]**: Automated verification results.
 
 ## 📁 Indexes
 - **[[changelog_v2|📜 Project Changelog]]**: Detailed version history.
