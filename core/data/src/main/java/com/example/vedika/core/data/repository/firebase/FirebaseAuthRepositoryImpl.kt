@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.vedika.core.data.model.VendorUser
 import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.VendorRepository
+import com.example.vedika.core.data.session.SessionStorage
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
@@ -25,7 +26,8 @@ import kotlin.coroutines.resume
 
 class FirebaseAuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val vendorRepository: VendorRepository
+    private val vendorRepository: VendorRepository,
+    private val sessionStorage: SessionStorage
 ) : AuthRepository {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -113,6 +115,7 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
 
     override suspend fun logout() {
         auth.signOut()
+        sessionStorage.clearSession()
     }
 
     override fun getCurrentUserId(): String? {

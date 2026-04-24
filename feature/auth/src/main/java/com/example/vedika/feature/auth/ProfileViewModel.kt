@@ -19,8 +19,7 @@ data class ProfileUiState(
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val vendorRepository: VendorRepository,
-    private val sessionStorage: com.example.vedika.core.data.session.SessionStorage
+    private val vendorRepository: VendorRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -42,7 +41,6 @@ class ProfileViewModel @Inject constructor(
     fun logout(onLoggedOut: () -> Unit) {
         viewModelScope.launch {
             authRepository.logout()
-            sessionStorage.clearSession()
             onLoggedOut()
         }
     }

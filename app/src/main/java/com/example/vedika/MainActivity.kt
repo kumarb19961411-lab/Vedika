@@ -430,12 +430,12 @@ fun VedikaAppShell(
             }
             composable(
                 route = VedikaDestination.VendorDetail.route,
-                arguments = listOf(navArgument("id") { type = NavType.StringType }),
+                arguments = listOf(navArgument("vendorId") { type = NavType.StringType }),
                 deepLinks = listOf(
                     navDeepLink { uriPattern = VedikaDestination.DEEP_LINK_VENDOR_DETAIL }
                 )
             ) { backStackEntry ->
-                val id = backStackEntry.arguments?.getString("id") ?: ""
+                val id = backStackEntry.arguments?.getString("vendorId") ?: ""
                 VendorDetailScreen(
                     onNavigateBack = { navController.popBackStack() },
                     onNavigateToInquiry = { vendorId ->

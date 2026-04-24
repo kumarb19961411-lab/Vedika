@@ -2,6 +2,7 @@ package com.example.vedika.data.fake
 
 import com.example.vedika.core.data.model.VendorUser
 import com.example.vedika.core.data.repository.AuthRepository
+import com.example.vedika.core.data.session.SessionStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -10,7 +11,9 @@ import javax.inject.Singleton
 import android.app.Activity
 
 @Singleton
-class FakeAuthRepository @Inject constructor() : AuthRepository {
+class FakeAuthRepository @Inject constructor(
+    private val sessionStorage: SessionStorage
+) : AuthRepository {
     private val currentUser = MutableStateFlow<VendorUser?>(null)
 
     override fun getActiveVendor(): Flow<VendorUser?> = currentUser
@@ -51,6 +54,7 @@ class FakeAuthRepository @Inject constructor() : AuthRepository {
 
     override suspend fun logout() {
         currentUser.value = null
+        sessionStorage.clearSession()
     }
 
     override fun getCurrentUserId(): String? = currentUser.value?.id

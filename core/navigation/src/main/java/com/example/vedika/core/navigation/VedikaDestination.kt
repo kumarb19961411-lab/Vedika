@@ -38,8 +38,8 @@ sealed class VedikaDestination(val route: String) {
     data object VendorBrowse : VedikaDestination("vendor_browse/{category}") {
         fun createRoute(category: String) = "vendor_browse/$category"
     }
-    data object VendorDetail : VedikaDestination("vendor_detail/{id}") {
-        fun createRoute(id: String) = "vendor_detail/$id"
+    data object VendorDetail : VedikaDestination("vendor/{vendorId}") {
+        fun createRoute(vendorId: String) = "vendor/$vendorId"
     }
     data object InquiryForm : VedikaDestination("inquiry_form/{id}") {
         fun createRoute(id: String) = "inquiry_form/$id"
@@ -54,7 +54,7 @@ sealed class VedikaDestination(val route: String) {
         const val DEEP_LINK_DASHBOARD = "$DEEP_LINK_PREFIX/dashboard"
         const val DEEP_LINK_FINANCE = "$DEEP_LINK_PREFIX/finance"
         const val DEEP_LINK_DISCOVERY = "$DEEP_LINK_PREFIX/discovery" // Maps to All category
-        const val DEEP_LINK_VENDOR_DETAIL = "$DEEP_LINK_PREFIX/vendor/{id}"
+        const val DEEP_LINK_VENDOR_DETAIL = "$DEEP_LINK_PREFIX/vendor/{vendorId}"
         const val DEEP_LINK_PROFILE = "$DEEP_LINK_PREFIX/profile"
     }
 }
