@@ -24,6 +24,13 @@ Use these hubs to navigate specific domains:
 - **[[Authentication_Implementation|🔐 Auth Implementation]]**: Technical details for sign-in/up.
 - **[[Flow_Architecture|🗺️ Journey Maps]]**: Onboarding and Discovery flow architecture.
 
+## 🧪 Quality Assurance (Beta Readiness)
+- **[[non_device_qa_report|📝 Non-Device QA Summary]]**: Final status before physical device gate.
+- **[[go_no_go_recommendation|🚦 Go/No-Go Recommendation]]**: Release gate assessment.
+- **[[defect_log|🐞 Defect Log]]**: Tracked issues and remediations.
+- **[[test_matrix|🧪 Test Matrix]]**: Verification coverage.
+- **[[build_regression|🛡️ Build Regression]]**: Automated verification results.
+
 ## 📁 Indexes
 - **[[changelog_v2|📜 Project Changelog]]**: Detailed version history.
 - **[[Archive_Index|📁 Archive Index]]**: Historical and legacy documentation.
