@@ -17,25 +17,24 @@ Use these hubs to navigate specific domains:
 - **[[Vendor_Flow_Hub|🏢 Vendor Flow Hub]]**: Partner onboarding, dashboard, and management guides.
 - **[[User_Flow_Hub|👤 User Flow Hub]]**: Customer discovery and booking flows.
 - **[[Firebase_Hub|🔥 Firebase Hub]]**: Firestore schema, security rules, and sync contracts.
-- **[[Phase_Tracker_Hub|⏱️ Phase Tracker]]**: Project status, changelogs, and historical archive.
-
-## 📁 Indexes
-- **[[Notes_Index|📝 Notes Index]]**: Scratchpad and in-progress knowledge.
-- **[[Archive_Index|📁 Archive Index]]**: Historical and legacy documentation.
 
 ## 📋 Quick Links
 - **[[SYSTEM_STATUS|🚀 System Status]]**: Real-time feature checklist and build health.
 - **[[Build_Troubleshooting_Guide|🛠️ Build Troubleshooting]]**: Solutions to common environment and compilation errors.
-- **[[Milestone_4_Stabilization_Report|🛡️ Milestone 4 Report]]**: Latest stabilization and test foundation results.
-- **[[repo_map|🗺️ Repository Map]]**: Module topology and dependency graph.
+- **[[Authentication_Implementation|🔐 Auth Implementation]]**: Technical details for sign-in/up.
+- **[[Flow_Architecture|🗺️ Journey Maps]]**: Onboarding and Discovery flow architecture.
 
------
+## 📁 Indexes
+- **[[changelog_v2|📜 Project Changelog]]**: Detailed version history.
+- **[[Archive_Index|📁 Archive Index]]**: Historical and legacy documentation.
+
+----
 ## 🛠️ Developer Toolbox
 - [[obsidian_mcp_setup|Obsidian Setup Guide]]
 - [[debug_capture_workflow|Debug & Capture Workflow]]
 - [[android_build_regression_guard|Build Regression Guard]]
 
------
+----
 > [!TIP]
 > Use `Ctrl+G` (or `Cmd+G`) in Obsidian to see how all these notes are connected in the Graph View!
 
