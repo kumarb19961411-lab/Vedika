@@ -68,10 +68,10 @@ Vedika is engineered for scalability and maintainability using **Clean Architect
 
 Vedika maintains a comprehensive **Obsidian-ready** documentation vault.
 
-- **[🕉️ Project Hub](hubs/Project_Hub.md)**: The central entry point for all documentation.
-- **[📊 System Status](SYSTEM_STATUS.md)**: Real-time feature checklist and build health.
-- **[🚦 QA Gate Summary](reports/beta_qa/physical_device_qa_gate_summary.md)**: Final results from the Physical Device QA Gate.
-- **[🐞 Defect Log](reports/beta_qa/defect_log.md)**: Current known issues and fixes.
+- **[🕉️ Project Hub](docs/hubs/Project_Hub.md)**: The central entry point for all documentation.
+- **[📊 System Status](docs/SYSTEM_STATUS.md)**: Real-time feature checklist and build health.
+- **[🚦 QA Gate Summary](docs/reports/beta_qa/physical_device_qa_gate_summary.md)**: Final results from the Physical Device QA Gate.
+- **[🐞 Defect Log](docs/reports/beta_qa/defect_log.md)**: Current known issues and fixes.
 
 ---
 Built with ❤️ by the Vedika Engineering Team.
