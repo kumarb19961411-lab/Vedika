@@ -10,7 +10,11 @@ Write-Host "   Vedika Physical-Device QA Report" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 
 # 1. Device Verification
-$serial = Get-ConnectedDevice
+try {
+    $serial = Get-ConnectedDevice
+} catch {
+    $serial = $null
+}
 if ($null -eq $serial) {
     Write-Host "Error: No physical device detected. Connect via USB or Wi-Fi first." -ForegroundColor Red
     exit 1

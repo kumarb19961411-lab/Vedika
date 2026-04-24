@@ -3,9 +3,9 @@
 
 function Get-AdbPath {
     # 1. Check system PATH first
-    $pathFromWhere = where.exe adb 2>$null | Select-Object -First 1
-    if ($null -ne $pathFromWhere -and (Test-Path $pathFromWhere)) {
-        return $pathFromWhere
+    $adbCmd = Get-Command adb -ErrorAction SilentlyContinue
+    if ($null -ne $adbCmd -and (Test-Path $adbCmd.Source)) {
+        return $adbCmd.Source
     }
 
     # 2. Check ANDROID_HOME environment variable
