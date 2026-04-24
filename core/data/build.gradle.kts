@@ -13,6 +13,7 @@ android {
         minSdk = 24
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -28,6 +29,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.androidx.security.crypto)
+    coreLibraryDesugaring(libs.android.desugarJdkLibs)
     
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)

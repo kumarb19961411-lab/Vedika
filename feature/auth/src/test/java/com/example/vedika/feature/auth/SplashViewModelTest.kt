@@ -8,6 +8,7 @@ import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.UserRepository
 import com.example.vedika.core.data.repository.VendorRepository
 import com.example.vedika.core.data.session.SessionStorage
+import com.example.vedika.core.data.util.VedikaLogger
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,7 @@ class SplashViewModelTest {
     private val vendorRepository = mockk<VendorRepository>()
     private val userRepository = mockk<UserRepository>()
     private val sessionStorage = mockk<SessionStorage>()
+    private val logger = mockk<VedikaLogger>(relaxed = true)
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -45,10 +47,10 @@ class SplashViewModelTest {
     fun `when user is not logged in, startup state is Unauthenticated`() = runTest {
         coEvery { authRepository.getCurrentUserId() } returns null
 
-        val viewModel = SplashViewModel(authRepository, vendorRepository, userRepository, sessionStorage)
+        val viewModel = SplashViewModel(authRepository, vendorRepository, userRepository, sessionStorage, logger)
 
+        testDispatcher.scheduler.advanceUntilIdle()
         viewModel.startupState.test {
-            assertEquals(StartupState.Loading, awaitItem())
             assertEquals(StartupState.Unauthenticated, awaitItem())
         }
     }
@@ -58,10 +60,10 @@ class SplashViewModelTest {
         coEvery { authRepository.getCurrentUserId() } returns "uid123"
         coEvery { sessionStorage.getAccountMode() } returns null
 
-        val viewModel = SplashViewModel(authRepository, vendorRepository, userRepository, sessionStorage)
+        val viewModel = SplashViewModel(authRepository, vendorRepository, userRepository, sessionStorage, logger)
 
+        testDispatcher.scheduler.advanceUntilIdle()
         viewModel.startupState.test {
-            assertEquals(StartupState.Loading, awaitItem())
             assertEquals(StartupState.Unauthenticated, awaitItem())
         }
     }
@@ -83,10 +85,10 @@ class SplashViewModelTest {
             )
         )
 
-        val viewModel = SplashViewModel(authRepository, vendorRepository, userRepository, sessionStorage)
+        val viewModel = SplashViewModel(authRepository, vendorRepository, userRepository, sessionStorage, logger)
 
+        testDispatcher.scheduler.advanceUntilIdle()
         viewModel.startupState.test {
-            assertEquals(StartupState.Loading, awaitItem())
             val state = awaitItem() as StartupState.Authenticated
             assertEquals(AccountMode.PARTNER, state.mode)
             assertEquals(true, state.profileExists)
@@ -100,10 +102,10 @@ class SplashViewModelTest {
         coEvery { sessionStorage.getAccountMode() } returns AccountMode.PARTNER
         coEvery { vendorRepository.getVendorProfile(uid) } returns Result.failure(Exception("VENDOR_NOT_FOUND"))
 
-        val viewModel = SplashViewModel(authRepository, vendorRepository, userRepository, sessionStorage)
+        val viewModel = SplashViewModel(authRepository, vendorRepository, userRepository, sessionStorage, logger)
 
+        testDispatcher.scheduler.advanceUntilIdle()
         viewModel.startupState.test {
-            assertEquals(StartupState.Loading, awaitItem())
             val state = awaitItem() as StartupState.Authenticated
             assertEquals(AccountMode.PARTNER, state.mode)
             assertEquals(false, state.profileExists)

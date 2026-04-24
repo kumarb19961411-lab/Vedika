@@ -1,6 +1,5 @@
 package com.example.vedika.feature.auth
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +13,7 @@ import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.UserRepository
 import com.example.vedika.core.data.repository.VendorRepository
 import com.example.vedika.core.data.session.SessionStorage
+import com.example.vedika.core.data.util.VedikaLogger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +28,8 @@ class AuthViewModel @Inject constructor(
     private val vendorRepository: VendorRepository,
     private val userRepository: UserRepository,
     private val sessionStorage: SessionStorage,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val logger: VedikaLogger
 ) : ViewModel() {
 
     private val _pendingDestination = savedStateHandle.getStateFlow<String?>("pendingDestination", null)
@@ -53,7 +54,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun logDebug(message: String) {
-        Log.d("VedikaDebug", "AuthViewModel: $message")
+        logger.d("VedikaDebug", "AuthViewModel: $message")
     }
 
     fun selectAccountMode(mode: AccountMode) {

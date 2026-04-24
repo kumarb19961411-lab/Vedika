@@ -7,6 +7,7 @@ import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.UserRepository
 import com.example.vedika.core.data.repository.VendorRepository
 import com.example.vedika.core.data.session.SessionStorage
+import com.example.vedika.core.data.util.VedikaLogger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +28,8 @@ class SplashViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val vendorRepository: VendorRepository,
     private val userRepository: UserRepository,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val logger: VedikaLogger
 ) : ViewModel() {
 
     private val _startupState = MutableStateFlow<StartupState>(StartupState.Idle)

@@ -13,6 +13,7 @@ import com.example.vedika.core.data.repository.AuthRepository
 import com.example.vedika.core.data.repository.UserRepository
 import com.example.vedika.core.data.repository.VendorRepository
 import com.example.vedika.core.data.session.SessionStorage
+import com.example.vedika.core.data.util.VedikaLogger
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -36,6 +37,7 @@ class AuthViewModelTest {
     private val vendorRepository = mockk<VendorRepository>()
     private val userRepository = mockk<UserRepository>()
     private val sessionStorage = mockk<SessionStorage>()
+    private val logger = mockk<VedikaLogger>(relaxed = true)
     private val savedStateHandle = SavedStateHandle()
 
     private val testDispatcher = StandardTestDispatcher()
@@ -53,7 +55,7 @@ class AuthViewModelTest {
 
     @Test
     fun `sendOtp with invalid phone returns error`() = runTest {
-        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle)
+        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle, logger)
         viewModel.updatePhoneNumber("123")
         
         viewModel.sendOtp(mockk()) {}
@@ -73,7 +75,7 @@ class AuthViewModelTest {
         
         coEvery { authRepository.sendOtp(formattedPhone, any()) } returns Result.success(verificationId)
 
-        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle)
+        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle, logger)
         viewModel.updatePhoneNumber(phoneNumber)
         
         viewModel.sendOtp(mockk()) {}
@@ -113,7 +115,7 @@ class AuthViewModelTest {
         )
         every { sessionStorage.saveAccountMode(AccountMode.PARTNER) } returns Unit
 
-        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle)
+        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle, logger)
         viewModel.selectAccountMode(AccountMode.PARTNER)
         viewModel.updateOtp(otp)
         
@@ -145,7 +147,7 @@ class AuthViewModelTest {
         coEvery { vendorRepository.getVendorProfile(uid) } returns Result.failure(Exception("VENDOR_NOT_FOUND"))
         every { sessionStorage.saveAccountMode(AccountMode.PARTNER) } returns Unit
 
-        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle)
+        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle, logger)
         viewModel.selectAccountMode(AccountMode.PARTNER)
         viewModel.updateOtp(otp)
         
@@ -185,7 +187,7 @@ class AuthViewModelTest {
         )
         every { sessionStorage.saveAccountMode(AccountMode.PARTNER) } returns Unit
 
-        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle)
+        val viewModel = AuthViewModel(authRepository, vendorRepository, userRepository, sessionStorage, savedStateHandle, logger)
         viewModel.selectAccountMode(AccountMode.PARTNER)
         
         viewModel.loginAsDevBypass {}
