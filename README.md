@@ -6,6 +6,12 @@
 
 ---
 
+## 🚀 Beta Status: CONDITIONAL GO
+The project has successfully passed the **Physical Device QA Gate** (Android API 35). 
+Current phase: **Final Stabilization & Beta Bug Bash**.
+
+---
+
 ## ✨ Key Features
 
 ### 🏢 For Vendors
@@ -60,11 +66,12 @@ Vedika is engineered for scalability and maintainability using **Clean Architect
 
 ## 📚 Documentation & Knowledge Base
 
-Vedika maintains a comprehensive **Obsidian-ready** documentation vault in the `docs/` folder.
+Vedika maintains a comprehensive **Obsidian-ready** documentation vault.
 
-- **[🕉️ Project Hub](docs/hubs/Project_Hub.md)**: The central entry point for all documentation.
-- **[📊 System Status](docs/SYSTEM_STATUS.md)**: Real-time feature checklist and build health.
-- **[🛡️ Beta Readiness Report](docs/reports/beta_qa/non_device_qa_report.md)**: Current status of the pre-release QA gate.
+- **[🕉️ Project Hub](hubs/Project_Hub.md)**: The central entry point for all documentation.
+- **[📊 System Status](SYSTEM_STATUS.md)**: Real-time feature checklist and build health.
+- **[🚦 QA Gate Summary](reports/beta_qa/physical_device_qa_gate_summary.md)**: Final results from the Physical Device QA Gate.
+- **[🐞 Defect Log](reports/beta_qa/defect_log.md)**: Current known issues and fixes.
 
 ---
 Built with ❤️ by the Vedika Engineering Team.

@@ -1,16 +1,16 @@
-# 🚦 Go/No-Go Recommendation: Physical Device QA
+# 🚦 Go/No-Go Recommendation: Physical Device QA Gate
 
-**Status**: 🟡 **CONDITIONAL GO**
+**Status**: 🟡 **CONDITIONAL GO TO BETA BUG BASH**
 
 ### Recommendation
-Proceed to **Physical Device QA** phase. The app has passed all non-device verification gates, including build stability, core logic unit tests, and navigation contract hardening.
+Proceed to the **Beta Bug Bash** phase. The physical device QA gate has been successfully navigated with no fatal crashes, ANRs, or blockers detected. The app is functionally stable on Android API 35 (Physical Hardware).
 
-### Exit Criteria for Physical QA
-1. **App Check**: Verify enforcement on physical hardware.
-2. **Deep Links**: Verify OS-level interception of `vedika://app` links.
-3. **Camera/Gallery**: Verify Firebase Storage uploads on real sensors.
-4. **Push Notifications**: Verify token registration and receipt.
+### Conditions for Beta Sign-off
+1. **Security Hardening**: Execute the approved Firestore and Storage rules remediation.
+2. **App Check**: Complete the production enforcement configuration.
+3. **Test Coverage**: Implement missing `FinanceViewModelTest` and `CalendarViewModelTest` (DEF-003).
+4. **Final Regression**: Perform a clean-pass smoke test after the above remediations.
 
 ### Risks
-- **DEF-005**: Storage rules may require adjustment once real media is used.
-- **R8/Proguard**: Minimal testing on obfuscated builds performed so far.
+- **Security**: Current Firebase rules are permissive for development; must be hardened before public bug bash.
+- **Push Notifications**: Officially deferred to Phase 5 per architectural docs; not a blocker for Beta.
